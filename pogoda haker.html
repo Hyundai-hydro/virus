@@ -1,0 +1,1191 @@
+<!doctype html><html><head></head><body><!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pogoda Hack</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Roboto', sans-serif;
+			min-height: 100vh;
+			background: linear-gradient(45deg, #2c3e50, #3498db);
+			color: white;
+			overflow-x: hidden;
+			transition: background 1s ease;
+			position: relative;
+		}
+
+		.sidebar {
+			position: fixed;
+			top: 0;
+			left: -350px;
+			width: 350px;
+			height: 100%;
+			background: rgba(44, 62, 80, 0.95);
+			padding: 20px;
+			transition: left 0.3s ease;
+			z-index: 20;
+			overflow-y: auto;
+			box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+		}
+
+		.sidebar.active {
+			left: 0;
+		}
+
+		.menu-btn {
+			position: fixed;
+			top: 15px;
+			left: 15px;
+			background: #3498db;
+			border: none;
+			color: white;
+			padding: 8px 12px;
+			border-radius: 5px;
+			cursor: pointer;
+			z-index: 21;
+			font-size: 16px;
+			transition: background 0.2s, transform 0.2s;
+		}
+
+		.menu-btn:hover {
+			background: #2980b9;
+			transform: scale(1.1);
+		}
+
+		h1 {
+			font-size: 26px;
+			margin-bottom: 20px;
+			text-align: center;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+		}
+
+		.tabs {
+			display: flex;
+			flex-wrap: wrap;
+			background: rgba(255, 255, 255, 0.1);
+			padding: 10px;
+			border-radius: 8px;
+			margin-bottom: 15px;
+		}
+
+		.tab {
+			flex: 1;
+			text-align: center;
+			padding: 10px;
+			cursor: pointer;
+			transition: background 0.3s, color 0.3s;
+			border-radius: 5px;
+			margin: 5px;
+			font-size: 14px;
+		}
+
+		.tab:hover,
+		.tab.active {
+			background: #3498db;
+			color: white;
+		}
+
+		.controls {
+			display: none;
+			grid-template-columns: 1fr;
+			gap: 12px;
+		}
+
+		.controls.active {
+			display: grid;
+		}
+
+		button {
+			padding: 12px;
+			background: linear-gradient(45deg, #3498db, #2980b9);
+			color: white;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			font-size: 14px;
+			transition: transform 0.2s, box-shadow 0.2s;
+			text-align: left;
+		}
+
+		button:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+		}
+
+		label {
+			font-size: 13px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 5px 0;
+			position: relative;
+		}
+
+		label:hover::after {
+			content: attr(data-tooltip);
+			position: absolute;
+			top: -35px;
+			left: 50%;
+			transform: translateX(-50%);
+			background: rgba(44, 62, 80, 0.9);
+			color: white;
+			padding: 6px 10px;
+			border-radius: 4px;
+			font-size: 11px;
+			white-space: nowrap;
+			z-index: 10;
+		}
+
+		input[type="range"] {
+			width: 100%;
+			height: 6px;
+			background: rgba(255, 255, 255, 0.2);
+			border-radius: 3px;
+			outline: none;
+			appearance: none;
+		}
+
+		input[type="range"]::-webkit-slider-thumb {
+			appearance: none;
+			width: 16px;
+			height: 16px;
+			background: #3498db;
+			border-radius: 50%;
+			cursor: pointer;
+			transition: background 0.2s;
+		}
+
+		input[type="range"]::-webkit-slider-thumb:hover {
+			background: #2980b9;
+		}
+
+		input[type="range"][id="temperature"]::-webkit-slider-thumb {
+			background: linear-gradient(45deg, #e74c3c, #3498db);
+		}
+
+		input[type="checkbox"] {
+			width: 16px;
+			height: 16px;
+			accent-color: #3498db;
+		}
+
+		.canvas {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: auto;
+			z-index: 5;
+		}
+
+		.particle {
+			position: absolute;
+			pointer-events: none;
+		}
+
+		.rain {
+			background: #00f;
+			width: 2px;
+			height: 10px;
+		}
+
+		.snow {
+			background: white;
+			width: 5px;
+			height: 5px;
+			border-radius: 50%;
+		}
+
+		.hail {
+			background: #aaa;
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+		}
+
+		.cloud {
+			background: rgba(255, 255, 255, 0.5);
+			width: 100px;
+			height: 50px;
+			border-radius: 50%;
+		}
+
+		.tornado {
+			background: rgba(100, 100, 100, 0.5);
+			width: 20px;
+			height: 100px;
+			transform-origin: bottom;
+		}
+
+		.lightning {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: white;
+			opacity: 0;
+			transition: opacity 0.1s;
+		}
+
+		.rainbow {
+			position: fixed;
+			top: 20%;
+			left: 0;
+			width: 100%;
+			height: 20px;
+			background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+			opacity: 0;
+			z-index: 4;
+			filter: blur(2px);
+		}
+
+		.alert {
+			position: fixed;
+			top: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			background: rgba(231, 76, 60, 0.9);
+			color: white;
+			padding: 12px 24px;
+			border-radius: 8px;
+			z-index: 20;
+			display: none;
+			animation: fadeInOut 3s;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+		}
+
+		@keyframes fadeInOut {
+			0% {
+				opacity: 0;
+				transform: translate(-50%, -20px);
+			}
+
+			10% {
+				opacity: 1;
+				transform: translate(-50%, 0);
+			}
+
+			90% {
+				opacity: 1;
+				transform: translate(-50%, 0);
+			}
+
+			100% {
+				opacity: 0;
+				transform: translate(-50%, -20px);
+			}
+		}
+
+		.slonecznie {
+			background: linear-gradient(to bottom, #87ceeb, #f4d03f);
+		}
+
+		.deszcz {
+			background: linear-gradient(to bottom, #4682b4, #2f4f4f);
+		}
+
+		.snieg {
+			background: linear-gradient(to bottom, #b0c4de, #ffffff);
+		}
+
+		.burza {
+			background: linear-gradient(to bottom, #191970, #2f4f4f);
+		}
+
+		.pochmurno {
+			background: linear-gradient(to bottom, #778899, #708090);
+		}
+
+		.wietrznie {
+			background: linear-gradient(to bottom, #add8e6, #b0e0e6);
+		}
+
+		.grad {
+			background: linear-gradient(to bottom, #a9a9a9, #696969);
+		}
+
+		.tornado {
+			background: linear-gradient(to bottom, #708090, #2f4f4f);
+		}
+
+		.upal {
+			background: linear-gradient(to bottom, #ff4500, #ffa500);
+		}
+
+		.mroz {
+			background: linear-gradient(to bottom, #e6e6fa, #f0f8ff);
+		}
+
+		.piasek {
+			background: linear-gradient(to bottom, #f4a460, #d2b48c);
+		}
+
+		.smuga {
+			background: linear-gradient(to bottom, #87ceeb, #ffffff);
+		}
+
+		.zorza {
+			background: linear-gradient(to bottom, #191970, #483d8b);
+		}
+
+		@media (max-width: 600px) {
+			.sidebar {
+				width: 100%;
+				left: -100%;
+			}
+
+			.sidebar.active {
+				left: 0;
+			}
+
+			.menu-btn {
+				padding: 6px 10px;
+				font-size: 14px;
+			}
+
+			button,
+			label {
+				font-size: 12px;
+			}
+
+			.tabs {
+				flex-direction: column;
+			}
+
+			.tab {
+				margin: 2px 0;
+			}
+		}
+	</style>
+</head>
+
+<body class="slonecznie">
+	<button class="menu-btn">Menu</button>
+	<div class="sidebar">
+		<h1>Pogoda Hack</h1>
+		<div class="tabs">
+			<div class="tab active" data-tab="weather">Pogoda</div>
+			<div class="tab" data-tab="effects">Efekty</div>
+			<div class="tab" data-tab="colors">Kolory</div>
+			<div class="tab" data-tab="sound">Dzwiek</div>
+		</div>
+		<div class="controls active" id="weather">
+			<button onclick="setWeather('slonecznie')">Slonecznie</button>
+			<button onclick="setWeather('deszcz')">Deszcz</button>
+			<button onclick="setWeather('snieg')">Snieg</button>
+			<button onclick="setWeather('burza')">Burza</button>
+			<button onclick="setWeather('pochmurno')">Pochmurno</button>
+			<button onclick="setWeather('wietrznie')">Wietrznie</button>
+			<button onclick="setWeather('grad')">Grad</button>
+			<button onclick="setWeather('tornado')">Tornado</button>
+			<button onclick="setWeather('upal')">Upal</button>
+			<button onclick="setWeather('mroz')">Mroz</button>
+			<button onclick="setWeather('piasek')">Burza Piaskowa</button>
+			<button onclick="setWeather('smuga')">Smuga Kondensacyjna</button>
+			<button onclick="setWeather('zorza')">Zorza Polarna</button>
+			<button onclick="randomWeather()">Ustaw Pogode (czasami sie nie ustawia poniewaz to zalezy od miesiaca lub uszkodzony system w chmurach)</button>
+			<button onclick="resetSettings()">Reset</button>
+		</div>
+		<div class="controls" id="effects">
+			<label data-tooltip="Reguluje sile opadow">Intensywnosc opadow: <span id="intensity-value">50</span>%</label>
+			<input type="range" id="intensity" min="0" max="100" value="50" oninput="updateIntensity()">
+			<label data-tooltip="Kierunek i predkosc wiatru">Sila wiatru: <span id="wind-value">0</span> m/s</label>
+			<input type="range" id="wind" min="-100" max="100" value="0" oninput="updateWind()">
+			<label data-tooltip="Temperatura otoczenia">Temperatura: <span id="temp-value">20</span> C</label>
+			<input type="range" id="temperature" min="-50" max="50" value="20" oninput="updateTemperature()">
+			<label data-tooltip="Poziom wilgoci w powietrzu">Wilgotnosc: <span id="humidity-value">50</span>%</label>
+			<input type="range" id="humidity" min="0" max="100" value="50" oninput="updateHumidity()">
+			<label data-tooltip="Cisnienie atmosferyczne">Cisnienie: <span id="pressure-value">1013</span> hPa</label>
+			<input type="range" id="pressure" min="800" max="1200" value="1013" oninput="updatePressure()">
+			<label data-tooltip="Gestość chmur na niebie">Zachmurzenie: <span id="cloudiness-value">0</span>%</label>
+			<input type="range" id="cloudiness" min="0" max="100" value="0" oninput="updateCloudiness()">
+			<label data-tooltip="Poziom mgly">Mgla: <span id="fog-value">0</span>%</label>
+			<input type="range" id="fog" min="0" max="90" value="0" oninput="updateFog()">
+			<label data-tooltip="Wlacz/wylacz tecze">Tecza: <input type="checkbox" id="rainbow" onchange="toggleRainbow()"></label>
+			<label data-tooltip="Jasnosc teczy">Intensywnosc teczy: <span id="rainbow-intensity-value">50</span>%</label>
+			<input type="range" id="rainbow-intensity" min="0" max="100" value="50" oninput="updateRainbowIntensity()">
+			<label data-tooltip="Czestosc blyskawic">Czestosc blyskawic: <span id="lightning-freq-value">10</span>%</label>
+			<input type="range" id="lightning-freq" min="0" max="100" value="10" oninput="updateLightningFreq()">
+			<label data-tooltip="Godzina dnia">Pora dnia: <span id="time-value">12</span>h</label>
+			<input type="range" id="time" min="0" max="24" value="12" oninput="updateTime()">
+			<label data-tooltip="Predkosc ruchu chmur">Predkosc chmur: <span id="cloud-speed-value">10</span> px/s</label>
+			<input type="range" id="cloud-speed" min="0" max="50" value="10" oninput="updateCloudSpeed()">
+			<label data-tooltip="Glebokosc warstwy sniegu">Glebokosc sniegu: <span id="snow-depth-value">0</span> cm</label>
+			<input type="range" id="snow-depth" min="0" max="100" value="0" oninput="updateSnowDepth()">
+			<label data-tooltip="Rozmiar kulek gradu">Rozmiar gradu: <span id="hail-size-value">0</span> cm</label>
+			<input type="range" id="hail-size" min="0" max="10" value="0" oninput="updateHailSize()">
+			<label data-tooltip="Sila wiru tornada">Sila tornada: <span id="tornado-strength-value">0</span>%</label>
+			<input type="range" id="tornado-strength" min="0" max="100" value="0" oninput="updateTornadoStrength()">
+			<label data-tooltip="Ilosc piasku w burzy">Poziom piasku: <span id="sand-level-value">0</span>%</label>
+			<input type="range" id="sand-level" min="0" max="100" value="0" oninput="updateSandLevel()">
+			<label data-tooltip="Jasnosc zorzy polarnej">Jasnosc zorzy: <span id="aurora-value">0</span>%</label>
+			<input type="range" id="aurora" min="0" max="100" value="0" oninput="updateAurora()">
+			<label data-tooltip="Liczba smug samolotow">Smugi kondensacyjne: <span id="contrail-value">0</span></label>
+			<input type="range" id="contrail" min="0" max="10" value="0" oninput="updateContrail()">
+			<label data-tooltip="Czestosc spadania meteorytow">Deszcz meteorytow: <span id="meteor-value">0</span>/s</label>
+			<input type="range" id="meteor" min="0" max="50" value="0" oninput="updateMeteor()">
+			<label data-tooltip="Poziom smogu w powietrzu">Poziom smogu: <span id="smog-value">0</span>%</label>
+			<input type="range" id="smog" min="0" max="100" value="0" oninput="updateSmog()">
+			<label data-tooltip="Widocznosc gwiazd w nocy">Widocznosc gwiazd: <span id="stars-value">0</span>%</label>
+			<input type="range" id="stars" min="0" max="100" value="0" oninput="updateStars()">
+			<label data-tooltip="Poziom rosy na powierzchni">Poziom rosy: <span id="dew-value">0</span>%</label>
+			<input type="range" id="dew" min="0" max="100" value="0" oninput="updateDew()">
+			<label data-tooltip="Wysokosc fal morskich">Sila fal: <span id="wave-value">0</span> m</label>
+			<input type="range" id="wave" min="0" max="10" value="0" oninput="updateWave()">
+			<label data-tooltip="Czas trwania blyskawicy">Predkosc blyskawic: <span id="lightning-speed-value">100</span> ms</label>
+			<input type="range" id="lightning-speed" min="50" max="500" value="100" oninput="updateLightningSpeed()">
+			<label data-tooltip="Poziom szronu na krawedziach">Poziom szronu: <span id="frost-value">0</span>%</label>
+			<input type="range" id="frost" min="0" max="100" value="0" oninput="updateFrost()">
+			<label data-tooltip="Sila drgan ekranu">Sila trzesienia ziemi: <span id="earthquake-value">0</span></label>
+			<input type="range" id="earthquake" min="0" max="10" value="0" oninput="updateEarthquake()">
+			<label data-tooltip="Poziom szadzi na powierzchni">Poziom szadzi: <span id="rime-value">0</span>%</label>
+			<input type="range" id="rime" min="0" max="100" value="0" oninput="updateRime()">
+			<label data-tooltip="Poziom oblodzenia ekranu">Poziom oblodzenia: <span id="ice-value">0</span>%</label>
+			<input type="range" id="ice" min="0" max="100" value="0" oninput="updateIce()">
+			<label data-tooltip="Miesiac wplywajacy na pogode">Miesiac: <span id="month-value">1</span></label>
+			<input type="range" id="month" min="1" max="12" value="1" oninput="updateMonth()">
+			<label data-tooltip="Rodzaj chmur na niebie">Typ chmur: <span id="cloud-type-value">Brak</span></label>
+			<input type="range" id="cloud-type" min="0" max="30" value="0" oninput="updateCloudType()">
+			<label data-tooltip="Efekt wizualny ekranu">Filtr: <span id="filter-value">Brak</span></label>
+			<input type="range" id="filter" min="0" max="3" value="0" oninput="updateFilter()">
+			<button onclick="triggerLightning()">Reczna blyskawica</button>
+			<button onclick="triggerMeteorShower()">Deszcz meteorytow</button>
+			<button onclick="triggerVolcano()">Erupcja wulkanu</button>
+			<button onclick="triggerFlood()">Powodz</button>
+		</div>
+		<div class="controls" id="colors">
+			<label data-tooltip="Czerwony skladnik nieba">Kolor nieba R: <span id="sky-r-value">135</span></label>
+			<input type="range" id="sky-r" min="0" max="255" value="135" oninput="updateSkyColor()">
+			<label data-tooltip="Zielony skladnik nieba">Kolor nieba G: <span id="sky-g-value">206</span></label>
+			<input type="range" id="sky-g" min="0" max="255" value="206" oninput="updateSkyColor()">
+			<label data-tooltip="Niebieski skladnik nieba">Kolor nieba B: <span id="sky-b-value">235</span></label>
+			<input type="range" id="sky-b" min="0" max="255" value="235" oninput="updateSkyColor()">
+			<label data-tooltip="Czerwony skladnik opadow">Kolor opadow R: <span id="precip-r-value">0</span></label>
+			<input type="range" id="precip-r" min="0" max="255" value="0" oninput="updatePrecipColor()">
+			<label data-tooltip="Zielony skladnik opadow">Kolor opadow G: <span id="precip-g-value">0</span></label>
+			<input type="range" id="precip-g" min="0" max="255" value="0" oninput="updatePrecipColor()">
+			<label data-tooltip="Niebieski skladnik opadow">Kolor opadow B: <span id="precip-b-value">255</span></label>
+			<input type="range" id="precip-b" min="0" max="255" value="255" oninput="updatePrecipColor()">
+        </div>
+			<div class="controls" id="sound">
+				<label data-tooltip="Glosnosc wszystkich dzwiekow">Glosnosc: <span id="volume-value">50</span>%</label>
+				<input type="range" id="volume" min="0" max="100" value="50" oninput="updateVolume()">
+				<button onclick="playSound('rain')">Dzwiek deszczu</button>
+				<button onclick="playSound('thunder')">Dzwiek grzmotu</button>
+				<button onclick="playSound('wind')">Dzwiek wiatru</button>
+				<button onclick="playSound('hail')">Dzwiek gradu</button>
+				<button onclick="playSound('tornado')">Dzwiek tornada</button>
+				<button onclick="playSound('sand')">Dzwiek piasku</button>
+				<button onclick="playSound('wave')">Dzwiek fal</button>
+				<button onclick="playSound('birds')">Dzwiek ptakow</button>
+				<button onclick="playSound('wolves')">Dzwiek wilkow</button>
+				<button onclick="playSound('aurora')">Dzwiek zorzy</button>
+				<button onclick="playSound('meteor')">Dzwiek meteorytow</button>
+				<button onclick="playSound('volcano')">Dzwiek wulkanu</button>
+				<button onclick="playSound('frost')">Dzwiek szronu</button>
+				<button onclick="playSound('flood')">Dzwiek powodzi</button>
+				<button onclick="toggleAuto()">Auto: <span id="auto-status">Wyl</span></button>
+				<button onclick="saveSettings()">Zapisz ustawienia</button>
+				<button onclick="loadSettings()">Wczytaj ustawienia</button>
+			</div>
+		</div>
+		<canvas id="canvas" class="canvas"></canvas>
+		<div id="lightning" class="lightning"></div>
+		<div id="rainbow" class="rainbow"></div>
+		<div id="alert" class="alert"></div>
+
+		<script>
+			const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        let weather = "slonecznie";
+        let intensity = 50;
+        let wind = 0;
+        let temperature = 20;
+        let humidity = 50;
+        let pressure = 1013;
+        let cloudiness = 0;
+        let fog = 0;
+        let rainbowIntensity = 50;
+        let lightningFreq = 10;
+        let time = 12;
+        let skyR = 135, skyG = 206, skyB = 235;
+        let cloudSpeed = 10;
+        let snowDepth = 0;
+        let hailSize = 0;
+        let tornadoStrength = 0;
+        let sandLevel = 0;
+        let aurora = 0;
+        let contrail = 0;
+        let meteor = 0;
+        let smog = 0;
+        let stars = 0;
+        let dew = 0;
+        let wave = 0;
+        let precipR = 0, precipG = 0, precipB = 255;
+        let lightningSpeed = 100;
+        let frost = 0;
+        let earthquake = 0;
+        let rime = 0;
+        let ice = 0;
+        let month = 1;
+        let cloudType = 0;
+        let filter = 0;
+        let volume = 50;
+        let particles = [];
+        let auto = false;
+        let anomalies = 0;
+        let audios = {};
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        function setWeather(type) {
+            weather = type;
+            document.body.className = type;
+            particles = [];
+            updateSkyColor();
+            playSound(type);
+            if (type === "burza") {
+                setInterval(randomLightning, 1000);
+            }
+        }
+
+        function randomWeather() {
+            if (Math.random() < 0.3 || (month >= 6 && month <= 8)) {
+                showAlert("Nie udalo sie ustawic pogody - zalezy od miesiaca lub uszkodzony system w chmurach!");
+                return;
+            }
+            const weathers = ["slonecznie", "deszcz", "snieg", "burza", "pochmurno", "wietrznie", "grad", "tornado", "upal", "mroz", "piasek", "smuga", "zorza"];
+            setWeather(weathers[Math.floor(Math.random() * weathers.length)]);
+            intensity = Math.random() * 100;
+            wind = Math.random() * 200 - 100;
+            temperature = Math.random() * 100 - 50;
+            humidity = Math.random() * 100;
+            pressure = 800 + Math.random() * 400;
+            cloudiness = Math.random() * 100;
+            fog = Math.random() * 90;
+            rainbowIntensity = Math.random() * 100;
+            lightningFreq = Math.random() * 100;
+            time = Math.random() * 24;
+            skyR = Math.random() * 255;
+            skyG = Math.random() * 255;
+            skyB = Math.random() * 255;
+            cloudSpeed = Math.random() * 50;
+            snowDepth = Math.random() * 100;
+            hailSize = Math.random() * 10;
+            tornadoStrength = Math.random() * 100;
+            sandLevel = Math.random() * 100;
+            aurora = Math.random() * 100;
+            contrail = Math.random() * 10;
+            meteor = Math.random() * 50;
+            smog = Math.random() * 100;
+            stars = Math.random() * 100;
+            dew = Math.random() * 100;
+            wave = Math.random() * 10;
+            precipR = Math.random() * 255;
+            precipG = Math.random() * 255;
+            precipB = Math.random() * 255;
+            lightningSpeed = 50 + Math.random() * 450;
+            frost = Math.random() * 100;
+            earthquake = Math.random() * 10;
+            rime = Math.random() * 100;
+            ice = Math.random() * 100;
+            month = Math.floor(Math.random() * 12) + 1;
+            cloudType = Math.floor(Math.random() * 31);
+            filter = Math.floor(Math.random() * 4);
+            updateAll();
+            anomalies++;
+        }
+
+        function resetSettings() {
+            weather = "slonecznie";
+            intensity = 50;
+            wind = 0;
+            temperature = 20;
+            humidity = 50;
+            pressure = 1013;
+            cloudiness = 0;
+            fog = 0;
+            rainbowIntensity = 50;
+            lightningFreq = 10;
+            time = 12;
+            skyR = 135; skyG = 206; skyB = 235;
+            cloudSpeed = 10;
+            snowDepth = 0;
+            hailSize = 0;
+            tornadoStrength = 0;
+            sandLevel = 0;
+            aurora = 0;
+            contrail = 0;
+            meteor = 0;
+            smog = 0;
+            stars = 0;
+            dew = 0;
+            wave = 0;
+            precipR = 0; precipG = 0; precipB = 255;
+            lightningSpeed = 100;
+            frost = 0;
+            earthquake = 0;
+            rime = 0;
+            ice = 0;
+            month = 1;
+            cloudType = 0;
+            filter = 0;
+            volume = 50;
+            setWeather("slonecznie");
+            updateAll();
+            showAlert("Ustawienia zresetowane!");
+        }
+
+        function updateAll() {
+            updateIntensity();
+            updateWind();
+            updateTemperature();
+            updateHumidity();
+            updatePressure();
+            updateCloudiness();
+            updateFog();
+            updateRainbowIntensity();
+            updateLightningFreq();
+            updateTime();
+            updateSkyColor();
+            updateCloudSpeed();
+            updateSnowDepth();
+            updateHailSize();
+            updateTornadoStrength();
+            updateSandLevel();
+            updateAurora();
+            updateContrail();
+            updateMeteor();
+            updateSmog();
+            updateStars();
+            updateDew();
+            updateWave();
+            updatePrecipColor();
+            updateLightningSpeed();
+            updateFrost();
+            updateEarthquake();
+            updateRime();
+            updateIce();
+            updateMonth();
+            updateCloudType();
+            updateFilter();
+            updateVolume();
+        }
+
+        function showAlert(msg) {
+            const alert = document.getElementById("alert");
+            alert.textContent = msg;
+            alert.style.display = "block";
+            setTimeout(() => alert.style.display = "none", 3000);
+        }
+
+        function updateIntensity() {
+            intensity = document.getElementById("intensity").value;
+            document.getElementById("intensity-value").textContent = intensity;
+        }
+
+        function updateWind() {
+            wind = document.getElementById("wind").value;
+            document.getElementById("wind-value").textContent = wind;
+        }
+
+        function updateTemperature() {
+            temperature = document.getElementById("temperature").value;
+            document.getElementById("temp-value").textContent = temperature;
+            document.body.style.filter = temperature < 0 ? `brightness(${1 + temperature / 100})` : `brightness(${1 + temperature / 100})`;
+        }
+
+        function updateHumidity() {
+            humidity = document.getElementById("humidity").value;
+            document.getElementById("humidity-value").textContent = humidity;
+            canvas.style.opacity = humidity > 80 ? 0.9 : 1;
+        }
+
+        function updatePressure() {
+            pressure = document.getElementById("pressure").value;
+            document.getElementById("pressure-value").textContent = pressure;
+            document.body.style.transition = pressure < 900 ? "background 0.1s" : "background 1s";
+        }
+
+        function updateCloudiness() {
+            cloudiness = document.getElementById("cloudiness").value;
+            document.getElementById("cloudiness-value").textContent = cloudiness;
+        }
+
+        function updateFog() {
+            fog = document.getElementById("fog").value;
+            document.getElementById("fog-value").textContent = fog;
+            canvas.style.background = `rgba(255, 255, 255, ${fog / 100})`;
+        }
+
+        function toggleRainbow() {
+            const rainbow = document.getElementById("rainbow");
+            rainbow.style.opacity = document.getElementById("rainbow").checked && (weather === "deszcz" || weather === "slonecznie") ? rainbowIntensity / 100 : 0;
+        }
+
+        function updateRainbowIntensity() {
+            rainbowIntensity = document.getElementById("rainbow-intensity").value;
+            document.getElementById("rainbow-intensity-value").textContent = rainbowIntensity;
+            toggleRainbow();
+        }
+
+        function updateLightningFreq() {
+            lightningFreq = document.getElementById("lightning-freq").value;
+            document.getElementById("lightning-freq-value").textContent = lightningFreq;
+        }
+
+        function updateTime() {
+            time = document.getElementById("time").value;
+            document.getElementById("time-value").textContent = Math.round(time);
+            let brightness = time < 6 || time > 18 ? 0.5 : 1;
+            document.body.style.filter = `brightness(${brightness * (1 + temperature / 100)})`;
+        }
+
+        function updateSkyColor() {
+            skyR = document.getElementById("sky-r").value;
+            skyG = document.getElementById("sky-g").value;
+            skyB = document.getElementById("sky-b").value;
+            document.getElementById("sky-r-value").textContent = skyR;
+            document.getElementById("sky-g-value").textContent = skyG;
+            document.getElementById("sky-b-value").textContent = skyB;
+            document.body.style.background = `linear-gradient(to bottom, rgb(${skyR}, ${skyG}, ${skyB}), #fff)`;
+        }
+
+        function updateCloudSpeed() {
+            cloudSpeed = document.getElementById("cloud-speed").value;
+            document.getElementById("cloud-speed-value").textContent = cloudSpeed;
+        }
+
+        function updateSnowDepth() {
+            snowDepth = document.getElementById("snow-depth").value;
+            document.getElementById("snow-depth-value").textContent = snowDepth;
+            canvas.style.borderBottom = snowDepth > 0 ? `${snowDepth}px solid #fff` : "none";
+        }
+
+        function updateHailSize() {
+            hailSize = document.getElementById("hail-size").value;
+            document.getElementById("hail-size-value").textContent = hailSize;
+        }
+
+        function updateTornadoStrength() {
+            tornadoStrength = document.getElementById("tornado-strength").value;
+            document.getElementById("tornado-strength-value").textContent = tornadoStrength;
+        }
+
+        function updateSandLevel() {
+            sandLevel = document.getElementById("sand-level").value;
+            document.getElementById("sand-level-value").textContent = sandLevel;
+        }
+
+        function updateAurora() {
+            aurora = document.getElementById("aurora").value;
+            document.getElementById("aurora-value").textContent = aurora;
+        }
+
+        function updateContrail() {
+            contrail = document.getElementById("contrail").value;
+            document.getElementById("contrail-value").textContent = contrail;
+        }
+
+        function updateMeteor() {
+            meteor = document.getElementById("meteor").value;
+            document.getElementById("meteor-value").textContent = meteor;
+        }
+
+        function updateSmog() {
+            smog = document.getElementById("smog").value;
+            document.getElementById("smog-value").textContent = smog;
+            canvas.style.background = `rgba(128, 128, 128, ${smog / 100})`;
+        }
+
+        function updateStars() {
+            stars = document.getElementById("stars").value;
+            document.getElementById("stars-value").textContent = stars;
+        }
+
+        function updateDew() {
+            dew = document.getElementById("dew").value;
+            document.getElementById("dew-value").textContent = dew;
+        }
+
+        function updateWave() {
+            wave = document.getElementById("wave").value;
+            document.getElementById("wave-value").textContent = wave;
+        }
+
+        function updatePrecipColor() {
+            precipR = document.getElementById("precip-r").value;
+            precipG = document.getElementById("precip-g").value;
+            precipB = document.getElementById("precip-b").value;
+            document.getElementById("precip-r-value").textContent = precipR;
+            document.getElementById("precip-g-value").textContent = precipG;
+            document.getElementById("precip-b-value").textContent = precipB;
+        }
+
+        function updateLightningSpeed() {
+            lightningSpeed = document.getElementById("lightning-speed").value;
+            document.getElementById("lightning-speed-value").textContent = lightningSpeed;
+        }
+
+        function updateFrost() {
+            frost = document.getElementById("frost").value;
+            document.getElementById("frost-value").textContent = frost;
+            document.body.style.border = frost > 0 ? `${frost / 10}px solid #e6e6fa` : "none";
+        }
+
+        function updateEarthquake() {
+            earthquake = document.getElementById("earthquake").value;
+            document.getElementById("earthquake-value").textContent = earthquake;
+            document.body.style.animation = earthquake > 0 ? `shake ${1 / earthquake}s infinite` : "none";
+        }
+
+        function updateRime() {
+            rime = document.getElementById("rime").value;
+            document.getElementById("rime-value").textContent = rime;
+        }
+
+        function updateIce() {
+            ice = document.getElementById("ice").value;
+            document.getElementById("ice-value").textContent = ice;
+            canvas.style.filter = ice > 0 ? `blur(${ice / 20}px)` : "none";
+        }
+
+        function updateMonth() {
+            month = document.getElementById("month").value;
+            document.getElementById("month-value").textContent = month;
+        }
+
+        function updateCloudType() {
+            cloudType = document.getElementById("cloud-type").value;
+            const types = ["Brak", "Cumulus", "Stratus", "Cirrus", "Nimbus", "Altostratus", "Cumulonimbus", "Stratocumulus", "Cirrostratus", "Cirrocumulus", "Altocumulus"];
+            document.getElementById("cloud-type-value").textContent = types[cloudType % types.length];
+        }
+
+        function updateFilter() {
+            filter = document.getElementById("filter").value;
+            const filters = ["Brak", "Sepia", "Czarno-biale", "Neon"];
+            document.getElementById("filter-value").textContent = filters[filter];
+            document.body.style.filter = filter == 1 ? "sepia(1)" : filter == 2 ? "grayscale(1)" : filter == 3 ? "contrast(2)" : "none";
+            if (temperature < 0) document.body.style.filter += ` brightness(${1 + temperature / 100})`;
+        }
+
+        function updateVolume() {
+            volume = document.getElementById("volume").value;
+            document.getElementById("volume-value").textContent = volume;
+            Object.values(audios).forEach(audio => audio.volume = volume / 100);
+        }
+
+        function triggerLightning() {
+            const lightning = document.getElementById("lightning");
+            lightning.style.opacity = 1;
+            setTimeout(() => lightning.style.opacity = 0, lightningSpeed);
+            playSound("thunder");
+        }
+
+        function randomLightning() {
+            if (weather === "burza" && Math.random() < lightningFreq / 100) {
+                triggerLightning();
+            }
+        }
+
+        function triggerMeteorShower() {
+            meteor = 50;
+            document.getElementById("meteor").value = meteor;
+            document.getElementById("meteor-value").textContent = meteor;
+            playSound("meteor");
+            setTimeout(() => {
+                meteor = 0;
+                document.getElementById("meteor").value = meteor;
+                document.getElementById("meteor-value").textContent = meteor;
+            }, 5000);
+        }
+
+        function triggerVolcano() {
+            particles.push({ x: canvas.width / 2, y: canvas.height, vx: 0, vy: -10, type: "volcano", size: 100 });
+            playSound("volcano");
+        }
+
+        function triggerFlood() {
+            canvas.style.background = `linear-gradient(to top, #4682b4 ${humidity}%, rgba(255, 255, 255, ${fog / 100}))`;
+            playSound("flood");
+            setTimeout(() => canvas.style.background = `rgba(255, 255, 255, ${fog / 100})`, 5000);
+        }
+
+        function toggleAuto() {
+            auto = !auto;
+            document.getElementById("auto-status").textContent = auto ? "Wl" : "Wyl";
+            if (auto) {
+                setInterval(() => randomWeather(), 30000);
+            }
+        }
+
+        function saveSettings() {
+            const settings = { weather, intensity, wind, temperature, humidity, pressure, cloudiness, fog, rainbowIntensity, lightningFreq, time, skyR, skyG, skyB, cloudSpeed, snowDepth, hailSize, tornadoStrength, sandLevel, aurora, contrail, meteor, smog, stars, dew, wave, precipR, precipG, precipB, lightningSpeed, frost, earthquake, rime, ice, month, cloudType, filter, volume };
+            localStorage.setItem("pogoda-hack", JSON.stringify(settings));
+            showAlert("Ustawienia zapisane!");
+        }
+
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem("pogoda-hack"));
+            if (settings) {
+                Object.keys(settings).forEach(key => {
+                    if (document. getElementById(key)) {
+                        document.getElementById(key).value = settings[key];
+                    }
+                });
+                setWeather(settings.weather);
+                updateAll();
+                showAlert("Ustawienia wczytane!");
+            }
+        }
+
+        function playSound(type) {
+            if (audios[type]) {
+                audios[type].pause();
+                audios[type].currentTime = 0;
+            }
+            audios[type] = new Audio();
+            audios[type].volume = volume / 100;
+            if (type === "thunder") audios[type].src = "https://www.soundjay.com/nature/thunder-01.mp3";
+            else if (type === "rain" || type === "deszcz") audios[type].src = "https://www.soundjay.com/nature/rain-01.mp3";
+            else if (type === "wind" || type === "wietrznie") audios[type].src = "https://www.soundjay.com/nature/wind-01.mp3";
+            else if (type === "hail") audios[type].src = "https://www.soundjay.com/nature/rain-02.mp3";
+            else if (type === "tornado") audios[type].src = "https://www.soundjay.com/nature/wind-02.mp3";
+            else if (type === "sand") audios[type].src = "https://www.soundjay.com/nature/sand-01.mp3";
+            else if (type === "wave") audios[type].src = "https://www.soundjay.com/nature/waves-01.mp3";
+            else if (type === "birds" || type === "slonecznie") audios[type].src = "https://www.soundjay.com/nature/birds-01.mp3";
+            else if (type === "wolves") audios[type].src = "https://www.soundjay.com/animal/wolf-01.mp3";
+            else if (type === "aurora") audios[type].src = "https://www.soundjay.com/nature/ambience-01.mp3";
+            else if (type === "meteor") audios[type].src = "https://www.soundjay.com/explosions/explosion-02.mp3";
+            else if (type === "volcano") audios[type].src = "https://www.soundjay.com/explosions/explosion-01.mp3";
+            else if (type === "frost") audios[type].src = "https://www.soundjay.com/nature/ice-01.mp3";
+            else if (type === "flood") audios[type].src = "https://www.soundjay.com/nature/water-01.mp3";
+            audios[type].loop = ["rain", "wind", "hail", "tornado", "sand", "wave", "birds", "wolves", "aurora", "flood"].includes(type);
+            audios[type].play().catch(() => {});
+        }
+
+        function createParticle() {
+            if (weather === "deszcz" || weather === "burza") {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: 0,
+                    vx: wind / 10,
+                    vy: 5 + intensity / 10,
+                    type: "rain"
+                });
+            } else if (weather === "snieg") {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: 0,
+                    vx: wind / 20,
+                    vy: 2 + intensity / 50,
+                    type: "snow"
+                });
+            } else if (weather === "grad") {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: 0,
+                    vx: wind / 15,
+                    vy: 5 + intensity / 20,
+                    type: "hail",
+                    size: hailSize
+                });
+            } else if (weather === "tornado" && tornadoStrength > 0) {
+                particles.push({
+                    x: canvas.width / 2 + Math.random() * 50 - 25,
+                    y: canvas.height,
+                    vx: (Math.random() - 0.5) * tornadoStrength / 10,
+                    vy: -tornadoStrength / 10,
+                    type: "tornado",
+                    size: tornadoStrength
+                });
+            } else if (weather === "piasek" && sandLevel > 0) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height,
+                    vx: wind / 5,
+                    vy: -sandLevel / 20,
+                    type: "sand",
+                    size: sandLevel / 10
+                });
+            } else if (weather === "smuga" && contrail > 0) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height / 4,
+                    vx: -contrail * 5,
+                    vy: 0,
+                    type: "contrail",
+                    size: contrail * 10
+                });
+            } else if (weather === "zorza" && aurora > 0) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height / 4,
+                    vx: 0,
+                    vy: 0,
+                    type: "aurora",
+                    size: aurora
+                });
+            } else if (meteor > 0) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: 0,
+                    vx: (Math.random() - 0.5) * 20,
+                    vy: 20,
+                    type: "meteor",
+                    size: 5
+                });
+            }
+            if (cloudiness > 0) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height / 4,
+                    vx: wind / 50 + cloudSpeed / 10,
+                    vy: 0,
+                    type: "cloud",
+                    size: 50 + cloudiness / 2
+                });
+            }
+            if (stars > 0 && time > 18) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: 0,
+                    vy: 0,
+                    type: "star",
+                    size: stars / 20
+                });
+            }
+            particles = particles.slice(-500);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if ((weather === "deszcz" || weather === "burza" || weather === "snieg" || weather === "grad") && Math.random() < intensity / 100) {
+                createParticle();
+            }
+            if ((cloudiness > 0 && Math.random() < cloudiness / 500) || meteor > 0 || sandLevel > 0 || contrail > 0 || aurora > 0 || stars > 0) {
+                createParticle();
+            }
+
+            particles = particles.filter(p => p.y < canvas.height && p.x < canvas.width && p.x > -p.size && p.y > -p.size);
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                ctx.beginPath();
+                if (p.type === "rain") {
+                    ctx.fillStyle = `rgb(${precipR}, ${precipG}, ${precipB})`;
+                    ctx.fillRect(p.x, p.y, 2, 10);
+                } else if (p.type === "snow") {
+                    ctx.fillStyle = `rgb(${precipR}, ${precipG}, ${precipB})`;
+                    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.type === "hail") {
+                    ctx.fillStyle = `rgb(${precipR}, ${precipG}, ${precipB})`;
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.type === "cloud") {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${cloudiness / 100})`;
+                    ctx.ellipse(p.x, p.y, p.size, p.size / 2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.type === "tornado") {
+                    ctx.fillStyle = `rgba(100, 100, 100, ${tornadoStrength / 100})`;
+                    ctx.fillRect(p.x, p.y, p.size / 5, p.size);
+                } else if (p.type === "sand") {
+                    ctx.fillStyle = `rgba(210, 180, 140, ${sandLevel / 100})`;
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.type === "contrail") {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${contrail / 10})`;
+                    ctx.fillRect(p.x, p.y, p.size, 2);
+                } else if (p.type === "aurora") {
+                    ctx.fillStyle = `rgba(0, 255, 0, ${aurora / 100})`;
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.type === "meteor") {
+                    ctx.fillStyle = "#ff4500";
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.type === "star") {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${stars / 100})`;
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.type === "volcano") {
+                    ctx.fillStyle = "#ff4500";
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+
+            if (wave > 0) {
+                ctx.beginPath();
+                ctx.fillStyle = "rgba(0, 105, 148, 0.5)";
+                for (let x = 0; x < canvas.width; x += 10) {
+                    let y = canvas.height - 50 + Math.sin(x / 50 + Date.now() / 1000) * wave * 10;
+                    ctx.lineTo(x, y);
+                }
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.fill();
+            }
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        canvas.addEventListener("click", (e) => {
+            particles.push({
+                x: e.clientX,
+                y: e.clientY,
+                vx: 0,
+                vy: 0,
+                type: "cloud",
+                size: 50
+            });
+            playSound("wind");
+        });
+
+        const style = document.createElement("style");
+        style.textContent = `
+            @keyframes shake {
+                0% { transform: translate(0, 0); }
+                25% { transform: translate(${earthquake}px, ${earthquake}px); }
+                50% { transform: translate(-${earthquake}px, -${earthquake}px); }
+                75% { transform: translate(${earthquake}px, -${earthquake}px); }
+                100% { transform: translate(0, 0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.querySelector(".menu-btn").addEventListener("click", () => {
+            document.querySelector(".sidebar").classList.toggle("active");
+        });
+
+        document.querySelectorAll(".tab").forEach(tab => {
+            tab.addEventListener("click", () => {
+                document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+                document.querySelectorAll(".controls").forEach(c => c.classList.remove("active"));
+                tab.classList.add("active");
+                document.getElementById(tab.dataset.tab).classList.add("active");
+            });
+        });
+		</script>
+</body>
+
+</html></body><html>

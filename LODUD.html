@@ -1,0 +1,1923 @@
+﻿
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>🚀 Mega Zaawansowany Discord Webhook Sender 🚀</title>
+	<style>
+		:root {
+			--theme-color: #5865f2;
+		}
+
+		body {
+			background-color: #1b1d21;
+			color: #e0e0e0;
+			font-family: Arial, sans-serif;
+			padding: 20px;
+			text-align: center;
+			min-height: 100vh;
+			margin: 0;
+			box-sizing: border-box;
+		}
+
+		h1 {
+			margin-bottom: 0.2em;
+			color: #ffffffdd;
+			animation: fadeIn 1s ease-in;
+			opacity: 0.95;
+			transition: opacity 0.3s ease;
+			font-size: 2em;
+		}
+
+		h1:hover {
+			opacity: 1;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(-20px);
+			}
+
+			to {
+				opacity: 0.95;
+				transform: translateY(0);
+			}
+		}
+
+		input,
+		textarea,
+		select,
+		button {
+			font-size: 16px;
+			padding: 12px 14px;
+			border-radius: 8px;
+			border: 1px solid #444;
+			margin: 6px 0;
+			font-family: inherit;
+			background: #17191d;
+			color: #ddd;
+			box-shadow: inset 0 0 5px #0008;
+			transition: all 0.3s ease, opacity 0.3s ease;
+			opacity: 0.9;
+			width: 100%;
+			max-width: 700px;
+			box-sizing: border-box;
+		}
+
+		input:hover,
+		textarea:hover,
+		select:hover {
+			opacity: 1;
+		}
+
+		input:focus,
+		textarea:focus,
+		select:focus {
+			outline: none;
+			border-color: var(--theme-color);
+			box-shadow: 0 0 8px var(--theme-color);
+			background: #22252a;
+			color: #fff;
+			opacity: 1;
+		}
+
+		.file-input-wrapper {
+			position: relative;
+			display: inline-block;
+			width: 100%;
+			max-width: 300px;
+			margin: 6px 0;
+			animation: fadeIn 1s ease-in;
+		}
+
+		.file-input-wrapper input[type="file"] {
+			opacity: 0;
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			cursor: pointer;
+			z-index: 1;
+		}
+
+		.file-input-wrapper .file-input-label {
+			display: block;
+			padding: 12px 14px;
+			border-radius: 8px;
+			border: 1px solid #444;
+			background: #17191d;
+			color: #ddd;
+			text-align: center;
+			cursor: pointer;
+			transition: all 0.3s ease, opacity 0.3s ease;
+			box-shadow: inset 0 0 5px #0008;
+			opacity: 0.9;
+			position: relative;
+			z-index: 0;
+		}
+
+		.file-input-wrapper .file-input-label:hover {
+			filter: brightness(1.1);
+			box-shadow: 0 0 8px var(--theme-color);
+			border-color: var(--theme-color);
+			animation: pulse 1.5s infinite;
+			opacity: 1;
+		}
+
+		.file-input-wrapper input[type="file"]:focus+.file-input-label {
+			border-color: var(--theme-color);
+			box-shadow: 0 0 8px var(--theme-color);
+			background: #22252a;
+			color: #fff;
+			opacity: 1;
+		}
+
+		@keyframes pulse {
+			0% {
+				transform: scale(1);
+			}
+
+			50% {
+				transform: scale(1.05);
+			}
+
+			100% {
+				transform: scale(1);
+			}
+		}
+
+		.checkbox-label input[type="checkbox"] {
+			appearance: none;
+			width: 20px;
+			height: 20px;
+			border: 1px solid #444;
+			border-radius: 4px;
+			background: #17191d;
+			cursor: pointer;
+			transition: all 0.3s ease, opacity 0.3s ease;
+			box-shadow: inset 0 0 5px #0008;
+			opacity: 0.85;
+		}
+
+		.checkbox-label input[type="checkbox"]:hover {
+			filter: brightness(1.1);
+			box-shadow: 0 0 8px var(--theme-color);
+			border-color: var(--theme-color);
+			animation: pulse 1.5s infinite;
+			opacity: 1;
+		}
+
+		.checkbox-label input[type="checkbox"]:checked {
+			background: var(--theme-color);
+			border-color: var(--theme-color);
+			box-shadow: 0 0 8px var(--theme-color);
+			opacity: 1;
+		}
+
+		.checkbox-label input[type="checkbox"]:checked::before {
+			content: '✔';
+			display: block;
+			text-align: center;
+			color: #fff;
+			font-size: 14px;
+			line-height: 20px;
+		}
+
+		.checkbox-label input[type="checkbox"]:active {
+			animation: bounce 0.2s;
+			opacity: 0.85;
+		}
+
+		textarea {
+			height: 100px;
+		}
+
+		button {
+			cursor: pointer;
+			transition: all 0.3s ease, opacity 0.3s ease;
+			border: none;
+			box-shadow: 0 3px 8px rgb(0 0 0 / 0.4);
+			opacity: 0.9;
+			width: auto;
+			min-width: 120px;
+		}
+
+		button:hover:not(:disabled) {
+			filter: brightness(1.1);
+			box-shadow: 0 4px 12px rgb(0 0 0 / 0.6);
+			opacity: 1;
+		}
+
+		button:active:not(:disabled) {
+			animation: bounce 0.2s;
+			opacity: 0.85;
+		}
+
+		@keyframes bounce {
+			0% {
+				transform: scale(1);
+			}
+
+			50% {
+				transform: scale(0.95);
+			}
+
+			100% {
+				transform: scale(1);
+			}
+		}
+
+		button:disabled {
+			cursor: not-allowed;
+			opacity: 0.5;
+			box-shadow: none;
+		}
+
+		#webhookInput {
+			max-width: 700px;
+		}
+
+		#status {
+			margin-top: 20px;
+			font-weight: bold;
+			min-height: 1.5em;
+			color: #f0f0f0cc;
+			animation: slideIn 0.5s ease-out;
+			opacity: 0.9;
+		}
+
+		#status:hover {
+			opacity: 1;
+		}
+
+		@keyframes slideIn {
+			from {
+				opacity: 0;
+				transform: translateX(-20px);
+			}
+
+			to {
+				opacity: 0.9;
+				transform: translateX(0);
+			}
+		}
+
+		#errorPopup,
+		#testConnectionPopup {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			background: rgba(15, 15, 15, 0.95);
+			font-size: 28px;
+			z-index: 9999;
+			text-align: center;
+			padding-top: 35vh;
+			user-select: none;
+			font-weight: 700;
+			animation: fadeIn 0.5s ease-in;
+			opacity: 0.95;
+		}
+
+		#errorPopup {
+			color: #ff5555;
+			text-shadow: 0 0 10px #ff5555;
+		}
+
+		#testConnectionPopup.success {
+			color: #43b581;
+			text-shadow: 0 0 10px #43b581;
+		}
+
+		#testConnectionPopup.error {
+			color: #ff5555;
+			text-shadow: 0 0 10px #ff5555;
+		}
+
+		#errorPopup:hover,
+		#testConnectionPopup:hover {
+			opacity: 1;
+		}
+
+		#errorPopup button,
+		#testConnectionPopup button {
+			margin-top: 20px;
+			font-size: 20px;
+			background: #faa61a;
+			color: black;
+			width: 140px;
+			border-radius: 8px;
+			box-shadow: 0 3px 8px rgb(0 0 0 / 0.5);
+			border: none;
+			cursor: pointer;
+			transition: all 0.3s ease, opacity 0.3s ease;
+			opacity: 0.9;
+		}
+
+		#errorPopup button:hover,
+		#testConnectionPopup button:hover {
+			background-color: #e59400;
+			opacity: 1;
+		}
+
+		#settingsPopup {
+			display: none;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 90vw;
+			max-width: 800px;
+			background: #1c1e22;
+			border-radius: 10px;
+			padding: 20px;
+			z-index: 10000;
+			box-shadow: 0 0 15px #000c;
+			animation: fadeIn 0.5s ease-in;
+			opacity: 0.95;
+		}
+
+		#settingsPopup:hover {
+			opacity: 1;
+		}
+
+		#settingsPopup h2 {
+			color: #ffffffdd;
+			margin-bottom: 15px;
+		}
+
+		#settingsPopup .settings-content {
+			max-height: 60vh;
+			overflow-y: auto;
+			padding-right: 10px;
+		}
+
+		#settingsPopup button {
+			margin-top: 15px;
+		}
+
+		#settingsPopup .close-settings-btn {
+			background: #f04747;
+			color: white;
+		}
+
+		#settingsPopup .save-settings-btn {
+			background: #43b581;
+			color: white;
+		}
+
+		.flex-row {
+			display: flex;
+			justify-content: center;
+			gap: 12px;
+			flex-wrap: wrap;
+			margin: 15px 0;
+		}
+
+		label {
+			display: block;
+			margin-top: 10px;
+			font-weight: 700;
+			color: #ccc;
+			opacity: 0.9;
+		}
+
+		label:hover {
+			opacity: 1;
+		}
+
+		#copyWebhookBtn {
+			background-color: #43b581;
+			color: white;
+			box-shadow: 0 3px 10px #2f7d57cc;
+		}
+
+		#tryConnectionBtn {
+			background-color: #7289da;
+			color: white;
+			margin-top: 10px;
+			box-shadow: 0 3px 10px #4f62b0cc;
+		}
+
+		#settingsBtn {
+			background-color: var(--theme-color);
+			color: white;
+			box-shadow: 0 3px 10px #3b47a4cc;
+		}
+
+		#startBtn {
+			background-color: #43b581;
+			color: white;
+			box-shadow: 0 3px 10px #2f7d57cc;
+		}
+
+		#pauseBtn {
+			background-color: #faa61a;
+			color: black;
+			box-shadow: 0 3px 10px #b37f00cc;
+		}
+
+		#stopBtn {
+			background-color: #f04747;
+			color: white;
+			box-shadow: 0 3px 10px #a02c2cdd;
+		}
+
+		#sendOnceBtn {
+			background-color: var(--theme-color);
+			color: white;
+			box-shadow: 0 3px 10px #3b47a4cc;
+		}
+
+		#copyPayloadBtn,
+		#savePayloadBtn {
+			background-color: var(--theme-color);
+			color: white;
+			box-shadow: 0 3px 10px #3b47a4cc;
+		}
+
+		#payloadPreview {
+			background: #17191d;
+			color: #ddd;
+			font-family: monospace;
+			max-width: 95vw;
+			margin: 0 auto;
+			margin-top: 20px;
+			padding: 14px;
+			border-radius: 10px;
+			max-height: 50vh;
+			overflow-y: auto;
+			overflow-x: auto;
+			white-space: pre-wrap;
+			text-align: left;
+			box-shadow: inset 0 0 10px #0008;
+			animation: fadeIn 1s ease-in;
+			opacity: 0.9;
+		}
+
+		#payloadPreview:hover {
+			opacity: 1;
+		}
+
+		#logBox {
+			background: #121417;
+			color: #bbb;
+			max-width: 95vw;
+			max-height: 50vh;
+			margin: 20px auto 0;
+			padding: 14px;
+			font-family: monospace;
+			overflow-y: auto;
+			border-radius: 10px;
+			text-align: left;
+			box-shadow: inset 0 0 12px #000c;
+			animation: slideIn 0.5s ease-out;
+			opacity: 0.9;
+		}
+
+		#logBox:hover {
+			opacity: 1;
+		}
+
+		.section {
+			border: 1px solid #333;
+			border-radius: 10px;
+			padding: 18px;
+			margin-top: 20px;
+			max-width: 95vw;
+			margin-left: auto;
+			margin-right: auto;
+			background: #1c1e22;
+			box-shadow: 0 0 15px #000c;
+			animation: fadeIn 1s ease-in;
+			opacity: 0.95;
+			transition: opacity 0.3s ease;
+		}
+
+		.section:hover {
+			opacity: 1;
+		}
+
+		.small-input {
+			width: 100%;
+			max-width: 100px;
+		}
+
+		.color-input {
+			width: 100%;
+			max-width: 130px;
+			padding: 5px;
+			height: 40px;
+			border: 1px solid #444;
+			border-radius: 8px;
+			background: #17191d;
+			box-shadow: inset 0 0 5px #0008;
+			opacity: 0.9;
+		}
+
+		.color-input:hover {
+			opacity: 1;
+		}
+
+		.checkbox-label {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			cursor: pointer;
+			color: #ccc;
+			user-select: none;
+		}
+
+		#embedFieldsContainer {
+			display: grid;
+			gap: 10px;
+		}
+
+		#logControls button {
+			background: var(--theme-color);
+			border-radius: 6px;
+			margin: 5px 10px 5px 0;
+			padding: 8px 18px;
+			box-shadow: 0 4px 12px #3b47a4cc;
+			transition: all 0.3s ease, opacity 0.3s ease;
+			opacity: 0.9;
+		}
+
+		#logControls button:hover {
+			filter: brightness(1.15);
+			opacity: 1;
+		}
+
+		@media (max-width: 800px) {
+			.section {
+				max-width: 90vw;
+				padding: 15px;
+			}
+
+			input,
+			textarea,
+			select {
+				max-width: 90vw;
+			}
+
+			#payloadPreview,
+			#logBox {
+				max-height: 40vh;
+			}
+		}
+
+		@media (max-width: 600px) {
+			.flex-row {
+				flex-direction: column;
+				align-items: center;
+				gap: 8px;
+			}
+
+			input,
+			textarea,
+			select,
+			.file-input-wrapper,
+			.color-input,
+			.small-input {
+				width: 100% !important;
+				max-width: 90vw;
+			}
+
+			button {
+				width: 100%;
+				max-width: 180px;
+				min-width: 100px;
+			}
+
+			h1 {
+				font-size: 1.6em;
+			}
+
+			label {
+				font-size: 0.9em;
+			}
+
+			#embedFieldsContainer {
+				display: block;
+			}
+		}
+
+		@media (max-width: 400px) {
+			input,
+			textarea,
+			select,
+			button {
+				font-size: 14px;
+				padding: 10px 12px;
+			}
+
+			textarea {
+				height: 80px;
+			}
+
+			.embedFieldValue {
+				height: 40px;
+			}
+
+			h1 {
+				font-size: 1.4em;
+			}
+
+			label {
+				font-size: 0.85em;
+			}
+
+			.section {
+				padding: 12px;
+			}
+
+			#payloadPreview,
+			#logBox {
+				padding: 10px;
+				font-size: 0.9em;
+				max-height: 30vh;
+			}
+		}
+
+		@media (max-width: 320px) {
+			input,
+			textarea,
+			select,
+			button {
+				font-size: 12px;
+				padding: 8px 10px;
+			}
+
+			h1 {
+				font-size: 1.2em;
+			}
+
+			label {
+				font-size: 0.8em;
+			}
+
+			button {
+				min-width: 80px;
+			}
+
+			.section {
+				padding: 10px;
+			}
+
+			#payloadPreview,
+			#logBox {
+				font-size: 0.85em;
+				max-height: 25vh;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<h1>🚀 Mega Zaawansowany Discord Webhook Sender 🚀</h1>
+
+	<div class="section" style="text-align:left;">
+		<label for="webhookInput">Webhook URL:</label>
+		<input type="text" id="webhookInput" placeholder="Wklej tutaj webhook Discord" />
+		<div class="flex-row">
+			<button id="copyWebhookBtn">Kopiuj Webhook</button>
+			<button id="tryConnectionBtn">Testuj Połączenie</button>
+			<button id="settingsBtn">Ustawienia</button>
+		</div>
+	</div>
+
+	<div class="section" style="text-align:left;">
+		<label for="messageInput">Wiadomość (możesz użyć <code>{i}</code> jako numeru wiadomości):</label>
+		<textarea id="messageInput" placeholder="Napisz wiadomość...">Przykładowa wiadomość nr {i}</textarea>
+
+		<div class="flex-row">
+			<div>
+				<label for="usernameInput">Nazwa nadawcy:</label>
+				<input type="text" id="usernameInput" placeholder="Opcjonalnie" />
+			</div>
+			<div>
+				<label for="avatarInput">Avatar URL nadawcy:</label>
+				<input type="text" id="avatarInput" placeholder="Opcjonalnie" />
+			</div>
+		</div>
+
+		<div class="flex-row">
+			<div>
+				<label for="ttsCheckbox" class="checkbox-label">
+					<input type="checkbox" id="ttsCheckbox" />
+					Wysyłaj jako TTS
+				</label>
+			</div>
+			<div>
+				<label for="fileInput">Wybierz plik (obraz):</label>
+				<div class="file-input-wrapper">
+					<input type="file" id="fileInput" accept="image/*" multiple />
+					<div class="file-input-label">Wybierz plik</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="flex-row">
+			<div>
+				<label for="mentionUserInput">Wspomnij użytkownika (ID):</label>
+				<input type="text" id="mentionUserInput" placeholder="ID użytkownika do wspomnienia" />
+			</div>
+			<div>
+				<label for="mentionChannelInput">Wspomnij kanał (ID):</label>
+				<input type="text" id="mentionChannelInput" placeholder="ID kanału do wspomnienia" />
+			</div>
+		</div>
+
+		<div class="flex-row">
+			<div>
+				<label for="emojiInput">Emoji (nazwa lub ID):</label>
+				<input type="text" id="emojiInput" placeholder="Nazwa lub ID emoji" />
+			</div>
+		</div>
+
+		<div class="flex-row">
+			<div>
+				<label for="messageLinkInput">Link do wiadomości (do edycji):</label>
+				<input type="text" id="messageLinkInput" placeholder="Link do wiadomości Discord" />
+			</div>
+			<div>
+				<button id="loadMessageBtn">Załaduj wiadomość</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="section" style="text-align:left;">
+		<h3>Embed (opcjonalnie)</h3>
+		<label for="embedTitle">Tytuł:</label>
+		<input type="text" id="embedTitle" placeholder="Tytuł embeda" />
+
+		<label for="embedDescription">Opis:</label>
+		<textarea id="embedDescription" placeholder="Opis embeda"></textarea>
+
+		<div class="flex-row" style="align-items:center;">
+			<div>
+				<label for="embedColor">Kolor (hex):</label>
+				<input type="color" id="embedColor" class="color-input" value="#5865f2" />
+			</div>
+			<div>
+				<label for="embedFooter">Footer:</label>
+				<input type="text" id="embedFooter" placeholder="Tekst stopki" />
+			</div>
+		</div>
+
+		<div class="flex-row">
+			<div>
+				<label for="embedThumbnail">Thumbnail URL:</label>
+				<input type="text" id="embedThumbnail" placeholder="Miniaturka (URL)" />
+			</div>
+			<div>
+				<label for="embedImage">Obraz URL:</label>
+				<input type="text" id="embedImage" placeholder="Duży obraz (URL)" />
+			</div>
+		</div>
+
+		<div class="flex-row">
+			<div>
+				<label for="embedAuthorName">Autor:</label>
+				<input type="text" id="embedAuthorName" placeholder="Nazwa autora" />
+			</div>
+			<div>
+				<label for="embedAuthorUrl">URL autora:</label>
+				<input type="text" id="embedAuthorUrl" placeholder="URL autora" />
+			</div>
+		</div>
+
+		<div id="embedFieldsContainer">
+			<h4>Pola embed (opcjonalne)</h4>
+			<button id="addEmbedFieldBtn" type="button">Dodaj pole</button>
+			<div id="embedFields"></div>
+		</div>
+	</div>
+
+	<div class="section" style="text-align:left;">
+		<h3>Ustawienia wysyłania</h3>
+		<div class="flex-row">
+			<div>
+				<label for="countInput">Ile razy wysłać:</label>
+				<input type="number" id="countInput" min="1" max="99999999999999999" value="10" class="small-input" />
+			</div>
+			<div>
+				<label for="delayInput">Opóźnienie (ms):</label>
+				<input type="number" id="delayInput" min="0" max="60000000000" value="1000" class="small-input" />
+			</div>
+			<div>
+				<label for="randomDelayCheckbox" class="checkbox-label">
+					<input type="checkbox" id="randomDelayCheckbox" />
+					Losowe opóźnienie (do wartości powyżej)
+				</label>
+			</div>
+		</div>
+
+		<div class="flex-row">
+			<div>
+				<label for="retryCountInput">Maks retry (przy błędach):</label>
+				<input type="number" id="retryCountInput" min="0" max="100000000000000000" value="3" class="small-input" />
+			</div>
+			<div>
+				<label for="maxMessageLengthInput" title="Discord ma limit 2000 znaków">Max długość wiadomości:</label>
+				<input type="number" id="maxMessageLengthInput" min="1" max="2000000000000000000" value="2000" class="small-input" />
+			</div>
+		</div>
+
+		<div class="flex-row">
+			<div>
+				<label for="threadIdInput">Thread ID (opcjonalnie):</label>
+				<input type="text" id="threadIdInput" placeholder="ID wątku na Discordzie" class="small-input" />
+			</div>
+			<div>
+				<label for="mentionRoleInput">Wspomnij rolę (ID):</label>
+				<input type="text" id="mentionRoleInput" placeholder="ID roli do wspomnienia" class="small-input" />
+			</div>
+		</div>
+	</div>
+
+	<div class="section" style="text-align:left;">
+		<h3>Podgląd JSON payload:</h3>
+		<pre id="payloadPreview"></pre>
+		<div class="flex-row">
+			<button id="copyPayloadBtn">Kopiuj JSON</button>
+			<button id="savePayloadBtn">Zapisz JSON</button>
+		</div>
+	</div>
+
+	<div class="section" style="text-align:left;">
+		<h3>Logi wysyłania:</h3>
+		<div id="logBox"></div>
+		<div id="logControls">
+			<button id="saveLogBtn">Zapisz log do pliku</button>
+			<button id="clearLogBtn">Wyczyść log</button>
+			<button id="exportConfigBtn">Eksportuj konfigurację</button>
+			<button id="importConfigBtn">Importuj konfigurację</button>
+			<input type="file" id="importConfigInput" style="display:none;" accept=".json" />
+		</div>
+	</div>
+
+	<div class="flex-row" style="justify-content:center; margin-top:30px;">
+		<button id="startBtn">START</button>
+		<button id="pauseBtn" disabled>PAUZA</button>
+		<button id="stopBtn" disabled>STOP</button>
+		<button id="sendOnceBtn">WYŚLIJ RAZ</button>
+	</div>
+
+	<div id="status"></div>
+
+	<div id="errorPopup">
+		<div id="errorMessage"></div>
+		<button onclick="closeError()">Zamknij</button>
+	</div>
+
+	<div id="testConnectionPopup">
+		<div id="testConnectionMessage"></div>
+		<button onclick="closeTestConnectionPopup()">Zamknij</button>
+	</div>
+
+	<div id="settingsPopup">
+		<h2>Ustawienia</h2>
+		<div class="settings-content">
+			<h3>Wygląd</h3>
+			<label for="themeColor">Kolor motywu (hex):</label>
+			<input type="color" id="themeColor" value="#5865f2" class="color-input" />
+			<label for="fontSize">Rozmiar czcionki (px):</label>
+			<input type="number" id="fontSize" min="10" max="24" value="16" class="small-input" />
+			<label for="opacityDefault">Domyślna przezroczystość elementów (0-1):</label>
+			<input type="number" id="opacityDefault" min="0" max="1" step="0.01" value="0.9" class="small-input" />
+			<label for="opacityHover">Przezroczystość przy najechaniu (0-1):</label>
+			<input type="number" id="opacityHover" min="0" max="1" step="0.01" value="1" class="small-input" />
+			<label for="opacityActive">Przezroczystość przy kliknięciu (0-1):</label>
+			<input type="number" id="opacityActive" min="0" max="1" step="0.01" value="0.85" class="small-input" />
+
+			<h3>Animacje</h3>
+			<label for="animationDuration">Czas animacji (s):</label>
+			<input type="number" id="animationDuration" min="0" max="5" step="0.1" value="0.3" class="small-input" />
+			<label for="enableAnimations" class="checkbox-label">
+				<input type="checkbox" id="enableAnimations" checked />
+				Włącz animacje
+			</label>
+
+			<h3>Logi</h3>
+			<label for="maxLogEntries">Maksymalna liczba wpisów w logach:</label>
+			<input type="number" id="maxLogEntries" min="10" max="1000" value="300" class="small-input" />
+			<label for="logFontSize">Rozmiar czcionki logów (px):</label>
+			<input type="number" id="logFontSize" min="8" max="20" value="14" class="small-input" />
+			<label for="autoClearLogs" class="checkbox-label">
+				<input type="checkbox" id="autoClearLogs" />
+				Automatycznie czyść logi przed wysyłaniem
+			</label>
+
+			<h3>Wysyłanie</h3>
+			<label for="retryDelayBase">Podstawowe opóźnienie retry (ms):</label>
+			<input type="number" id="retryDelayBase" min="100" max="10000" value="1000" class="small-input" />
+			<label for="statusTimeoutSuccess">Czas wyświetlania statusu sukcesu (ms):</label>
+			<input type="number" id="statusTimeoutSuccess" min="1000" max="10000" value="3000" class="small-input" />
+			<label for="statusTimeoutError">Czas wyświetlania statusu błędu (ms):</label>
+			<input type="number" id="statusTimeoutError" min="1000" max="10000" value="5000" class="small-input" />
+			<label for="allowedMentions">Allowed mentions (parse):</label>
+			<select id="allowedMentions">
+				<option value="all">All</option>
+				<option value="roles">Roles</option>
+				<option value="users">Users</option>
+				<option value="everyone">Everyone</option>
+				<option value="none">None</option>
+			</select>
+			<label for="suppressEmbeds" class="checkbox-label">
+				<input type="checkbox" id="suppressEmbeds" />
+				Suppress embeds
+			</label>
+			<label for="addButton">Dodaj przycisk (opcjonalnie):</label>
+			<input type="text" id="addButton" placeholder="Etykieta przycisku" />
+			<label for="buttonUrl">URL przycisku:</label>
+			<input type="text" id="buttonUrl" placeholder="URL przycisku" />
+			<label for="pollQuestion">Pytanie ankiety:</label>
+			<input type="text" id="pollQuestion" placeholder="Pytanie ankiety" />
+			<label for="pollOptions">Opcje ankiety (oddzielone przecinkami):</label>
+			<input type="text" id="pollOptions" placeholder="Opcja1,Opcja2,Opcja3" />
+		</div>
+		<div class="flex-row" style="justify-content:center;">
+			<button class="save-settings-btn">Zapisz</button>
+			<button class="close-settings-btn">Anuluj</button>
+		</div>
+	</div>
+
+	<script>
+		(() => {
+			// --- Elementy ---
+			const webhookInput = document.getElementById('webhookInput');
+			const messageInput = document.getElementById('messageInput');
+			const usernameInput = document.getElementById('usernameInput');
+			const avatarInput = document.getElementById('avatarInput');
+			const ttsCheckbox = document.getElementById('ttsCheckbox');
+			const fileInput = document.getElementById('fileInput');
+			const fileInputLabel = document.querySelector('.file-input-label');
+			const threadIdInput = document.getElementById('threadIdInput');
+			const mentionRoleInput = document.getElementById('mentionRoleInput');
+			const mentionUserInput = document.getElementById('mentionUserInput');
+			const mentionChannelInput = document.getElementById('mentionChannelInput');
+			const emojiInput = document.getElementById('emojiInput');
+			const messageLinkInput = document.getElementById('messageLinkInput');
+			const loadMessageBtn = document.getElementById('loadMessageBtn');
+
+			const embedTitle = document.getElementById('embedTitle');
+			const embedDescription = document.getElementById('embedDescription');
+			const embedColor = document.getElementById('embedColor');
+			const embedFooter = document.getElementById('embedFooter');
+			const embedThumbnail = document.getElementById('embedThumbnail');
+			const embedImage = document.getElementById('embedImage');
+			const embedAuthorName = document.getElementById('embedAuthorName');
+			const embedAuthorUrl = document.getElementById('embedAuthorUrl');
+
+			const embedFieldsContainer = document.getElementById('embedFields');
+			const addEmbedFieldBtn = document.getElementById('addEmbedFieldBtn');
+
+			const countInput = document.getElementById('countInput');
+			const delayInput = document.getElementById('delayInput');
+			const randomDelayCheckbox = document.getElementById('randomDelayCheckbox');
+			const retryCountInput = document.getElementById('retryCountInput');
+			const maxMessageLengthInput = document.getElementById('maxMessageLengthInput');
+
+			const payloadPreview = document.getElementById('payloadPreview');
+			const copyPayloadBtn = document.getElementById('copyPayloadBtn');
+			const savePayloadBtn = document.getElementById('savePayloadBtn');
+
+			const logBox = document.getElementById('logBox');
+			const saveLogBtn = document.getElementById('saveLogBtn');
+			const clearLogBtn = document.getElementById('clearLogBtn');
+			const exportConfigBtn = document.getElementById('exportConfigBtn');
+			const importConfigBtn = document.getElementById('importConfigBtn');
+			const importConfigInput = document.getElementById('importConfigInput');
+			const tryConnectionBtn = document.getElementById('tryConnectionBtn');
+			const settingsBtn = document.getElementById('settingsBtn');
+
+			const startBtn = document.getElementById('startBtn');
+			const pauseBtn = document.getElementById('pauseBtn');
+			const stopBtn = document.getElementById('stopBtn');
+			const sendOnceBtn = document.getElementById('sendOnceBtn');
+
+			const statusDiv = document.getElementById('status');
+			const errorPopup = document.getElementById('errorPopup');
+			const errorMessageDiv = document.getElementById('errorMessage');
+			const testConnectionPopup = document.getElementById('testConnectionPopup');
+			const testConnectionMessageDiv = document.getElementById('testConnectionMessage');
+			const settingsPopup = document.getElementById('settingsPopup');
+
+			// Elementy ustawień
+			const themeColor = document.getElementById('themeColor');
+			const fontSize = document.getElementById('fontSize');
+			const opacityDefault = document.getElementById('opacityDefault');
+			const opacityHover = document.getElementById('opacityHover');
+			const opacityActive = document.getElementById('opacityActive');
+			const animationDuration = document.getElementById('animationDuration');
+			const enableAnimations = document.getElementById('enableAnimations');
+			const maxLogEntries = document.getElementById('maxLogEntries');
+			const logFontSize = document.getElementById('logFontSize');
+			const retryDelayBaseInput = document.getElementById('retryDelayBase');
+			const autoClearLogs = document.getElementById('autoClearLogs');
+			const statusTimeoutSuccess = document.getElementById('statusTimeoutSuccess');
+			const statusTimeoutError = document.getElementById('statusTimeoutError');
+			const allowedMentions = document.getElementById('allowedMentions');
+			const suppressEmbeds = document.getElementById('suppressEmbeds');
+			const addButton = document.getElementById('addButton');
+			const buttonUrl = document.getElementById('buttonUrl');
+			const pollQuestion = document.getElementById('pollQuestion');
+			const pollOptions = document.getElementById('pollOptions');
+
+			// --- Stany ---
+			let sending = false;
+			let paused = false;
+			let stopped = false;
+			let currentIndex = 0;
+			let logs = [];
+			let retryDelayBase = 1000;
+			let maxRetry = 3;
+
+			// --- Funkcje ustawień ---
+			function applySettings() {
+				const root = document.documentElement;
+				root.style.setProperty('--theme-color', themeColor.value);
+				const newFontSize = `${fontSize.value}px`;
+				['input', 'textarea', 'select', 'button', 'label'].forEach(selector => {
+					document.querySelectorAll(selector).forEach(el => {
+						el.style.fontSize = newFontSize;
+					});
+				});
+				['input', 'textarea', 'select', 'button', '.section', '#payloadPreview', '#logBox', '#status', '#errorPopup', '#testConnectionPopup', '#settingsPopup'].forEach(selector => {
+					document.querySelectorAll(selector).forEach(el => {
+						el.style.opacity = opacityDefault.value;
+						el.style.transition = `all ${animationDuration.value}s ease, opacity ${animationDuration.value}s ease`;
+					});
+				});
+				const styleElement = document.createElement('style');
+				const hoverStyles = ['input:hover', 'textarea:hover', 'select:hover', 'button:hover:not(:disabled)', '.section:hover', '#payloadPreview:hover', '#logBox:hover', '#status:hover', '#errorPopup:hover', '#testConnectionPopup:hover', '#settingsPopup:hover'].map(selector => `${selector} { opacity: ${opacityHover.value} !important; }`).join('\n');
+				const activeStyles = ['button:active:not(:disabled)', '.checkbox-label input[type="checkbox"]:active'].map(selector => `${selector} { opacity: ${opacityActive.value} !important; }`).join('\n');
+				const animationStyles = enableAnimations.checked ? '' : `* { animation: none !important; }`;
+				styleElement.textContent = `${hoverStyles}\n${activeStyles}\n${animationStyles}`;
+				document.head.appendChild(styleElement);
+				logBox.style.fontSize = `${logFontSize.value}px`;
+				retryDelayBase = parseInt(retryDelayBaseInput.value);
+			}
+
+			function openSettings() {
+				settingsPopup.style.display = 'block';
+			}
+
+			function closeSettings() {
+				settingsPopup.style.display = 'none';
+			}
+
+			function saveSettings() {
+				applySettings();
+				log('✅ Zapisano ustawienia.');
+				statusDiv.textContent = 'Zapisano ustawienia.';
+				setTimeout(() => { if (statusDiv.textContent === 'Zapisano ustawienia.') statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+				closeSettings();
+			}
+
+			applySettings();
+			settingsBtn.addEventListener('click', openSettings);
+			document.querySelector('.close-settings-btn').addEventListener('click', closeSettings);
+			document.querySelector('.save-settings-btn').addEventListener('click', saveSettings);
+			settingsPopup.addEventListener('click', (e) => {
+				if (e.target === settingsPopup) closeSettings();
+			});
+
+			// --- Zamykanie popupów ---
+			function closeError() {
+				errorPopup.style.display = 'none';
+				errorMessageDiv.textContent = '';
+			}
+
+			function closeTestConnectionPopup() {
+				testConnectionPopup.style.display = 'none';
+				testConnectionMessageDiv.textContent = '';
+				testConnectionPopup.classList.remove('success', 'error');
+			}
+
+			[errorPopup, testConnectionPopup].forEach(popup => {
+				popup.addEventListener('click', (e) => {
+					if (e.target === popup) {
+						if (popup.id === 'errorPopup') closeError();
+						else closeTestConnectionPopup();
+					}
+				});
+			});
+
+			// --- Aktualizacja etykiety pola pliku ---
+			fileInput.addEventListener('change', () => {
+				fileInputLabel.textContent = fileInput.files.length > 0 ? Array.from(fileInput.files).map(file => file.name).join(', ') : 'Wybierz plik';
+			});
+
+			// --- Funkcje do embed fields ---
+			function createEmbedField(index = 0, name = '', value = '', inline = false) {
+				const div = document.createElement('div');
+				div.style.marginTop = '10px';
+				div.style.borderTop = '1px solid #444';
+				div.style.paddingTop = '10px';
+
+				div.innerHTML = `
+					<label>Field #${index + 1} Nazwa:</label><br/>
+					<input type="text" class="embedFieldName" placeholder="Nazwa pola" value="${name}" style="width:100%; max-width:90vw;" />
+					<br/>
+					<label>Wartość:</label><br/>
+					<textarea class="embedFieldValue" placeholder="Wartość pola" style="width:100%; max-width:90vw; height:50px;">${value}</textarea>
+					<br/>
+					<label class="checkbox-label"><input type="checkbox" class="embedFieldInline" ${inline ? 'checked' : ''}/> Inline</label>
+					<button type="button" class="removeFieldBtn" style="margin-left:10px; background:#f04747; color:white; border:none; border-radius:4px; cursor:pointer;">Usuń</button>
+				`;
+				return div;
+			}
+
+			embedFieldsContainer.appendChild(createEmbedField());
+
+			addEmbedFieldBtn.addEventListener('click', () => {
+				const newField = createEmbedField(embedFieldsContainer.children.length);
+				embedFieldsContainer.appendChild(newField);
+				updateEmbedFieldLabels();
+				updatePayloadPreview();
+			});
+
+			embedFieldsContainer.addEventListener('click', (e) => {
+				if (e.target.classList.contains('removeFieldBtn')) {
+					e.target.parentElement.remove();
+					updateEmbedFieldLabels();
+					updatePayloadPreview();
+				}
+			});
+
+			function updateEmbedFieldLabels() {
+				[...embedFieldsContainer.children].forEach((fieldDiv, i) => {
+					const label = fieldDiv.querySelector('label');
+					if (label) label.textContent = `Field #${i + 1} Nazwa:`;
+				});
+			}
+
+			// --- Funkcja do generowania payload ---
+			function generatePayload(i = 1) {
+				let msg = messageInput.value.replace(/{i}/g, i);
+				const maxLen = parseInt(maxMessageLengthInput.value);
+				if (msg.length > maxLen) {
+					msg = msg.slice(0, maxLen);
+					log(`⚠️ Wiadomość nr ${i} została obcięta do ${maxLen} znaków`);
+				}
+
+				const mentionRole = mentionRoleInput.value.trim();
+				if (mentionRole) {
+					msg = `<@&${mentionRole}> ${msg}`;
+				}
+
+				const mentionUser = mentionUserInput.value.trim();
+				if (mentionUser) {
+					msg = `<@${mentionUser}> ${msg}`;
+				}
+
+				const mentionChannel = mentionChannelInput.value.trim();
+				if (mentionChannel) {
+					msg = `<#${mentionChannel}> ${msg}`;
+				}
+
+				const emoji = emojiInput.value.trim();
+				if (emoji) {
+					const isCustomEmoji = emoji.match(/<a?:\w+:\d+>/);
+					if (isCustomEmoji) {
+						msg = `${emoji} ${msg}`;
+					} else {
+						const emojiUnicode = emoji.match(/[\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u);
+						if (emojiUnicode) {
+							msg = `${emoji} ${msg}`;
+						} else {
+							msg = `:${emoji}: ${msg}`;
+						}
+					}
+				}
+
+				let embed = null;
+				const title = embedTitle.value.trim();
+				const description = embedDescription.value.trim();
+				const color = embedColor.value;
+				const footer = embedFooter.value.trim();
+				const thumbnail = embedThumbnail.value.trim();
+				const image = embedImage.value.trim();
+				const authorName = embedAuthorName.value.trim();
+				const authorUrl = embedAuthorUrl.value.trim();
+
+				const fields = [];
+				const fieldDivs = embedFieldsContainer.querySelectorAll('div');
+				fieldDivs.forEach(div => {
+					const name = div.querySelector('.embedFieldName').value.trim();
+					const value = div.querySelector('.embedFieldValue').value.trim();
+					const inline = div.querySelector('.embedFieldInline').checked;
+					if (name && value) fields.push({ name, value, inline });
+				});
+
+				if (title || description || fields.length || footer || thumbnail || image || authorName) {
+					embed = {};
+					if (title) embed.title = title;
+					if (description) embed.description = description;
+					if (color) embed.color = parseInt(color.replace('#', ''), 16);
+					if (footer) embed.footer = { text: footer };
+					if (thumbnail) embed.thumbnail = { url: thumbnail };
+					if (image) embed.image = { url: image };
+					if (authorName) embed.author = { name: authorName, url: authorUrl || undefined };
+					if (fields.length) embed.fields = fields;
+				}
+
+				const payload = {
+					content: msg || '',
+					tts: ttsCheckbox.checked,
+				};
+
+				const username = usernameInput.value.trim();
+				if (username) payload.username = username;
+
+				const avatarURL = avatarInput.value.trim();
+				if (avatarURL) payload.avatar_url = avatarURL;
+
+				if (embed) payload.embeds = [embed];
+
+				const threadId = threadIdInput.value.trim();
+				if (threadId) payload.thread_id = threadId;
+
+				// Allowed mentions
+				const allowedMentionsValue = allowedMentions.value;
+				if (allowedMentionsValue !== 'all') {
+					payload.allowed_mentions = { parse: [] };
+					if (allowedMentionsValue === 'roles') payload.allowed_mentions.parse.push('roles');
+					if (allowedMentionsValue === 'users') payload.allowed_mentions.parse.push('users');
+					if (allowedMentionsValue === 'everyone') payload.allowed_mentions.parse.push('everyone');
+				}
+
+				// Suppress embeds
+				if (suppressEmbeds.checked) {
+					payload.flags = 4; // Suppress embeds flag
+				}
+
+				// Button component
+				const buttonLabel = addButton.value.trim();
+				const buttonLink = buttonUrl.value.trim();
+				if (buttonLabel && buttonLink) {
+					payload.components = [{
+						type: 1,
+						components: [{
+							type: 2,
+							label: buttonLabel,
+							style: 5, // Link button
+							url: buttonLink
+						}]
+					}];
+				}
+
+				// Poll
+				const pollQ = pollQuestion.value.trim();
+				const pollOpts = pollOptions.value.trim().split(',').filter(opt => opt.trim());
+				if (pollQ && pollOpts.length > 1) {
+					payload.poll = {
+						question: { text: pollQ },
+						answers: pollOpts.map((opt, idx) => ({
+							answer_id: idx + 1,
+							poll_media: { text: opt.trim() }
+						})),
+						duration: 24,
+						allow_multiselect: false
+					};
+				}
+
+				return payload;
+			}
+
+			// --- Funkcja do bezpiecznego kopiowania do schowka ---
+			function copyToClipboard(text, successMessage, errorMessage) {
+				if (navigator.clipboard && window.isSecureContext) {
+					navigator.clipboard.writeText(text).then(() => {
+						statusDiv.textContent = successMessage;
+						log(`✅ ${successMessage}`);
+						setTimeout(() => { if (statusDiv.textContent === successMessage) statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+					}).catch(err => {
+						log(`❌ Błąd kopiowania: ${err.message}. Skopiuj ręcznie: ${text}`);
+						statusDiv.textContent = `${errorMessage}: ${err.message}. Skopiuj ręcznie z podglądu.`;
+						setTimeout(() => { if (statusDiv.textContent.includes(errorMessage)) statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					});
+				} else {
+					const textarea = document.createElement('textarea');
+					textarea.value = text;
+					document.body.appendChild(textarea);
+					textarea.select();
+					try {
+						document.execCommand('copy');
+						statusDiv.textContent = successMessage;
+						log(`✅ ${successMessage} (użyto fallbacku)`);
+						setTimeout(() => { if (statusDiv.textContent === successMessage) statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+					} catch (err) {
+						log(`❌ Błąd kopiowania: ${err.message}. Skopiuj ręcznie: ${text}`);
+						statusDiv.textContent = `${errorMessage}: ${err.message}. Skopiuj ręcznie z podglądu.`;
+						setTimeout(() => { if (statusDiv.textContent.includes(errorMessage)) statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					}
+					document.body.removeChild(textarea);
+				}
+			}
+
+			// --- Kopiowanie JSON ---
+			copyPayloadBtn.addEventListener('click', () => {
+				const payload = JSON.stringify(generatePayload(currentIndex + 1), null, 2);
+				copyToClipboard(payload, 'JSON payload skopiowany!', 'Błąd kopiowania JSON');
+			});
+
+			// --- Zapisywanie JSON payload ---
+			savePayloadBtn.addEventListener('click', () => {
+				const payload = generatePayload(currentIndex + 1);
+				const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = 'webhook_payload.json';
+				a.click();
+				URL.revokeObjectURL(url);
+				log('✅ Zapisano JSON payload.');
+				statusDiv.textContent = 'Zapisano JSON payload.';
+				setTimeout(() => { if (statusDiv.textContent === 'Zapisano JSON payload.') statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+			});
+
+			// --- Kopiowanie webhooka ---
+			document.getElementById('copyWebhookBtn').addEventListener('click', () => {
+				const webhookUrl = webhookInput.value;
+				copyToClipboard(webhookUrl, 'Webhook URL skopiowany!', 'Błąd kopiowania Webhook URL');
+			});
+
+			// --- Testowanie połączenia ---
+			tryConnectionBtn.addEventListener('click', async () => {
+				const webhookUrl = webhookInput.value.trim();
+				if (!webhookUrl) {
+					log('❌ Brak URL webhooka.');
+					statusDiv.textContent = 'Brak URL webhooka!';
+					testConnectionMessageDiv.textContent = 'Brak URL webhooka!';
+					testConnectionPopup.classList.add('error');
+					testConnectionPopup.style.display = 'block';
+					setTimeout(() => { if (statusDiv.textContent === 'Brak URL webhooka!') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					return;
+				}
+
+				const valid = await validateWebhook(webhookUrl);
+				if (valid) {
+					log('✅ Webhook jest prawidłowy.');
+					statusDiv.textContent = 'Webhook jest prawidłowy!';
+					testConnectionMessageDiv.textContent = 'Webhook jest prawidłowy!';
+					testConnectionPopup.classList.add('success');
+					testConnectionPopup.style.display = 'block';
+					setTimeout(() => { if (statusDiv.textContent === 'Webhook jest prawidłowy!') statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+				} else {
+					log('❌ Nieprawidłowy URL webhooka.');
+					statusDiv.textContent = 'Nieprawidłowy URL webhooka!';
+					testConnectionMessageDiv.textContent = 'Nieprawidłowy URL webhooka!';
+					testConnectionPopup.classList.add('error');
+					testConnectionPopup.style.display = 'block';
+					setTimeout(() => { if (statusDiv.textContent === 'Nieprawidłowy URL webhooka!') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+				}
+			});
+
+			// --- Eksport konfiguracji ---
+			exportConfigBtn.addEventListener('click', () => {
+				const config = {
+					webhookUrl: webhookInput.value,
+					message: messageInput.value,
+					username: usernameInput.value,
+					avatarUrl: avatarInput.value,
+					tts: ttsCheckbox.checked,
+					embed: {
+						title: embedTitle.value,
+						description: embedDescription.value,
+						color: embedColor.value,
+						footer: embedFooter.value,
+						thumbnail: embedThumbnail.value,
+						image: embedImage.value,
+						authorName: embedAuthorName.value,
+						authorUrl: embedAuthorUrl.value,
+						fields: [...embedFieldsContainer.querySelectorAll('div')].map(div => ({
+							name: div.querySelector('.embedFieldName').value,
+							value: div.querySelector('.embedFieldValue').value,
+							inline: div.querySelector('.embedFieldInline').checked
+						}))
+					},
+					count: countInput.value,
+					delay: delayInput.value,
+					randomDelay: randomDelayCheckbox.checked,
+					retryCount: retryCountInput.value,
+					maxMessageLength: maxMessageLengthInput.value,
+					threadId: threadIdInput.value,
+					mentionRole: mentionRoleInput.value,
+					mentionUser: mentionUserInput.value,
+					mentionChannel: mentionChannelInput.value,
+					emoji: emojiInput.value,
+					messageLink: messageLinkInput.value,
+					allowedMentions: allowedMentions.value,
+					suppressEmbeds: suppressEmbeds.checked,
+					buttonLabel: addButton.value,
+					buttonUrl: buttonUrl.value,
+					pollQuestion: pollQuestion.value,
+					pollOptions: pollOptions.value,
+					settings: {
+						themeColor: themeColor.value,
+						fontSize: fontSize.value,
+						opacityDefault: opacityDefault.value,
+						opacityHover: opacityHover.value,
+						opacityActive: opacityActive.value,
+						animationDuration: animationDuration.value,
+						enableAnimations: enableAnimations.checked,
+						maxLogEntries: maxLogEntries.value,
+						logFontSize: logFontSize.value,
+						retryDelayBase: retryDelayBaseInput.value,
+						autoClearLogs: autoClearLogs.checked,
+						statusTimeoutSuccess: statusTimeoutSuccess.value,
+						statusTimeoutError: statusTimeoutError.value
+					}
+				};
+				const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json;charset=utf-8' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = 'webhook_config.json';
+				a.click();
+				URL.revokeObjectURL(url);
+				log('✅ Wyeksportowano konfigurację.');
+				statusDiv.textContent = 'Zapisano konfigurację.';
+				setTimeout(() => { if (statusDiv.textContent === 'Zapisano konfigurację.') statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+			});
+
+			// --- Import konfiguracji ---
+			importConfigBtn.addEventListener('click', () => {
+				importConfigInput.click();
+			});
+
+			importConfigInput.addEventListener('change', (e) => {
+				const file = e.target.files[0];
+				if (!file) return;
+				const reader = new FileReader();
+				reader.onload = (ev) => {
+					try {
+						const config = JSON.parse(ev.target.result);
+						webhookInput.value = config.webhookUrl || '';
+						messageInput.value = config.message || '';
+						usernameInput.value = config.username || '';
+						avatarInput.value = config.avatarUrl || '';
+						ttsCheckbox.checked = config.tts || false;
+						embedTitle.value = config.embed?.title || '';
+						embedDescription.value = config.embed?.description || '';
+						embedColor.value = config.embed?.color || '#5865f2';
+						embedFooter.value = config.embed?.footer || '';
+						embedThumbnail.value = config.embed?.thumbnail || '';
+						embedImage.value = config.embed?.image || '';
+						embedAuthorName.value = config.embed?.authorName || '';
+						embedAuthorUrl.value = config.embed?.authorUrl || '';
+						countInput.value = config.count || '10';
+						delayInput.value = config.delay || '1000';
+						randomDelayCheckbox.checked = config.randomDelay || false;
+						retryCountInput.value = config.retryCount || '3';
+						maxMessageLengthInput.value = config.maxMessageLength || '2000';
+						threadIdInput.value = config.threadId || '';
+						mentionRoleInput.value = config.mentionRole || '';
+						mentionUserInput.value = config.mentionUser || '';
+						mentionChannelInput.value = config.mentionChannel || '';
+						emojiInput.value = config.emoji || '';
+						messageLinkInput.value = config.messageLink || '';
+						allowedMentions.value = config.allowedMentions || 'all';
+						suppressEmbeds.checked = config.suppressEmbeds || false;
+						addButton.value = config.buttonLabel || '';
+						buttonUrl.value = config.buttonUrl || '';
+						pollQuestion.value = config.pollQuestion || '';
+						pollOptions.value = config.pollOptions || '';
+
+						// Ustawienia
+						if (config.settings) {
+							themeColor.value = config.settings.themeColor || '#5865f2';
+							fontSize.value = config.settings.fontSize || '16';
+							opacityDefault.value = config.settings.opacityDefault || '0.9';
+							opacityHover.value = config.settings.opacityHover || '1';
+							opacityActive.value = config.settings.opacityActive || '0.85';
+							animationDuration.value = config.settings.animationDuration || '0.3';
+							enableAnimations.checked = config.settings.enableAnimations !== false;
+							maxLogEntries.value = config.settings.maxLogEntries || '300';
+							logFontSize.value = config.settings.logFontSize || '14';
+							retryDelayBaseInput.value = config.settings.retryDelayBase || '1000';
+							autoClearLogs.checked = config.settings.autoClearLogs || false;
+							statusTimeoutSuccess.value = config.settings.statusTimeoutSuccess || '3000';
+							statusTimeoutError.value = config.settings.statusTimeoutError || '5000';
+							applySettings();
+						}
+
+						embedFieldsContainer.innerHTML = '';
+						(config.embed?.fields || []).forEach((field, i) => {
+							const fieldDiv = createEmbedField(i, field.name, field.value, field.inline);
+							embedFieldsContainer.appendChild(fieldDiv);
+						});
+						if (!config.embed?.fields?.length) {
+							embedFieldsContainer.appendChild(createEmbedField());
+						}
+						updateEmbedFieldLabels();
+						updatePayloadPreview();
+						log('✅ Konfiguracja zaimportowana pomyślnie.');
+						statusDiv.textContent = 'Konfiguracja zaimportowana pomyślnie!';
+						setTimeout(() => { if (statusDiv.textContent === 'Konfiguracja zaimportowana pomyślnie!') statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+					} catch (err) {
+						log('❌ Błąd podczas importu konfiguracji: ' + err.message);
+						statusDiv.textContent = 'Błąd podczas importu konfiguracji: ' + err.message;
+						setTimeout(() => { if (statusDiv.textContent.includes('Błąd podczas importu konfiguracji')) statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					}
+				};
+				reader.readAsText(file);
+				importConfigInput.value = ''; // Reset input
+			});
+
+			// --- Logowanie ---
+			function log(text) {
+				const timestamp = new Date().toLocaleTimeString();
+				logs.push(`[${timestamp}] ${text}`);
+				if (logs.length > parseInt(maxLogEntries.value)) logs.shift();
+				logBox.textContent = logs.join('\n');
+				logBox.scrollTop = logBox.scrollHeight;
+			}
+
+			// --- Czyszczenie logów ---
+			clearLogBtn.addEventListener('click', () => {
+				logs = [];
+				logBox.textContent = '';
+				log('✅ Logi wyczyszczone.');
+				statusDiv.textContent = 'Logi wyczyszczone.';
+				setTimeout(() => { if (statusDiv.textContent === 'Logi wyczyszczone.') statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+			});
+
+			// --- Zapisywanie logów do pliku ---
+			saveLogBtn.addEventListener('click', () => {
+				const blob = new Blob([logs.join('\n')], { type: 'text/plain;charset=utf-8' });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = 'webhook_sender_log.txt';
+				a.click();
+				URL.revokeObjectURL(url);
+				log('✅ Zapisano logi do pliku.');
+				statusDiv.textContent = 'Zapisano logi do pliku.';
+				setTimeout(() => { if (statusDiv.textContent === 'Zapisano logi do pliku.') statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+			});
+
+			// --- Walidacja webhooka ---
+			async function validateWebhook(url) {
+				if (!url) return false;
+				try {
+					const res = await fetch(url, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
+					return res.ok;
+				} catch {
+					return false;
+				}
+			}
+
+			// --- Ładowanie wiadomości z linku ---
+			loadMessageBtn.addEventListener('click', async () => {
+				const messageLink = messageLinkInput.value.trim();
+				if (!messageLink) {
+					log('❌ Brak linku do wiadomości.');
+					statusDiv.textContent = 'Brak linku do wiadomości!';
+					setTimeout(() => { if (statusDiv.textContent === 'Brak linku do wiadomości!') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					return;
+				}
+
+				const match = messageLink.match(/https:\/\/discord\.com\/channels\/(\d+)\/(\d+)\/(\d+)/);
+				if (!match) {
+					log('❌ Nieprawidłowy format linku do wiadomości.');
+					statusDiv.textContent = 'Nieprawidłowy format linku do wiadomości!';
+					setTimeout(() => { if (statusDiv.textContent === 'Nieprawidłowy format linku do wiadomości!') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					return;
+				}
+
+				const [, guildId, channelId, messageId] = match;
+				log('⚠️ Funkcja ładowania wiadomości wymaga API Discord z tokenem bota, co nie jest obsługiwane w tej wersji.');
+				statusDiv.textContent = 'Funkcja ładowania wiadomości nie jest obsługiwana w tej wersji.';
+				setTimeout(() => { if (statusDiv.textContent === 'Funkcja ładowania wiadomości nie jest obsługiwana w tej wersji.') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+			});
+
+			// --- Podgląd JSON na żywo ---
+			function updatePayloadPreview() {
+				try {
+					const payload = generatePayload(currentIndex + 1);
+					payloadPreview.textContent = JSON.stringify(payload, null, 2);
+				} catch (e) {
+					payloadPreview.textContent = 'Błąd w generowaniu payload: ' + e.message;
+					log('❌ Błąd w generowaniu payload: ' + e.message);
+					statusDiv.textContent = 'Błąd w generowaniu payload: ' + e.message;
+					setTimeout(() => { if (statusDiv.textContent.includes('Błąd w generowaniu payload')) statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+				}
+			}
+
+			[messageInput, usernameInput, avatarInput, ttsCheckbox, fileInput, embedTitle, embedDescription, embedColor, embedFooter, embedThumbnail, embedImage, embedAuthorName, embedAuthorUrl, countInput, delayInput, retryCountInput, maxMessageLengthInput, threadIdInput, mentionRoleInput, mentionUserInput, mentionChannelInput, emojiInput, messageLinkInput, allowedMentions, suppressEmbeds, addButton, buttonUrl, pollQuestion, pollOptions].forEach(el => {
+				el.addEventListener('input', updatePayloadPreview);
+			});
+
+			embedFieldsContainer.addEventListener('input', updatePayloadPreview);
+
+			updatePayloadPreview();
+
+			// --- Wysyłanie pliku ---
+			async function sendFile(webhookUrl, files, payload) {
+				const formData = new FormData();
+				Array.from(files).forEach((file, index) => {
+					if (file.size > 25 * 1024 * 1024) {
+						log(`❌ Plik ${file.name} przekracza limit 25 MB.`);
+						return false;
+					}
+					formData.append(`files[${index}]`, file);
+				});
+				formData.append('payload_json', JSON.stringify(payload));
+
+				try {
+					const res = await fetch(webhookUrl, {
+						method: 'POST',
+						body: formData,
+					});
+					if (!res.ok) {
+						const errorData = await res.json().catch(() => ({}));
+						log(`❌ Błąd wysyłania pliku: ${res.status} ${res.statusText} - ${errorData.message || 'Nieznany błąd'}`);
+						return false;
+					}
+					return true;
+				} catch (e) {
+					log(`❌ Błąd podczas wysyłania pliku: ${e.message}`);
+					return false;
+				}
+			}
+
+			// --- Edycja wiadomości ---
+			async function editMessage(webhookUrl, messageId, payload, files) {
+				const formData = new FormData();
+				if (files && files.length > 0) {
+					Array.from(files).forEach((file, index) => {
+						if (file.size > 25 * 1024 * 1024) {
+							log(`❌ Plik ${file.name} przekracza limit 25 MB.`);
+							return false;
+						}
+						formData.append(`files[${index}]`, file);
+					});
+				}
+				formData.append('payload_json', JSON.stringify(payload));
+
+				try {
+					const res = await fetch(`${webhookUrl}/messages/${messageId}`, {
+						method: 'PATCH',
+						body: files && files.length > 0 ? formData : JSON.stringify(payload),
+						headers: files && files.length > 0 ? {} : { 'Content-Type': 'application/json' },
+					});
+					if (!res.ok) {
+						const errorData = await res.json().catch(() => ({}));
+						log(`❌ Błąd edycji wiadomości: ${res.status} ${res.statusText} - ${errorData.message || 'Nieznany błąd'}`);
+						return false;
+					}
+					return true;
+				} catch (e) {
+					log(`❌ Wyjątek podczas edycji wiadomości: ${e.message}`);
+					return false;
+				}
+			}
+
+			// --- Funkcja wysyłania pojedynczej wiadomości ---
+			async function sendOnce() {
+				const webhookUrl = webhookInput.value.trim();
+				if (!webhookUrl) {
+					log('❌ Brak URL webhooka.');
+					statusDiv.textContent = 'Brak URL webhooka!';
+					setTimeout(() => { if (statusDiv.textContent === 'Brak URL webhooka!') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					return;
+				}
+
+				const valid = await validateWebhook(webhookUrl);
+				if (!valid) {
+					log('❌ Nieprawidłowy URL webhooka.');
+					statusDiv.textContent = 'Nieprawidłowy URL webhooka!';
+					setTimeout(() => { if (statusDiv.textContent === 'Nieprawidłowy URL webhooka!') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					return;
+				}
+
+				const messageLink = messageLinkInput.value.trim();
+				const payload = generatePayload(1);
+				const files = fileInput.files;
+
+				try {
+					let success;
+					if (messageLink) {
+						const match = messageLink.match(/https:\/\/discord\.com\/channels\/(\d+)\/(\d+)\/(\d+)/);
+						if (match) {
+							const messageId = match[3];
+							success = await editMessage(webhookUrl, messageId, payload, files);
+							if (success) {
+								log(`✅ Edytowano wiadomość${files.length > 0 ? ` z plikami` : ''}`);
+								statusDiv.textContent = `Edytowano wiadomość${files.length > 0 ? ` z plikami` : ''}`;
+							}
+						} else {
+							log('❌ Nieprawidłowy format linku do wiadomości.');
+							statusDiv.textContent = 'Nieprawidłowy format linku do wiadomości!';
+							success = false;
+						}
+					} else {
+						if (files.length > 0) {
+							success = await sendFile(webhookUrl, files, payload);
+						} else {
+							const res = await fetch(webhookUrl, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify(payload),
+							});
+							if (!res.ok) {
+								const errorData = await res.json().catch(() => ({}));
+								log(`❌ Błąd wysyłania wiadomości: ${res.status} ${res.statusText} - ${errorData.message || 'Nieznany błąd'}`);
+								statusDiv.textContent = `Błąd wysyłania wiadomości: ${res.status} ${res.statusText}`;
+								setTimeout(() => { if (statusDiv.textContent.includes('Błąd wysyłania wiadomości')) statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+								return;
+							}
+							success = true;
+						}
+						if (success) {
+							log(`✅ Wysłano pojedynczą wiadomość${files.length > 0 ? ` z plikami` : ''}`);
+							statusDiv.textContent = `Wysłano pojedynczą wiadomość${files.length > 0 ? ` z plikami` : ''}`;
+						}
+					}
+
+					if (success) {
+						setTimeout(() => { if (statusDiv.textContent.includes('Wysłano pojedynczą wiadomość') || statusDiv.textContent.includes('Edytowano wiadomość')) statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+					}
+				} catch (e) {
+					log(`❌ Wyjątek podczas wysyłania wiadomości: ${e.message}`);
+					statusDiv.textContent = `Błąd wysyłania wiadomości: ${e.message}`;
+					setTimeout(() => { if (statusDiv.textContent.includes('Błąd wysyłania wiadomości')) statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+				}
+			}
+
+			// --- Pauza i Stop ---
+			pauseBtn.addEventListener('click', () => {
+				paused = !paused;
+				pauseBtn.textContent = paused ? 'WZNÓW' : 'PAUZA';
+				if (!paused) sendLoop();
+				log(paused ? '⏸️ Wysłanie zapauzowane.' : '▶️ Wznowiono wysyłanie.');
+				statusDiv.textContent = paused ? 'Wysłanie zapauzowane.' : 'Wznowiono wysyłanie.';
+				setTimeout(() => { if (statusDiv.textContent.includes('Wysłanie zapauzowane') || statusDiv.textContent.includes('Wznowiono wysyłanie')) statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+			});
+
+			stopBtn.addEventListener('click', () => {
+				stopped = true;
+				sending = false;
+				startBtn.disabled = false;
+				pauseBtn.disabled = true;
+				stopBtn.disabled = true;
+				log('🛑 Wysyłanie zatrzymane przez użytkownika.');
+				statusDiv.textContent = 'Wysyłanie zatrzymane.';
+				setTimeout(() => { if (statusDiv.textContent === 'Wysyłanie zatrzymane.') statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+			});
+
+			// --- Główna pętla wysyłania ---
+			async function sendLoop() {
+				if (!sending) return;
+				if (paused) return;
+				if (stopped) return;
+
+				const webhookUrl = webhookInput.value.trim();
+				if (!webhookUrl) {
+					log('❌ Brak URL webhooka.');
+					statusDiv.textContent = 'Brak URL webhooka.';
+					sending = false;
+					startBtn.disabled = false;
+					pauseBtn.disabled = true;
+					stopBtn.disabled = true;
+					setTimeout(() => { if (statusDiv.textContent === 'Brak URL webhooka.') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					return;
+				}
+
+				if (currentIndex >= parseInt(countInput.value)) {
+					log('✅ Wysłano wszystkie wiadomości.');
+					statusDiv.textContent = 'Wysłano wszystkie wiadomości.';
+					sending = false;
+					startBtn.disabled = false;
+					pauseBtn.disabled = true;
+					stopBtn.disabled = true;
+					setTimeout(() => { if (statusDiv.textContent === 'Wysłano wszystkie wiadomości.') statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+					return;
+				}
+
+				if (autoClearLogs.checked && currentIndex === 0) {
+					logs = [];
+					logBox.textContent = '';
+					log('✅ Logi wyczyszczone przed rozpoczęciem wysyłania.');
+				}
+
+				const payload = generatePayload(currentIndex + 1);
+				const files = fileInput.files;
+
+				try {
+					let success;
+					const messageLink = messageLinkInput.value.trim();
+					if (messageLink) {
+						const match = messageLink.match(/https:\/\/discord\.com\/channels\/(\d+)\/(\d+)\/(\d+)/);
+						if (match) {
+							const messageId = match[3];
+							success = await editMessage(webhookUrl, messageId, payload, files);
+							if (success) {
+								log(`✅ Edytowano wiadomość nr ${currentIndex + 1}${files.length > 0 ? ` z plikami` : ''}`);
+								statusDiv.textContent = `Edytowano wiadomość nr ${currentIndex + 1}${files.length > 0 ? ` z plikami` : ''}`;
+							}
+						} else {
+							log('❌ Nieprawidłowy format linku do wiadomości.');
+							statusDiv.textContent = 'Nieprawidłowy format linku do wiadomości!';
+							success = false;
+						}
+					} else {
+						if (files.length > 0) {
+							success = await sendFile(webhookUrl, files, payload);
+						} else {
+							const res = await fetch(webhookUrl, {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify(payload),
+							});
+							if (!res.ok) {
+								const errorData = await res.json().catch(() => ({}));
+								log(`❌ Błąd wysyłania wiadomości nr ${currentIndex + 1}: ${res.status} ${res.statusText} - ${errorData.message || 'Nieznany błąd'}`);
+								throw new Error(`${res.status} ${res.statusText}`);
+							}
+							success = true;
+						}
+						if (success) {
+							log(`✅ Wysłano wiadomość nr ${currentIndex + 1}${files.length > 0 ? ` z plikami` : ''}`);
+							statusDiv.textContent = `Wysłano wiadomość nr ${currentIndex + 1}${files.length > 0 ? ` z plikami` : ''}`;
+						}
+					}
+
+					if (success) {
+						setTimeout(() => { if (statusDiv.textContent.includes('Wysłano wiadomość nr') || statusDiv.textContent.includes('Edytowano wiadomość nr')) statusDiv.textContent = ''; }, parseInt(statusTimeoutSuccess.value));
+						currentIndex++;
+					}
+				} catch (e) {
+					log(`❌ Wyjątek podczas wysyłania wiadomości nr ${currentIndex + 1}: ${e.message}`);
+					if (maxRetry > 0) {
+						maxRetry--;
+						log(`🔄 Próba ponownego wysyłania (${maxRetry} prób pozostało)`);
+						setTimeout(sendLoop, retryDelayBase);
+						return;
+					} else {
+						log(`❌ Maksymalna liczba prób wysyłania przekroczona.`);
+						statusDiv.textContent = 'Maksymalna liczba prób wysyłania przekroczona.';
+						sending = false;
+						startBtn.disabled = false;
+						pauseBtn.disabled = true;
+						stopBtn.disabled = true;
+						setTimeout(() => { if (statusDiv.textContent === 'Maksymalna liczba prób wysyłania przekroczona.') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+						return;
+					}
+				}
+
+				let delayMs = parseInt(delayInput.value);
+				if (randomDelayCheckbox.checked) {
+					delayMs = Math.floor(Math.random() * delayMs);
+				}
+
+				setTimeout(sendLoop, delayMs);
+			}
+
+			// --- Start wysyłania ---
+			startBtn.addEventListener('click', async () => {
+				const valid = await validateWebhook(webhookInput.value.trim());
+				if (!valid) {
+					log('❌ Nieprawidłowy URL webhooka.');
+					statusDiv.textContent = 'Nieprawidłowy URL webhooka!';
+					setTimeout(() => { if (statusDiv.textContent === 'Nieprawidłowy URL webhooka!') statusDiv.textContent = ''; }, parseInt(statusTimeoutError.value));
+					return;
+				}
+				sending = true;
+				paused = false;
+				stopped = false;
+				currentIndex = 0;
+				maxRetry = parseInt(retryCountInput.value);
+				startBtn.disabled = true;
+				pauseBtn.disabled = false;
+				stopBtn.disabled = false;
+				log('▶️ Rozpoczęto wysyłanie wiadomości.');
+				statusDiv.textContent = 'Rozpoczęto wysyłanie wiadomości...';
+				sendLoop();
+			});
+
+			// --- Wysłanie pojedynczej wiadomości ---
+			sendOnceBtn.addEventListener('click', sendOnce);
+		})();
+	</script>
+</body>
+</html>

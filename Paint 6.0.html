@@ -1,0 +1,1194 @@
+<!doctype html><html><head><style type="text/css">* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+    overflow: hidden;
+}
+
+body.dark { background-color: #1e1e1e; color: #ddd; }
+body.elegant { background-color: #1a1c22; color: #e0e0e0; }
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+#topbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    z-index: 10;
+}
+
+body.dark #topbar { background: rgba(40, 40, 40, 0.9); }
+body.elegant #topbar { background: rgba(30, 34, 40, 0.9); }
+
+.action-group, .pro-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background-color: #ffffff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+body.dark button { background-color: #333; color: #fff; }
+body.elegant button { background-color: #2a2f3b; color: #e0e0e0; }
+
+.tool.active {
+    background-color: #5c7cfa;
+    color: white;
+    box-shadow: 0 0 10px rgba(92, 124, 250, 0.5);
+}
+
+#toolbox {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50px;
+    padding: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 20;
+    cursor: move;
+}
+
+body.dark #toolbox { background: rgba(40, 40, 40, 0.95); }
+body.elegant #toolbox { background: rgba(30, 34, 40, 0.95); }
+
+#toolbox:hover {
+    border-radius: 20px;
+    transform: scale(1.05);
+}
+
+#toolbox .tool-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#toolbox .tool, #toolbox input, #toolbox select {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+#toolbox:hover .tool, #toolbox:hover input, #toolbox:hover select {
+    opacity: 1;
+}
+
+#colorPanel {
+    position: absolute;
+    top: 60px;
+    left: 150px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    cursor: move;
+    z-index: 30;
+}
+
+body.dark #colorPanel { background: rgba(40, 40, 40, 0.95); }
+body.elegant #colorPanel { background: rgba(30, 34, 40, 0.95); }
+
+.color-group {
+    display: flex;
+    gap: 10px;
+}
+
+input[type="color"] {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+}
+
+input[type="range"] {
+    width: 80px;
+    accent-color: #5c7cfa;
+    cursor: pointer;
+}
+
+input[type="text"], input[type="number"], select {
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    transition: all 0.3s;
+}
+
+body.dark input[type="text"], body.dark input[type="number"], body.dark select {
+    background-color: #333;
+    border-color: #555;
+    color: #fff;
+}
+
+body.elegant input[type="text"], body.elegant input[type="number"], body.elegant select {
+    background-color: #2a2f3b;
+    border-color: #444;
+    color: #e0e0e0;
+}
+
+.hidden { display: none !important; }
+
+#canvas {
+    flex: 1;
+    margin: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+body.dark #canvas { background-color: #2a2a2a; }
+body.elegant #canvas { background-color: #22252b; }
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    transform: translateY(-20px);
+    animation: slideIn 0.3s ease forwards;
+}
+
+body.dark .modal-content { background: #2a2a2a; }
+body.elegant .modal-content { background: #1e2229; }
+
+@keyframes slideIn {
+    to { transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 { font-size: 24px; font-weight: 600; }
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+}
+
+body.dark .close-btn { color: #bbb; }
+body.elegant .close-btn { color: #e0e0e0; }
+
+.settings-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.setting label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+body.dark .setting label { color: #ccc; }
+body.elegant .setting label { color: #e0e0e0; }
+
+.text-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.text-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.text-btn:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+body.dark .text-btn { background-color: #3a3a3a; border-color: #555; }
+body.elegant .text-btn { background-color: #2a2f3b; border-color: #444; }
+
+.modal-footer {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.modal-footer button, .modal-footer input[type="file"] { margin-left: 10px; }</style></head><body><!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Paint Pro Ultra - Elegance</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+	<div id="app">
+		<header id="topbar">
+			<div class="action-group">
+				<button id="clearBtn" title="Wyczy[ (Ctrl+N)">Wyczy[</button>
+				<button id="saveBtn" title="Zapisz (Ctrl+S)">Zapisz</button>
+				<button id="settingsBtn" title="Ustawienia (Ctrl+,)">Ustawienia</button>
+				<button id="resetCanvasBtn" title="Resetuj pBótno (Ctrl+R)">Resetuj</button>
+			</div>
+			<div class="pro-group">
+				<input type="text" id="proCode" placeholder="Kod Pro">
+				<button id="activatePro">Pro</button>
+			</div>
+		</header>
+		<div id="toolbox" class="draggable">
+			<div class="tool-group">
+				<button id="brushBtn" class="tool active" title="Pdzel (B)">Pdzel</button>
+				<button id="eraserBtn" class="tool" title="Gumka (E)">Gumka</button>
+				<button id="lineBtn" class="tool" title="Linia (L)">Linia</button>
+				<button id="rectBtn" class="tool" title="Prostokt (R)">Prostokt</button>
+				<button id="circleBtn" class="tool" title="KoBo (C)">KoBo</button>
+				<button id="textBtn" class="tool hidden" title="Tekst (T)">Tekst</button>
+				<button id="fillBtn" class="tool hidden" title="WypeBnij (F)">WypeBnij</button>
+				<button id="undoBtn" class="tool hidden" title="Cofnij (Ctrl+Z)">Cofnij</button>
+				<button id="redoBtn" class="tool hidden" title="Ponów (Ctrl+Y)">Ponów</button>
+				<input type="range" id="lineWidth" min="1" max="100" value="5" title="Grubo[ linii">
+				<input type="file" id="importImage" accept="image/*" class="hidden" title="Importuj obraz">
+				<select id="fontSize" class="hidden" title="Rozmiar czcionki">
+                    <option value="16">16px</option>
+                    <option value="24">24px</option>
+                    <option value="32" selected>32px</option>
+                    <option value="48">48px</option>
+                    <option value="64">64px</option>
+                </select>
+				<button id="zoomIn" class="tool hidden" title="Powiksz (+)">Powiksz</button>
+				<button id="zoomOut" class="tool hidden" title="Pomniejsz (-)">Pomniejsz</button>
+			</div>
+		</div>
+		<div id="colorPanel" class="draggable">
+			<div class="color-group">
+				<input type="color" id="colorPicker" value="#000000" title="Kolor obramowania">
+				<input type="color" id="fillColorPicker" value="#ffffff" disabled title="Kolor wypeBnienia">
+            </div>
+			</div>
+			<main>
+				<canvas id="canvas" width="1200" height="800"></canvas>
+			</main>
+			<div id="settingsPanel" class="modal hidden">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h2>Ustawienia</h2>
+						<button id="closeSettings" class="close-btn">X</button>
+					</div>
+					<div class="settings-sections">
+						<div class="setting">
+							<label>Rozmiar pBótna</label>
+							<input type="number" id="canvasWidth" value="1200" min="100" max="3840">
+							<input type="number" id="canvasHeight" value="800" min="100" max="2160">
+                    </div>
+							<div class="setting">
+								<label>Kolor tBa</label>
+								<input type="color" id="bgColor" value="#ffffff">
+                    </div>
+								<div class="setting">
+									<label>Styl pdzla</label>
+									<select id="brushStyle">
+                            <!-- Opcje bd dynamicznie aktualizowane w JS -->
+                        </select>
+								</div>
+								<div class="setting">
+									<label>Jzyk</label>
+									<select id="language">
+                            <option value="pl" selected>Polski</option>
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+								</div>
+								<div class="setting">
+									<label>Motyw</label>
+									<select id="theme">
+                            <!-- Opcje bd dynamicznie aktualizowane w JS -->
+                        </select>
+								</div>
+								<div class="setting">
+									<label>CzuBo[ myszy</label>
+									<input type="range" id="mouseSensitivity" min="1" max="20" value="5">
+                    </div>
+									<div class="setting">
+										<label>Siatka</label>
+										<input type="checkbox" id="gridToggle">
+										<input type="number" id="gridSize" value="20" min="5" max="200" disabled>
+                    </div>
+										<div class="setting">
+											<label>Zoom domy[lny</label>
+											<input type="range" id="defaultZoom" min="50" max="200" value="100" step="10">
+                    </div>
+											<div class="setting">
+												<label>Automatyczne zapisywanie</label>
+												<input type="checkbox" id="autoSave">
+                    </div>
+												<div class="setting">
+													<label>Domy[lny tekst</label>
+													<input type="text" id="defaultText" value="Witaj" placeholder="Wpisz tekst">
+													<div class="text-buttons">
+														<button class="text-btn" data-text="Witaj">Witaj</button>
+														<button class="text-btn" data-text="Hello">Hello</button>
+														<button class="text-btn" data-text="Test">Test</button>
+													</div>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button id="exportSettings">Eksportuj</button>
+												<input type="file" id="importSettings" accept=".json" style="display: inline-block;">
+												<button id="resetSettings">Resetuj</button>
+												<button id="saveSettings">Zapisz</button>
+												<button id="applySettings">Zastosuj</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<script src="script.js"></script>
+</body>
+
+</html><script type="text/javascript">const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const elements = {
+  colorPicker: document.getElementById('colorPicker'),
+  fillColorPicker: document.getElementById('fillColorPicker'),
+  lineWidth: document.getElementById('lineWidth'),
+  clearBtn: document.getElementById('clearBtn'),
+  saveBtn: document.getElementById('saveBtn'),
+  proCode: document.getElementById('proCode'),
+  activatePro: document.getElementById('activatePro'),
+  settingsBtn: document.getElementById('settingsBtn'),
+  settingsPanel: document.getElementById('settingsPanel'),
+  canvasWidth: document.getElementById('canvasWidth'),
+  canvasHeight: document.getElementById('canvasHeight'),
+  bgColor: document.getElementById('bgColor'),
+  brushStyle: document.getElementById('brushStyle'),
+  language: document.getElementById('language'),
+  theme: document.getElementById('theme'),
+  mouseSensitivity: document.getElementById('mouseSensitivity'),
+  gridToggle: document.getElementById('gridToggle'),
+  gridSize: document.getElementById('gridSize'),
+  defaultZoom: document.getElementById('defaultZoom'),
+  autoSave: document.getElementById('autoSave'),
+  defaultText: document.getElementById('defaultText'),
+  applySettings: document.getElementById('applySettings'),
+  saveSettings: document.getElementById('saveSettings'),
+  resetSettings: document.getElementById('resetSettings'),
+  closeSettings: document.getElementById('closeSettings'),
+  exportSettings: document.getElementById('exportSettings'),
+  importSettings: document.getElementById('importSettings'),
+  resetCanvasBtn: document.getElementById('resetCanvasBtn'),
+  tools: {
+    brush: document.getElementById('brushBtn'),
+    eraser: document.getElementById('eraserBtn'),
+    line: document.getElementById('lineBtn'),
+    rect: document.getElementById('rectBtn'),
+    circle: document.getElementById('circleBtn'),
+    text: document.getElementById('textBtn'),
+    fill: document.getElementById('fillBtn')
+  },
+  undoBtn: document.getElementById('undoBtn'),
+  redoBtn: document.getElementById('redoBtn'),
+  importImage: document.getElementById('importImage'),
+  fontSize: document.getElementById('fontSize'),
+  zoomIn: document.getElementById('zoomIn'),
+  zoomOut: document.getElementById('zoomOut'),
+  colorPanel: document.getElementById('colorPanel'),
+  toolbox: document.getElementById('toolbox')
+};
+
+let state = {
+  painting: false,
+  tool: 'brush',
+  startX: 0,
+  startY: 0,
+  history: [],
+  redoStack: [],
+  isPro: false,
+  lang: 'pl',
+  zoom: 1,
+  sensitivity: 5,
+  showGrid: false,
+  gridSpacing: 20,
+  autoSaveInterval: null,
+  settingsOpen: false,
+  lastKeyTime: 0,
+  defaultText: 'Witaj',
+  dragging: null,
+  dragOffsetX: 0,
+  dragOffsetY: 0
+};
+
+const translations = {
+  pl: {
+    brush: 'Pdzel', eraser: 'Gumka', line: 'Linia', rect: 'Prostokt', circle: 'KoBo',
+    text: 'Tekst', fill: 'WypeBnij', clear: 'Wyczy[', save: 'Zapisz', settings: 'Ustawienia',
+    undo: 'Cofnij', redo: 'Ponów', proCode: 'Kod Pro', activatePro: 'Pro', settingsTitle: 'Ustawienia',
+    canvasSize: 'Rozmiar pBótna', bgColor: 'Kolor tBa', brushStyle: 'Styl pdzla', language: 'Jzyk',
+    theme: 'Motyw', mouseSensitivity: 'CzuBo[ myszy', grid: 'Siatka', defaultZoom: 'Zoom domy[lny',
+    autoSave: 'Automatyczne zapisywanie', defaultText: 'Domy[lny tekst', apply: 'Zastosuj',
+    close: 'Zamknij', saveSettings: 'Zapisz', resetSettings: 'Resetuj', proActivated: 'Pro aktywowane!',
+    wrongCode: 'BBdny kod.', proOnly: 'Tylko Pro.', textPrompt: 'Wpisz tekst (lub zostaw puste dla domy[lnego):',
+    exportSettings: 'Eksportuj', importSettings: 'Importuj', resetCanvas: 'Resetuj pBótno',
+    zoomIn: 'Powiksz', zoomOut: 'Pomniejsz',
+    brushStyles: { round: 'OkrgBy', square: 'Kwadratowy', butt: 'PBaski' },
+    themes: { light: 'Jasny', dark: 'Ciemny', elegant: 'Elegancki' }
+  },
+  en: {
+    brush: 'Brush', eraser: 'Eraser', line: 'Line', rect: 'Rectangle', circle: 'Circle',
+    text: 'Text', fill: 'Fill', clear: 'Clear', save: 'Save', settings: 'Settings',
+    undo: 'Undo', redo: 'Redo', proCode: 'Pro Code', activatePro: 'Pro', settingsTitle: 'Settings',
+    canvasSize: 'Canvas size', bgColor: 'Background color', brushStyle: 'Brush style', language: 'Language',
+    theme: 'Theme', mouseSensitivity: 'Mouse sensitivity', grid: 'Grid', defaultZoom: 'Default zoom',
+    autoSave: 'Auto-save', defaultText: 'Default text', apply: 'Apply', close: 'Close',
+    saveSettings: 'Save', resetSettings: 'Reset', proActivated: 'Pro activated!', wrongCode: 'Invalid code.',
+    proOnly: 'Pro only.', textPrompt: 'Enter text (or leave blank for default):', exportSettings: 'Export',
+    importSettings: 'Import', resetCanvas: 'Reset Canvas',
+    zoomIn: 'Zoom In', zoomOut: 'Zoom Out',
+    brushStyles: { round: 'Round', square: 'Square', butt: 'Flat' },
+    themes: { light: 'Light', dark: 'Dark', elegant: 'Elegant' }
+  },
+  de: {
+    brush: 'Pinsel', eraser: 'Radierer', line: 'Linie', rect: 'Rechteck', circle: 'Kreis',
+    text: 'Text', fill: 'Füllen', clear: 'Löschen', save: 'Speichern', settings: 'Einstellungen',
+    undo: 'Rückgängig', redo: 'Wiederholen', proCode: 'Pro-Code', activatePro: 'Pro', settingsTitle: 'Einstellungen',
+    canvasSize: 'Leinwandgröße', bgColor: 'Hintergrundfarbe', brushStyle: 'Pinselstil', language: 'Sprache',
+    theme: 'Thema', mouseSensitivity: 'Mausempfindlichkeit', grid: 'Raster', defaultZoom: 'Standardzoom',
+    autoSave: 'Automatisches Speichern', defaultText: 'Standardtext', apply: 'Anwenden', close: 'Schließen',
+    saveSettings: 'Speichern', resetSettings: 'Zurücksetzen', proActivated: 'Pro aktiviert!', wrongCode: 'Falscher Code.',
+    proOnly: 'Nur Pro.', textPrompt: 'Text eingeben (oder leer lassen für Standard):', exportSettings: 'Exportieren',
+    importSettings: 'Importieren', resetCanvas: 'Leinwand zurücksetzen',
+    zoomIn: 'Vergrößern', zoomOut: 'Verkleinern',
+    brushStyles: { round: 'Rund', square: 'Quadratisch', butt: 'Flach' },
+    themes: { light: 'Hell', dark: 'Dunkel', elegant: 'Elegant' }
+  }
+};
+
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+
+// Funkcja aktualizacji jzyka
+function updateLanguage() {
+  const t = translations[state.lang];
+
+  // Aktualizacja tekstu i tytuBów w narzdziach
+  Object.keys(elements.tools).forEach(k => {
+    elements.tools[k].textContent = t[k];
+    elements.tools[k].title = `${t[k]} (${k[0].toUpperCase()})`;
+  });
+
+  // Topbar
+  elements.clearBtn.textContent = t.clear;
+  elements.clearBtn.title = `${t.clear} (Ctrl+N)`;
+  elements.saveBtn.textContent = t.save;
+  elements.saveBtn.title = `${t.save} (Ctrl+S)`;
+  elements.settingsBtn.textContent = t.settings;
+  elements.settingsBtn.title = `${t.settings} (Ctrl+,)`;
+  elements.resetCanvasBtn.textContent = t.resetCanvas;
+  elements.resetCanvasBtn.title = `${t.resetCanvas} (Ctrl+R)`;
+
+  // Pro
+  elements.proCode.placeholder = t.proCode;
+  elements.activatePro.textContent = t.activatePro;
+
+  // Dodatkowe narzdzia
+  elements.undoBtn.textContent = t.undo;
+  elements.undoBtn.title = `${t.undo} (Ctrl+Z)`;
+  elements.redoBtn.textContent = t.redo;
+  elements.redoBtn.title = `${t.redo} (Ctrl+Y)`;
+  elements.zoomIn.textContent = t.zoomIn;
+  elements.zoomIn.title = `${t.zoomIn} (+)`;
+  elements.zoomOut.textContent = t.zoomOut;
+  elements.zoomOut.title = `${t.zoomOut} (-)`;
+
+  // Ustawienia - etykiety
+  elements.settingsPanel.querySelector('h2').textContent = t.settingsTitle;
+  const labels = elements.settingsPanel.querySelectorAll('.setting label');
+  labels[0].textContent = t.canvasSize;
+  labels[1].textContent = t.bgColor;
+  labels[2].textContent = t.brushStyle;
+  labels[3].textContent = t.language;
+  labels[4].textContent = t.theme;
+  labels[5].textContent = t.mouseSensitivity;
+  labels[6].textContent = t.grid;
+  labels[7].textContent = t.defaultZoom;
+  labels[8].textContent = t.autoSave;
+  labels[9].textContent = t.defaultText;
+
+  // Przyciski w ustawieniach
+  elements.applySettings.textContent = t.apply;
+  elements.saveSettings.textContent = t.saveSettings;
+  elements.resetSettings.textContent = t.resetSettings;
+  elements.exportSettings.textContent = t.exportSettings;
+
+  // Aktualizacja opcji Brush Style
+  const brushStyles = ['round', 'square', 'butt'];
+  elements.brushStyle.innerHTML = ''; // Czy[cimy istniejce opcje
+  brushStyles.forEach(style => {
+    const option = document.createElement('option');
+    option.value = style;
+    option.textContent = t.brushStyles[style];
+    if (style === elements.brushStyle.value) option.selected = true;
+    elements.brushStyle.appendChild(option);
+  });
+
+  // Aktualizacja opcji Theme
+  const themes = ['light', 'dark', 'elegant'];
+  elements.theme.innerHTML = ''; // Czy[cimy istniejce opcje
+  themes.forEach(theme => {
+    const option = document.createElement('option');
+    option.value = theme;
+    option.textContent = t.themes[theme];
+    if (theme === elements.theme.value) option.selected = true;
+    elements.theme.appendChild(option);
+  });
+
+  // Przyciski tekstowe w ustawieniach
+  const textButtons = document.querySelectorAll('.text-btn');
+  textButtons[0].textContent = t.defaultText === 'Witaj' ? 'Witaj' : 'Default 1';
+  textButtons[1].textContent = t.defaultText === 'Hello' ? 'Hello' : 'Default 2';
+  textButtons[2].textContent = t.defaultText === 'Test' ? 'Test' : 'Default 3';
+
+  // Aktualizacja placeholderów i tytuBów
+  elements.lineWidth.title = t.lineWidth || 'Grubo[ linii';
+  elements.importImage.title = t.importImage || 'Importuj obraz';
+  elements.fontSize.title = t.fontSize || 'Rozmiar czcionki';
+  elements.defaultText.placeholder = t.textPrompt.split('(')[0].trim();
+}
+
+function saveState() {
+  state.history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+  state.redoStack = [];
+  if (state.history.length > 100) state.history.shift();
+  if (state.autoSaveInterval) autoSave();
+}
+
+function drawGrid() {
+  if (!state.showGrid) return;
+  ctx.save();
+  ctx.strokeStyle = document.body.className === 'elegant' ? '#e0e0e050' : '#ccc';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x <= canvas.width; x += state.gridSpacing * state.zoom) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, canvas.height);
+    ctx.stroke();
+  }
+  for (let y = 0; y <= canvas.height; y += state.gridSpacing * state.zoom) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function autoSave() {
+  const data = canvas.toDataURL('image/png');
+  localStorage.setItem('paintProAutoSave', data);
+}
+
+function toggleSettings() {
+  state.settingsOpen = !state.settingsOpen;
+  elements.settingsPanel.classList.toggle('hidden');
+}
+
+function startPainting(e) {
+  state.painting = true;
+  state.startX = (e.clientX - canvas.offsetLeft) / state.zoom;
+  state.startY = (e.clientY - canvas.offsetTop) / state.zoom;
+  saveState();
+  ctx.beginPath();
+  ctx.moveTo(state.startX, state.startY);
+  if (state.tool === 'brush' || state.tool === 'eraser') draw(e);
+  if (state.tool === 'text' && state.isPro) promptText(e);
+}
+
+function stopPainting(e) {
+  if (!state.painting) return;
+  state.painting = false;
+  const endX = (e.clientX - canvas.offsetLeft) / state.zoom;
+  const endY = (e.clientY - canvas.offsetTop) / state.zoom;
+
+  ctx.strokeStyle = state.tool === 'eraser' ? '#fff' : elements.colorPicker.value;
+  ctx.lineWidth = elements.lineWidth.value;
+  if (state.isPro) ctx.fillStyle = elements.fillColorPicker.value;
+
+  if (state.tool === 'line') {
+    ctx.beginPath();
+    ctx.moveTo(state.startX, state.startY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+  } else if (state.tool === 'rect') {
+    if (state.isPro && elements.tools.fill.classList.contains('active')) {
+      ctx.fillRect(state.startX, state.startY, endX - state.startX, endY - state.startY);
+    }
+    ctx.strokeRect(state.startX, state.startY, endX - state.startX, endY - state.startY);
+  } else if (state.tool === 'circle') {
+    const radius = Math.sqrt(Math.pow(endX - state.startX, 2) + Math.pow(endY - state.startY, 2));
+    ctx.beginPath();
+    ctx.arc(state.startX, state.startY, radius, 0, Math.PI * 2);
+    if (state.isPro && elements.tools.fill.classList.contains('active')) ctx.fill();
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  drawGrid();
+}
+
+function draw(e) {
+  if (!state.painting || (state.tool !== 'brush' && state.tool !== 'eraser')) return;
+
+  ctx.lineWidth = elements.lineWidth.value / state.zoom;
+  ctx.strokeStyle = state.tool === 'eraser' ? '#fff' : elements.colorPicker.value;
+
+  const x = (e.clientX - canvas.offsetLeft) / state.zoom;
+  const y = (e.clientY - canvas.offsetTop) / state.zoom;
+  const dx = (x - state.startX) / state.sensitivity;
+  const dy = (y - state.startY) / state.sensitivity;
+
+  ctx.lineTo(state.startX + dx, state.startY + dy);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(state.startX + dx, state.startY + dy);
+  state.startX += dx;
+  state.startY += dy;
+}
+
+function previewShape(e) {
+  if (!state.painting || (state.tool !== 'line' && state.tool !== 'rect' && state.tool !== 'circle')) return;
+
+  const endX = (e.clientX - canvas.offsetLeft) / state.zoom;
+  const endY = (e.clientY - canvas.offsetTop) / state.zoom;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.putImageData(state.history[state.history.length - 1], 0, 0);
+
+  ctx.strokeStyle = elements.colorPicker.value;
+  ctx.lineWidth = elements.lineWidth.value / state.zoom;
+  if (state.isPro) ctx.fillStyle = elements.fillColorPicker.value;
+
+  if (state.tool === 'line') {
+    ctx.beginPath();
+    ctx.moveTo(state.startX, state.startY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+  } else if (state.tool === 'rect') {
+    if (state.isPro && elements.tools.fill.classList.contains('active')) {
+      ctx.fillRect(state.startX, state.startY, endX - state.startX, endY - state.startY);
+    }
+    ctx.strokeRect(state.startX, state.startY, endX - state.startX, endY - state.startY);
+  } else if (state.tool === 'circle') {
+    const radius = Math.sqrt(Math.pow(endX - state.startX, 2) + Math.pow(endY - state.startY, 2));
+    ctx.beginPath();
+    ctx.arc(state.startX, state.startY, radius, 0, Math.PI * 2);
+    if (state.isPro && elements.tools.fill.classList.contains('active')) ctx.fill();
+    ctx.stroke();
+  }
+  drawGrid();
+}
+
+function promptText(e) {
+  const text = prompt(translations[state.lang].textPrompt, state.defaultText) || state.defaultText;
+  if (text) {
+    ctx.font = `${elements.fontSize.value}px Segoe UI`;
+    ctx.fillStyle = elements.colorPicker.value;
+    ctx.fillText(text, state.startX, state.startY);
+  }
+  state.painting = false;
+  drawGrid();
+}
+
+function floodFill(x, y, fillColor) {
+  x /= state.zoom;
+  y /= state.zoom;
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const targetColor = getPixelColor(imageData, x, y);
+  if (colorsMatch(targetColor, fillColor)) return;
+
+  const stack = [[x, y]];
+  while (stack.length) {
+    const [cx, cy] = stack.pop();
+    const currentColor = getPixelColor(imageData, cx, cy);
+
+    if (colorsMatch(currentColor, targetColor)) {
+      setPixelColor(imageData, cx, cy, fillColor);
+      stack.push([cx + 1, cy]);
+      stack.push([cx - 1, cy]);
+      stack.push([cx, cy + 1]);
+      stack.push([cx, cy - 1]);
+    }
+  }
+  ctx.putImageData(imageData, 0, 0);
+}
+
+function getPixelColor(imageData, x, y) {
+  const index = (Math.floor(y) * imageData.width + Math.floor(x)) * 4;
+  return [imageData.data[index], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3]];
+}
+
+function setPixelColor(imageData, x, y, color) {
+  const index = (Math.floor(y) * imageData.width + Math.floor(x)) * 4;
+  imageData.data[index] = color[0];
+  imageData.data[index + 1] = color[1];
+  imageData.data[index + 2] = color[2];
+  imageData.data[index + 3] = color[3];
+}
+
+function colorsMatch(c1, c2) {
+  return c1[0] === c2[0] && c1[1] === c2[1] && c1[2] === c2[2] && c1[3] === c2[3];
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return [r, g, b, 255];
+}
+
+// Event Listeners
+canvas.addEventListener('mousedown', startPainting);
+canvas.addEventListener('mouseup', stopPainting);
+canvas.addEventListener('mousemove', (e) => {
+  draw(e);
+  previewShape(e);
+});
+canvas.addEventListener('mouseout', stopPainting);
+canvas.addEventListener('click', (e) => {
+  if (state.tool === 'fill' && state.isPro) {
+    saveState();
+    floodFill(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, hexToRgb(elements.fillColorPicker.value));
+    drawGrid();
+  }
+});
+
+elements.clearBtn.addEventListener('click', () => {
+  saveState();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawGrid();
+});
+
+elements.saveBtn.addEventListener('click', () => {
+  const link = document.createElement('a');
+  link.download = `paint_pro_${Date.now()}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+});
+
+elements.activatePro.addEventListener('click', () => {
+  if (elements.proCode.value === '2137') {
+    state.isPro = true;
+    elements.tools.text.classList.remove('hidden');
+    elements.tools.fill.classList.remove('hidden');
+    elements.undoBtn.classList.remove('hidden');
+    elements.redoBtn.classList.remove('hidden');
+    elements.importImage.classList.remove('hidden');
+    elements.fontSize.classList.remove('hidden');
+    elements.zoomIn.classList.remove('hidden');
+    elements.zoomOut.classList.remove('hidden');
+    elements.fillColorPicker.disabled = false;
+    alert(translations[state.lang].proActivated);
+    updateLanguage(); // Aktualizacja jzyka po aktywacji Pro
+  } else {
+    alert(translations[state.lang].wrongCode);
+  }
+});
+
+Object.keys(elements.tools).forEach(t => {
+  elements.tools[t].addEventListener('click', () => {
+    if (t === 'text' || t === 'fill') {
+      if (!state.isPro) return alert(translations[state.lang].proOnly);
+    }
+    state.tool = t;
+    Object.values(elements.tools).forEach(btn => btn.classList.remove('active'));
+    elements.tools[t].classList.add('active');
+  });
+});
+
+elements.undoBtn.addEventListener('click', () => {
+  if (!state.isPro) return alert(translations[state.lang].proOnly);
+  if (state.history.length > 1) {
+    state.redoStack.push(state.history.pop());
+    ctx.putImageData(state.history[state.history.length - 1], 0, 0);
+    drawGrid();
+  }
+});
+
+elements.redoBtn.addEventListener('click', () => {
+  if (!state.isPro) return alert(translations[state.lang].proOnly);
+  if (state.redoStack.length) {
+    state.history.push(state.redoStack.pop());
+    ctx.putImageData(state.history[state.history.length - 1], 0, 0);
+    drawGrid();
+  }
+});
+
+elements.importImage.addEventListener('change', (e) => {
+  if (!state.isPro) return alert(translations[state.lang].proOnly);
+  const file = e.target.files[0];
+  const img = new Image();
+  img.onload = () => {
+    saveState();
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    drawGrid();
+  };
+  img.src = URL.createObjectURL(file);
+});
+
+elements.zoomIn.addEventListener('click', () => {
+  state.zoom += 0.1;
+  applyZoom();
+});
+
+elements.zoomOut.addEventListener('click', () => {
+  state.zoom = Math.max(0.1, state.zoom - 0.1);
+  applyZoom();
+});
+
+function applyZoom() {
+  canvas.style.transform = `scale(${state.zoom})`;
+  canvas.style.transformOrigin = 'top left';
+  drawGrid();
+}
+
+function startDragging(e, element) {
+  state.dragging = element;
+  state.dragOffsetX = e.clientX - element.offsetLeft;
+  state.dragOffsetY = e.clientY - element.offsetTop;
+  element.style.cursor = 'grabbing';
+}
+
+elements.toolbox.addEventListener('mousedown', (e) => {
+  if (e.target === elements.toolbox || e.target.classList.contains('tool-group')) {
+    startDragging(e, elements.toolbox);
+  }
+});
+
+elements.colorPanel.addEventListener('mousedown', (e) => {
+  if (e.target === elements.colorPanel || e.target.classList.contains('color-group')) {
+    startDragging(e, elements.colorPanel);
+  }
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (!state.dragging) return;
+  const newX = e.clientX - state.dragOffsetX;
+  const newY = e.clientY - state.dragOffsetY;
+  state.dragging.style.left = `${newX}px`;
+  state.dragging.style.top = `${newY}px`;
+});
+
+document.addEventListener('mouseup', () => {
+  if (state.dragging) {
+    state.dragging.style.cursor = 'move';
+    state.dragging = null;
+  }
+});
+
+elements.settingsBtn.addEventListener('click', () => {
+  toggleSettings();
+});
+
+elements.closeSettings.addEventListener('click', (e) => {
+  e.stopPropagation();
+  toggleSettings();
+});
+
+elements.settingsPanel.addEventListener('click', (e) => {
+  if (e.target === elements.settingsPanel) {
+    toggleSettings();
+  }
+});
+
+elements.gridToggle.addEventListener('change', () => {
+  elements.gridSize.disabled = !elements.gridToggle.checked;
+  state.showGrid = elements.gridToggle.checked;
+  drawGrid();
+});
+
+document.querySelectorAll('.text-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.getAttribute('data-text');
+    elements.defaultText.value = text;
+    state.defaultText = text;
+  });
+});
+
+elements.applySettings.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const newWidth = parseInt(elements.canvasWidth.value);
+  const newHeight = parseInt(elements.canvasHeight.value);
+  canvas.width = newWidth;
+  canvas.height = newHeight;
+  ctx.fillStyle = elements.bgColor.value;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.lineCap = elements.brushStyle.value;
+  ctx.lineJoin = elements.brushStyle.value === 'round' ? 'round' : 'miter';
+  state.lang = elements.language.value;
+  document.body.className = elements.theme.value;
+  state.sensitivity = parseInt(elements.mouseSensitivity.value);
+  state.showGrid = elements.gridToggle.checked;
+  state.gridSpacing = parseInt(elements.gridSize.value);
+  state.zoom = parseInt(elements.defaultZoom.value) / 100;
+  state.defaultText = elements.defaultText.value || 'Witaj';
+  applyZoom();
+  if (elements.autoSave.checked && !state.autoSaveInterval) {
+    state.autoSaveInterval = setInterval(autoSave, 30000);
+  } else if (!elements.autoSave.checked && state.autoSaveInterval) {
+    clearInterval(state.autoSaveInterval);
+    state.autoSaveInterval = null;
+  }
+  updateLanguage();
+  saveState();
+  drawGrid();
+  toggleSettings();
+});
+
+elements.saveSettings.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const settings = {
+    width: elements.canvasWidth.value,
+    height: elements.canvasHeight.value,
+    bgColor: elements.bgColor.value,
+    brushStyle: elements.brushStyle.value,
+    language: elements.language.value,
+    theme: elements.theme.value,
+    sensitivity: elements.mouseSensitivity.value,
+    grid: elements.gridToggle.checked,
+    gridSize: elements.gridSize.value,
+    defaultZoom: elements.defaultZoom.value,
+    autoSave: elements.autoSave.checked,
+    defaultText: elements.defaultText.value,
+    colorPanelX: elements.colorPanel.style.left || '150px',
+    colorPanelY: elements.colorPanel.style.top || '60px',
+    toolboxX: elements.toolbox.style.left || '20px',
+    toolboxY: elements.toolbox.style.top || '60px'
+  };
+  localStorage.setItem('paintProSettings', JSON.stringify(settings));
+  alert(`${translations[state.lang].saveSettings} - OK`);
+});
+
+elements.resetSettings.addEventListener('click', (e) => {
+  e.stopPropagation();
+  localStorage.removeItem('paintProSettings');
+  elements.canvasWidth.value = 1200;
+  elements.canvasHeight.value = 800;
+  elements.bgColor.value = '#ffffff';
+  elements.brushStyle.value = 'round';
+  elements.language.value = 'pl';
+  elements.theme.value = 'light';
+  elements.mouseSensitivity.value = 5;
+  elements.gridToggle.checked = false;
+  elements.gridSize.value = 20;
+  elements.gridSize.disabled = true;
+  elements.defaultZoom.value = 100;
+  elements.autoSave.checked = false;
+  elements.defaultText.value = 'Witaj';
+  elements.colorPanel.style.left = '150px';
+  elements.colorPanel.style.top = '60px';
+  elements.toolbox.style.left = '20px';
+  elements.toolbox.style.top = '60px';
+  elements.applySettings.click();
+});
+
+elements.exportSettings.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const settings = {
+    width: elements.canvasWidth.value,
+    height: elements.canvasHeight.value,
+    bgColor: elements.bgColor.value,
+    brushStyle: elements.brushStyle.value,
+    language: elements.language.value,
+    theme: elements.theme.value,
+    sensitivity: elements.mouseSensitivity.value,
+    grid: elements.gridToggle.checked,
+    gridSize: elements.gridSize.value,
+    defaultZoom: elements.defaultZoom.value,
+    autoSave: elements.autoSave.checked,
+    defaultText: elements.defaultText.value,
+    colorPanelX: elements.colorPanel.style.left || '150px',
+    colorPanelY: elements.colorPanel.style.top || '60px',
+    toolboxX: elements.toolbox.style.left || '20px',
+    toolboxY: elements.toolbox.style.top || '60px'
+  };
+  const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'paint_pro_settings.json';
+  link.click();
+});
+
+elements.importSettings.addEventListener('change', (e) => {
+  e.stopPropagation();
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const settings = JSON.parse(event.target.result);
+      elements.canvasWidth.value = settings.width;
+      elements.canvasHeight.value = settings.height;
+      elements.bgColor.value = settings.bgColor;
+      elements.brushStyle.value = settings.brushStyle;
+      elements.language.value = settings.language;
+      elements.theme.value = settings.theme;
+      elements.mouseSensitivity.value = settings.sensitivity;
+      elements.gridToggle.checked = settings.grid;
+      elements.gridSize.value = settings.gridSize;
+      elements.gridSize.disabled = !settings.grid;
+      elements.defaultZoom.value = settings.defaultZoom;
+      elements.autoSave.checked = settings.autoSave;
+      elements.defaultText.value = settings.defaultText || 'Witaj';
+      elements.colorPanel.style.left = settings.colorPanelX || '150px';
+      elements.colorPanel.style.top = settings.colorPanelY || '60px';
+      elements.toolbox.style.left = settings.toolboxX || '20px';
+      elements.toolbox.style.top = settings.toolboxY || '60px';
+      elements.applySettings.click();
+      alert('Ustawienia zaimportowane!');
+    } catch (err) {
+      alert('BBd podczas importu ustawieD: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+});
+
+elements.resetCanvasBtn.addEventListener('click', () => {
+  saveState();
+  ctx.fillStyle = elements.bgColor.value;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  state.history = [];
+  state.redoStack = [];
+  drawGrid();
+});
+
+document.addEventListener('keydown', (e) => {
+  const now = Date.now();
+  if (now - state.lastKeyTime < 200) return;
+  state.lastKeyTime = now;
+
+  if (e.ctrlKey) {
+    e.preventDefault();
+    switch (e.key) {
+      case 'z': elements.undoBtn.click(); break;
+      case 'y': elements.redoBtn.click(); break;
+      case 's': elements.saveBtn.click(); break;
+      case 'n': elements.clearBtn.click(); break;
+      case 'r': elements.resetCanvasBtn.click(); break;
+      case ',': toggleSettings(); break;
+    }
+  } else {
+    switch (e.key.toLowerCase()) {
+      case 'b': elements.tools.brush.click(); break;
+      case 'e': elements.tools.eraser.click(); break;
+      case 'l': elements.tools.line.click(); break;
+      case 'r': elements.tools.rect.click(); break;
+      case 'c': elements.tools.circle.click(); break;
+      case 't': if (state.isPro) elements.tools.text.click(); break;
+      case 'f': if (state.isPro) elements.tools.fill.click(); break;
+      case '+': if (state.isPro) elements.zoomIn.click(); break;
+      case '-': if (state.isPro) elements.zoomOut.click(); break;
+    }
+  }
+});
+
+function loadSettings() {
+  const saved = localStorage.getItem('paintProSettings');
+  if (saved) {
+    const settings = JSON.parse(saved);
+    elements.canvasWidth.value = settings.width;
+    elements.canvasHeight.value = settings.height;
+    elements.bgColor.value = settings.bgColor;
+    elements.brushStyle.value = settings.brushStyle;
+    elements.language.value = settings.language;
+    elements.theme.value = settings.theme;
+    elements.mouseSensitivity.value = settings.sensitivity;
+    elements.gridToggle.checked = settings.grid;
+    elements.gridSize.value = settings.gridSize;
+    elements.gridSize.disabled = !settings.grid;
+    elements.defaultZoom.value = settings.defaultZoom;
+    elements.autoSave.checked = settings.autoSave;
+    elements.defaultText.value = settings.defaultText || 'Witaj';
+    elements.colorPanel.style.left = settings.colorPanelX || '150px';
+    elements.colorPanel.style.top = settings.colorPanelY || '60px';
+    elements.toolbox.style.left = settings.toolboxX || '20px';
+    elements.toolbox.style.top = settings.toolboxY || '60px';
+    state.defaultText = elements.defaultText.value;
+    elements.applySettings.click();
+  } else {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Inicjalizacja domy[lnych opcji Brush Style i Theme
+    updateLanguage();
+  }
+  const autoSaveData = localStorage.getItem('paintProAutoSave');
+  if (autoSaveData) {
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      saveState();
+    };
+    img.src = autoSaveData;
+  }
+}
+
+updateLanguage();
+loadSettings();</script></body><html>

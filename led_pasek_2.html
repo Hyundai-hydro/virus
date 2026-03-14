@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>LED Controller 44-keys IR 💡🎛️</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<style>
+		:root {
+			--bg: #0f1115;
+			--panel: #1a1f29;
+			--accent: #5865f2;
+			--text: #e6e6e6;
+			--muted: #98a2b3;
+			--danger: #ff4d4f;
+			--ok: #22c55e;
+		}
+
+		* {
+			box-sizing: border-box
+		}
+
+		body {
+			margin: 0;
+			font-family: Inter, Segoe UI, Arial, sans-serif;
+			background: linear-gradient(180deg, #0b0e13 0%, #11151d 100%);
+			color: var(--text);
+		}
+
+		header {
+			padding: 24px 16px;
+			text-align: center;
+		}
+
+		header h1 {
+			margin: 0 0 8px;
+			font-size: 24px;
+		}
+
+		header p {
+			margin: 0;
+			color: var(--muted);
+			font-size: 14px;
+		}
+
+		.container {
+			display: grid;
+			grid-template-columns: 1.2fr 1fr;
+			gap: 16px;
+			padding: 16px;
+		}
+
+		@media (max-width: 960px) {
+			.container {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		/* Pasek LED */
+		.panel {
+			background: var(--panel);
+			border: 1px solid #222833;
+			border-radius: 12px;
+			padding: 16px;
+		}
+
+		.panel h2 {
+			margin: 0 0 12px;
+			font-size: 18px;
+		}
+
+		.led-strip {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			padding: 10px;
+			background: #10141c;
+			border-radius: 10px;
+			min-height: 88px;
+			justify-content: center;
+			position: relative;
+			cursor: crosshair;
+		}
+
+		.led-strip::after {
+			content: '';
+			position: absolute;
+			top: -10px;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 2px;
+			height: 100px;
+			background: rgba(255, 255, 255, 0.1);
+			pointer-events: none;
+		}
+
+		.led {
+			width: 22px;
+			height: 22px;
+			border-radius: 50%;
+			background: #2b3240;
+			box-shadow: 0 0 8px rgba(255, 255, 255, 0);
+			transition: background 80ms linear, box-shadow 80ms linear, transform 120ms ease;
+			position: relative;
+			user-select: none;
+		}
+
+		.led.on:hover {
+			transform: translateY(-2px)
+		}
+
+		.led.editable:hover {
+			cursor: pointer;
+			transform: scale(1.1);
+		}
+
+		.strip-controls {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 12px;
+			flex-wrap: wrap;
+		}
+
+		.strip-controls .group {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			flex-wrap: wrap
+		}
+
+		.select {
+			background: #121622;
+			color: var(--text);
+			border: 1px solid #2b3240;
+			border-radius: 8px;
+			padding: 8px;
+			outline: none;
+		}
+
+		/* Podgląd koloru */
+		.preview-wrap {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-top: 12px;
+		}
+
+		.preview {
+			width: 64px;
+			height: 64px;
+			border-radius: 10px;
+			border: 2px solid #222a36;
+			box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+			background: #2b3240;
+		}
+
+		.preview-info {
+			font-size: 13px;
+			color: var(--muted);
+		}
+
+		/* Pilot 44-klawiszowy */
+		.remote {
+			display: grid;
+			grid-template-columns: repeat(6, minmax(0, 1fr));
+			gap: 8px;
+		}
+
+		.btn {
+			appearance: none;
+			border: none;
+			cursor: pointer;
+			background: #151a24;
+			color: #e8e8ea;
+			padding: 10px 8px;
+			border-radius: 10px;
+			font-size: 14px;
+			line-height: 1.2;
+			border: 1px solid #2a3140;
+			transition: transform 80ms ease, box-shadow 80ms ease, background 80ms ease, border-color 80ms ease;
+		}
+
+		.btn:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25)
+		}
+
+		.btn:active {
+			transform: translateY(0) scale(0.98)
+		}
+
+		.btn-wide {
+			grid-column: span 2
+		}
+
+		.btn-round {
+			border-radius: 999px
+		}
+
+		.btn-on {
+			background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+			color: white;
+			border-color: #1c7f3a
+		}
+
+		.btn-off {
+			background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+			color: white;
+			border-color: #9f1f1f
+		}
+
+		.btn-accent {
+			background: linear-gradient(180deg, #7c8cf8 0%, #5f6ae6 100%);
+			color: white;
+			border-color: #4a52c9
+		}
+
+		.btn-ghost {
+			background: #151a24;
+			color: #d7d9dd
+		}
+
+		.btn-lock {
+			background: linear-gradient(180deg, #334155 0%, #1f2937 100%);
+			color: #d7d9dd
+		}
+
+		/* Kolorowe przyciski */
+		.c-red {
+			background: linear-gradient(180deg, #ff5a5f 0%, #e63946 100%);
+			color: #fff;
+			border-color: #b21d29
+		}
+
+		.c-green {
+			background: linear-gradient(180deg, #34d399 0%, #10b981 100%);
+			color: #fff;
+			border-color: #0a7e5e
+		}
+
+		.c-blue {
+			background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
+			color: #fff;
+			border-color: #2457b4
+		}
+
+		.c-white {
+			background: linear-gradient(180deg, #e5e7eb 0%, #cbd5e1 100%);
+			color: #111;
+			border-color: #b9c3ce
+		}
+
+		.c-orange {
+			background: linear-gradient(180deg, #fb923c 0%, #f59e0b 100%);
+			color: #111;
+			border-color: #c47305
+		}
+
+		.c-purple {
+			background: linear-gradient(180deg, #a78bfa 0%, #8b5cf6 100%);
+			color: #fff;
+			border-color: #6b3fe0
+		}
+
+		.c-pink {
+			background: linear-gradient(180deg, #f472b6 0%, #ec4899 100%);
+			color: #fff;
+			border-color: #c02b75
+		}
+
+		.c-teal {
+			background: linear-gradient(180deg, #5eead4 0%, #14b8a6 100%);
+			color: #111;
+			border-color: #0e8f84
+		}
+
+		.c-yellow {
+			background: linear-gradient(180deg, #fde047 0%, #facc15 100%);
+			color: #111;
+			border-color: #d8aa0d
+		}
+
+		/* Suwaki */
+		.sliders {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+			margin-top: 12px;
+		}
+
+		@media (max-width:720px) {
+			.sliders {
+				grid-template-columns: 1fr
+			}
+		}
+
+		.slider {
+			background: #111622;
+			border: 1px solid #222a36;
+			border-radius: 12px;
+			padding: 10px;
+		}
+
+		.slider label {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-size: 14px;
+			margin-bottom: 6px
+		}
+
+		.slider .value {
+			color: var(--muted);
+			font-feature-settings: "tnum"1;
+			font-variant-numeric: tabular-nums
+		}
+
+		input[type="range"] {
+			width: 100%;
+			-webkit-appearance: none;
+			appearance: none;
+			background: transparent;
+			height: 28px;
+		}
+
+		input[type="range"]::-webkit-slider-runnable-track {
+			height: 8px;
+			border-radius: 999px;
+			background: linear-gradient(90deg, #1f2937, #334155);
+		}
+
+		input[type="range"]::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			appearance: none;
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+			background: var(--accent);
+			border: 2px solid #fff;
+			margin-top: -5px;
+			box-shadow: 0 0 8px rgba(88, 101, 242, 0.7);
+		}
+
+		/* Kolorowe tory dla RGB */
+		#r::-webkit-slider-runnable-track {
+			background: linear-gradient(90deg, #1f2937, #ef4444)
+		}
+
+		#g::-webkit-slider-runnable-track {
+			background: linear-gradient(90deg, #1f2937, #10b981)
+		}
+
+		#b::-webkit-slider-runnable-track {
+			background: linear-gradient(90deg, #1f2937, #3b82f6)
+		}
+
+		#brightness::-webkit-slider-runnable-track {
+			background: linear-gradient(90deg, #1f2937, #f8fafc)
+		}
+
+		#saturation::-webkit-slider-runnable-track {
+			background: linear-gradient(90deg, #1f2937, #f472b6)
+		}
+
+		/* Info/status */
+		.status {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			flex-wrap: wrap;
+			margin-top: 12px;
+			color: var(--muted);
+			font-size: 13px;
+		}
+
+		.badge {
+			background: #0f1420;
+			border: 1px solid #2c3445;
+			color: #cdd2dc;
+			padding: 6px 10px;
+			border-radius: 999px;
+			font-size: 12px;
+		}
+
+		/* Advanced Editor */
+		.editor-panel {
+			display: none;
+			margin-top: 12px;
+			padding: 12px;
+			background: #0f1420;
+			border: 1px solid #2c3445;
+			border-radius: 8px;
+		}
+
+		.editor-panel.active {
+			display: block;
+		}
+
+		textarea {
+			width: 100%;
+			height: 120px;
+			background: #121622;
+			color: var(--text);
+			border: 1px solid #2b3240;
+			border-radius: 6px;
+			padding: 8px;
+			font-family: monospace;
+			font-size: 12px;
+		}
+
+		.editor-controls {
+			display: flex;
+			gap: 8px;
+			margin-top: 8px;
+		}
+
+		/* Pattern Canvas */
+		.pattern-canvas {
+			display: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			opacity: 0.5;
+		}
+
+		.pattern-canvas.active {
+			display: block;
+			pointer-events: all;
+		}
+
+		/* Gyroscope indicator */
+		.gyro-indicator {
+			position: fixed;
+			top: 10px;
+			right: 10px;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: var(--accent);
+			opacity: 0;
+			transition: opacity 0.3s;
+		}
+
+		.gyro-indicator.active {
+			opacity: 1;
+		}
+
+		/* Dropdowns */
+		.dropdown-group {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		.dropdown-group label {
+			font-size: 12px;
+			color: var(--muted);
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>LED Controller 44-keys IR 💡🎛️</h1>
+		<p>Klikaj pilot, przesuwaj suwaki i oglądaj natychmiastowe efekty na pasku LED 🌈 | Zaawansowane: Edytor
+			skryptów, rysowanie wzorów, symulacja ognia, reakcja na ruch, rozwijane listy dla trybów i presetów,
+			animowany gradient, więcej LEDów (do 120), naprawione kolory (biały jest biały!)</p>
+	</header>
+
+	<div class="container">
+		<!-- LEWY PANEL: Pasek LED + podgląd -->
+		<section class="panel">
+			<h2>Pasek LED 💡🌈</h2>
+			<div class="led-strip" id="ledStrip" aria-label="Pasek LED">
+				<canvas class="pattern-canvas" id="patternCanvas"></canvas>
+			</div>
+
+			<div class="strip-controls">
+				<div class="group dropdown-group">
+					<label for="modeSelect">Tryb:</label>
+					<select id="modeSelect" class="select">
+						<option value="static">Static</option>
+						<option value="fade">Fade 🌫️</option>
+						<option value="blink">Blink ⚡</option>
+						<option value="pulse">Pulse ❤️</option>
+						<option value="jump">Jump 🔀</option>
+						<option value="strobe">Strobe ✨</option>
+						<option value="fire">Fire 🔥</option>
+						<option value="matrix">Matrix 💚</option>
+						<option value="chaser">Chaser 🏃‍♂️</option>
+						<option value="larson">Larson 🚗</option>
+						<option value="twinkle">Twinkle ⭐</option>
+						<option value="comet">Comet ☄️</option>
+						<option value="plasma">Plasma ⚡</option>
+						<option value="bounce">Bounce ⬅️➡️</option>
+						<option value="snake">Snake 🐍</option>
+						<option value="gyro">Gyro 🌀</option>
+					</select>
+
+					<label for="ledCount" class="badge">LEDs</label>
+					<select id="ledCount" class="select">
+            <option value="30">30</option>
+            <option value="45">45</option>
+            <option value="60" selected>60</option>
+            <option value="80">80</option>
+            <option value="100">100</option>
+            <option value="120">120</option>
+          </select>
+
+					<span class="badge" id="fpsBadge">FPS: —</span>
+					<span class="badge" id="latencyBadge">Latency: — ms</span>
+					<span class="badge" id="cpuBadge">CPU: —%</span>
+				</div>
+				<div class="group dropdown-group">
+					<label for="presetSelect">Preset:</label>
+					<select id="presetSelect" class="select">
+						<option value="">None</option>
+						<option value="red">Red 🔴</option>
+						<option value="green">Green 🟢</option>
+						<option value="blue">Blue 🔵</option>
+						<option value="white">White ⚪</option>
+						<option value="rainbow">Rainbow 🌈</option>
+						<option value="fire">Fire 🔥</option>
+						<option value="party">Party 🎉</option>
+						<option value="ocean">Ocean 🌊</option>
+					</select>
+
+					<button class="btn btn-on btn-round" id="btnOn">ON 💡</button>
+					<button class="btn btn-off btn-round" id="btnOff">OFF ❌</button>
+					<button class="btn btn-lock btn-round" id="btnLock">🔒 Lock DIY</button>
+					<button class="btn btn-accent btn-round" id="btnAdvanced">⚡ Adv</button>
+				</div>
+			</div>
+
+			<div class="preview-wrap">
+				<div class="preview" id="preview"></div>
+				<div class="preview-info" id="previewInfo">rgb(255, 255, 255), B:100%, S:100%</div>
+			</div>
+
+			<div class="editor-panel" id="editorPanel">
+				<h3>Zaawansowany Edytor Skryptów JS</h3>
+				<p>Wpisz kod JS, który modyfikuje `leds` (tablica divów LED) i `state`. Użyj `renderStatic()` na końcu.
+				</p>
+				<div class="dropdown-group">
+					<label for="scriptPresetSelect">Preset Skryptu:</label>
+					<select id="scriptPresetSelect" class="select">
+						<option value="">None</option>
+					</select>
+				</div>
+				<textarea id="scriptEditor" placeholder="// Przykład: losowe kolory&#10;for(let i=0; i&lt;leds.length; i++) {&#10;  leds[i].style.background = `hsl(${Math.random()*360}, 100%, 50%)`;&#10;}&#10;renderStatic();"></textarea>
+				<div class="editor-controls">
+					<button class="btn btn-accent" id="runScript">▶️ Run</button>
+					<button class="btn btn-ghost" id="saveScript">💾 Save Preset</button>
+					<button class="btn btn-danger" id="clearScript">🗑️ Clear</button>
+				</div>
+			</div>
+		</section>
+
+		<!-- PRAWY PANEL: Pilot + suwaki -->
+		<section class="panel">
+			<h2>Pilot 44-klawiszowy IR 🎛️📡</h2>
+
+			<!-- Pilot (8 wierszy × 6 kolumn; niektóre klawisze puste by uzyskać 44) -->
+			<div class="remote" id="remote">
+				<!-- Row 1 -->
+				<button class="btn btn-accent btn-wide" data-action="mode" data-mode="fade">🌫️ Fade</button>
+				<button class="btn btn-ghost" data-action="mode" data-mode="blink">⚡ Blink</button>
+				<button class="btn btn-ghost" data-action="mode" data-mode="pulse">❤️ Pulse</button>
+				<button class="btn btn-ghost" data-action="mode" data-mode="jump">🔀 Jump</button>
+				<button class="btn btn-ghost" data-action="mode" data-mode="strobe">✨ Strobe</button>
+
+				<!-- Row 2 -->
+				<button class="btn c-red" data-action="color" data-color="red">🔴</button>
+				<button class="btn c-green" data-action="color" data-color="green">🟢</button>
+				<button class="btn c-blue" data-action="color" data-color="blue">🔵</button>
+				<button class="btn c-white" data-action="color" data-color="white">⚪</button>
+				<button class="btn c-orange" data-action="color" data-color="orange">🟠</button>
+				<button class="btn c-purple" data-action="color" data-color="purple">🟣</button>
+
+				<!-- Row 3 -->
+				<button class="btn c-pink" data-action="color" data-color="pink">💗</button>
+				<button class="btn c-teal" data-action="color" data-color="teal">🌸</button>
+				<button class="btn c-yellow" data-action="color" data-color="yellow">🟡</button>
+				<button class="btn btn-ghost" data-action="whiteBalance" data-wb="warm">🔥 Warm</button>
+				<button class="btn btn-ghost" data-action="whiteBalance" data-wb="neutral">🌤️ Neutral</button>
+				<button class="btn btn-ghost" data-action="whiteBalance" data-wb="cool">❄️ Cool</button>
+
+				<!-- Row 4 -->
+				<button class="btn btn-ghost" data-action="brightness" data-step="-10">🌞 −</button>
+				<button class="btn btn-ghost" data-action="brightness" data-step="+10">🌞 +</button>
+				<button class="btn btn-ghost" data-action="saturation" data-step="-10">🌈 −</button>
+				<button class="btn btn-ghost" data-action="saturation" data-step="+10">🌈 +</button>
+				<button class="btn btn-ghost" data-action="speed" data-speed="slow">🐢 Slow</button>
+				<button class="btn btn-ghost" data-action="speed" data-speed="turbo">🚀 Turbo</button>
+
+				<!-- Row 5 (DIY) -->
+				<button class="btn btn-ghost" data-action="diy" data-slot="DIY1">DIY1</button>
+				<button class="btn btn-ghost" data-action="diy" data-slot="DIY2">DIY2</button>
+				<button class="btn btn-ghost" data-action="diy" data-slot="DIY3">DIY3</button>
+				<button class="btn btn-ghost" data-action="diy" data-slot="DIY4">DIY4</button>
+				<button class="btn btn-ghost" data-action="diy" data-slot="DIY5">DIY5</button>
+				<button class="btn btn-ghost" data-action="diy" data-slot="DIY6">DIY6</button>
+
+				<!-- Row 6 (DIY Save/Load) -->
+				<button class="btn btn-accent" data-action="save">💾 Save</button>
+				<button class="btn btn-ghost" data-action="load">🔄 Load</button>
+				<button class="btn btn-ghost" data-action="clear">🗑️ Clear</button>
+				<button class="btn btn-ghost" data-action="shuffle">🎲 Shuffle</button>
+				<button class="btn btn-ghost" data-action="mirror">🪞 Mirror</button>
+				<button class="btn btn-ghost" data-action="gradient">🌈 Gradient</button>
+
+				<!-- Row 7 (Power + combo) -->
+				<button class="btn btn-on" data-action="power" data-power="on">ON 💡</button>
+				<button class="btn btn-off" data-action="power" data-power="off">OFF ❌</button>
+				<button class="btn btn-ghost" data-action="combo" data-combo="color+pulse">🎛️+❤️</button>
+				<button class="btn btn-ghost" data-action="combo" data-combo="strobe+blue">✨+🔵</button>
+				<button class="btn btn-ghost" data-action="combo" data-combo="jump+rainbow">🔀+🌈</button>
+				<button class="btn btn-ghost" data-action="reset">♻️ Reset</button>
+
+				<!-- Row 8 (Advanced) -->
+				<button class="btn btn-accent" data-action="twinkle">⭐ Twinkle</button>
+				<button class="btn btn-ghost" data-action="comet">☄️ Comet</button>
+				<button class="btn btn-ghost" data-action="plasma">⚡ Plasma</button>
+				<button class="btn btn-ghost" data-action="bounce">⬅️ Bounce</button>
+				<button class="btn btn-ghost" data-action="snake">🐍 Snake</button>
+				<button class="btn btn-ghost" data-action="draw">✏️ Draw</button>
+			</div>
+
+			<!-- Suwaki -->
+			<div class="sliders">
+				<div class="slider">
+					<label><span>R 🔴</span><span class="value" id="rVal">255</span></label>
+					<input id="r" type="range" min="0" max="255" value="255" />
+				</div>
+					<div class="slider">
+						<label><span>G 🟢</span><span class="value" id="gVal">0</span></label>
+						<input id="g" type="range" min="0" max="255" value="0" />
+				</div>
+						<div class="slider">
+							<label><span>B 🔵</span><span class="value" id="bVal">0</span></label>
+							<input id="b" type="range" min="0" max="255" value="0" />
+				</div>
+							<div class="slider">
+								<label><span>Brightness 🌞</span><span class="value" id="brVal">100%</span></label>
+								<input id="brightness" type="range" min="0" max="100" value="100" />
+				</div>
+								<div class="slider">
+									<label><span>Saturation 🌈</span><span class="value" id="satVal">100%</span></label>
+									<input id="saturation" type="range" min="0" max="100" value="100" />
+				</div>
+								</div>
+
+								<div class="status" id="status">
+									<span class="badge" id="modeBadge">Mode: static</span>
+									<span class="badge" id="colorBadge">Color: rgb(255, 0, 0)</span>
+									<span class="badge" id="speedBadge">Speed: normal</span>
+									<span class="badge" id="diyBadge">DIY: none</span>
+								</div>
+		</section>
+	</div>
+
+	<div class="gyro-indicator" id="gyroIndicator"></div>
+
+	<script>
+		// --- Utilities: clamp, map, color conversions ---
+    const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+
+    function rgbToHsl(r,g,b){
+      r/=255; g/=255; b/=255;
+      const max = Math.max(r,g,b), min = Math.min(r,g,b);
+      let h, s, l = (max+min)/2;
+      if(max===min){ h = s = 0; }
+      else{
+        const d = max-min;
+        s = l > 0.5 ? d/(2 - max - min) : d/(max + min);
+        switch(max){
+          case r: h = (g - b)/d + (g < b ? 6 : 0); break;
+          case g: h = (b - r)/d + 2; break;
+          case b: h = (r - g)/d + 4; break;
+        }
+        h /= 6;
+      }
+      return [h*360, s*100, l*100];
+    }
+    function hslToRgb(h,s,l){
+      h/=360; s/=100; l/=100;
+      if(s===0){
+        const v = Math.round(l*255);
+        return [v,v,v];
+      }
+      const hue2rgb = (p,q,t)=>{
+        if(t<0) t+=1;
+        if(t>1) t-=1;
+        if(t<1/6) return p + (q-p)*6*t;
+        if(t<1/2) return q;
+        if(t<2/3) return p + (q-p)*(2/3 - t)*6;
+        return p;
+      };
+      const q = l < 0.5 ? l*(1+s) : l + s - l*s;
+      const p = 2*l - q;
+      const r = hue2rgb(p,q,h + 1/3);
+      const g = hue2rgb(p,q,h);
+      const b = hue2rgb(p,q,h - 1/3);
+      return [Math.round(r*255), Math.round(g*255), Math.round(b*255)];
+    }
+    function applyBrightnessSaturation([r,g,b], brightnessPct, saturationPct){
+      // Poprawiona logika: najpierw brightness, potem desaturacja (mieszanie z luminancją)
+      let rr = Math.round(r * (brightnessPct / 100));
+      let gg = Math.round(g * (brightnessPct / 100));
+      let bb = Math.round(b * (brightnessPct / 100));
+      const lum = (rr + gg + bb) / 3;
+      rr = Math.round(rr * (saturationPct / 100) + lum * (1 - saturationPct / 100));
+      gg = Math.round(gg * (saturationPct / 100) + lum * (1 - saturationPct / 100));
+      bb = Math.round(bb * (saturationPct / 100) + lum * (1 - saturationPct / 100));
+      return [Math.min(255, rr), Math.min(255, gg), Math.min(255, bb)];
+    }
+    const presets = {
+      red: [255,0,0],
+      green:[0,255,0],
+      blue:[0,0,255],
+      white:[255,255,255],
+      orange:[255,128,0],
+      purple:[160,64,255],
+      pink:[255,64,160],
+      teal:[0,200,180],
+      yellow:[255,210,0],
+      party: [Math.random()*255, Math.random()*255, Math.random()*255],
+      ocean: [0,100,200]
+    };
+
+    // --- State ---
+    const state = {
+      power: true,
+      baseColor: [255,0,0], // RGB - start with red
+      brightness: 100,          // 0..100
+      saturation: 100,          // 0..100
+      mode: 'static',           // ...
+      speed: 'normal',          // ...
+      ledCount: 60,
+      diyLocked: false,
+      selectedDIY: null,
+      lastInteractionTs: performance.now(),
+      advancedMode: false,
+      gyroEnabled: false,
+      drawMode: false,
+      fireBuffer: [],
+      matrixDrops: [],
+      chaserPos: 0,
+      larsonDir: 1,
+      gyroData: { alpha: 0, beta: 0, gamma: 0 },
+      twinkleStates: [],
+      cometPos: 0,
+      cometTrail: [],
+      gradientPhase: 0,
+      bouncePos: 0,
+      bounceDir: 1,
+      snakePositions: []
+    };
+
+    // --- DOM ---
+    const ledStrip = document.getElementById('ledStrip');
+    const ledCountSel = document.getElementById('ledCount');
+    const modeSelect = document.getElementById('modeSelect');
+    const presetSelect = document.getElementById('presetSelect');
+    const preview = document.getElementById('preview');
+    const previewInfo = document.getElementById('previewInfo');
+
+    const rSlider = document.getElementById('r');
+    const gSlider = document.getElementById('g');
+    const bSlider = document.getElementById('b');
+    const brSlider = document.getElementById('brightness');
+    const satSlider = document.getElementById('saturation');
+
+    const rVal = document.getElementById('rVal');
+    const gVal = document.getElementById('gVal');
+    const bVal = document.getElementById('bVal');
+    const brVal = document.getElementById('brVal');
+    const satVal = document.getElementById('satVal');
+
+    const fpsBadge = document.getElementById('fpsBadge');
+    const latencyBadge = document.getElementById('latencyBadge');
+    const cpuBadge = document.getElementById('cpuBadge');
+    const modeBadge = document.getElementById('modeBadge');
+    const colorBadge = document.getElementById('colorBadge');
+    const speedBadge = document.getElementById('speedBadge');
+    const diyBadge = document.getElementById('diyBadge');
+
+    const btnOn = document.getElementById('btnOn');
+    const btnOff = document.getElementById('btnOff');
+    const btnLock = document.getElementById('btnLock');
+    const btnAdvanced = document.getElementById('btnAdvanced');
+    const remote = document.getElementById('remote');
+    const editorPanel = document.getElementById('editorPanel');
+    const scriptEditor = document.getElementById('scriptEditor');
+    const scriptPresetSelect = document.getElementById('scriptPresetSelect');
+    const runScript = document.getElementById('runScript');
+    const saveScript = document.getElementById('saveScript');
+    const clearScript = document.getElementById('clearScript');
+    const gyroIndicator = document.getElementById('gyroIndicator');
+    const patternCanvas = document.getElementById('patternCanvas');
+
+    // Pattern drawing
+    let patternCtx;
+    let isDrawing = false;
+
+    // Load script presets
+    function loadScriptPresets() {
+      const select = scriptPresetSelect;
+      select.innerHTML = '<option value="">None</option>';
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('script_')) {
+          const option = document.createElement('option');
+          option.value = key;
+          option.textContent = key.replace('script_', '');
+          select.appendChild(option);
+        }
+      }
+    }
+
+    // --- LED creation ---
+    let leds = [];
+    function createStrip(count){
+      ledStrip.innerHTML = '';
+      leds = [];
+      state.twinkleStates = new Array(count).fill(0);
+      state.fireBuffer = new Array(count).fill(0);
+      state.snakePositions = new Array(Math.floor(count / 3)).fill(0);
+      for(let i=0;i<count;i++){
+        const d = document.createElement('div');
+        d.className = 'led on';
+        d.dataset.index = i;
+        ledStrip.appendChild(d);
+        leds.push(d);
+      }
+      if (patternCanvas) {
+        patternCanvas.width = ledStrip.offsetWidth;
+        patternCanvas.height = ledStrip.offsetHeight;
+        patternCtx = patternCanvas.getContext('2d');
+      }
+    }
+    createStrip(state.ledCount);
+
+    // --- Rendering ---
+    function currentColorRGB(){
+      const [r,g,b] = state.baseColor;
+      return applyBrightnessSaturation([r,g,b], state.brightness, state.saturation);
+    }
+    function rgbStr([r,g,b]){ return `rgb(${r}, ${g}, ${b})`; }
+
+    function renderStatic(){
+      const col = state.power ? currentColorRGB() : [34,34,34];
+      const css = rgbStr(col);
+      for(const led of leds){
+        led.style.background = css;
+        led.style.boxShadow = state.power ? `0 0 10px ${css}` : '0 0 8px rgba(0,0,0,0)';
+      }
+      preview.style.background = css;
+      previewInfo.textContent = `${css}, B:${state.brightness}%, S:${state.saturation}%`;
+      colorBadge.textContent = `Color: ${css}`;
+    }
+
+    // Animation engine
+    let animTimer = null;
+    let animPhase = 0;
+    let lastFrame = performance.now();
+    let frames = 0, lastFpsTime = performance.now();
+    let cpuStart = performance.now();
+
+    function getSpeedMul() {
+      return state.speed==='turbo' ? 2.5 : state.speed==='slow' ? 0.6 : 1.0;
+    }
+
+    function frame(){
+      const now = performance.now();
+      frames++;
+      // FPS calculation
+      if(now - lastFpsTime >= 1000){
+        fpsBadge.textContent = `FPS: ${frames}`;
+        frames = 0;
+        lastFpsTime = now;
+      }
+      // CPU usage approximation
+      if (now - cpuStart >= 1000) {
+        const cpuUsage = ((now - cpuStart - 1000) / 10).toFixed(0);
+        cpuBadge.textContent = `CPU: ${Math.min(cpuUsage, 100)}%`;
+        cpuStart = now;
+      }
+      latencyBadge.textContent = `Latency: ${Math.round(now - state.lastInteractionTs)} ms`;
+
+      const speedMul = getSpeedMul();
+      const dt = (now - lastFrame)/1000 * speedMul;
+      lastFrame = now;
+      animPhase += dt;
+      state.gradientPhase += dt * 0.5;
+
+      if(!state.power){
+        renderStatic();
+        requestAnimationFrame(frame);
+        return;
+      }
+
+      switch(state.mode){
+        case 'static': renderStatic(); break;
+        case 'fade': renderFade(); break;
+        case 'blink': renderBlink(); break;
+        case 'pulse': renderPulse(); break;
+        case 'jump': renderJump(); break;
+        case 'strobe': renderStrobe(); break;
+        case 'fire': renderFire(); break;
+        case 'matrix': renderMatrix(); break;
+        case 'chaser': renderChaser(); break;
+        case 'larson': renderLarson(); break;
+        case 'twinkle': renderTwinkle(); break;
+        case 'comet': renderComet(); break;
+        case 'plasma': renderPlasma(); break;
+        case 'bounce': renderBounce(); break;
+        case 'snake': renderSnake(); break;
+        case 'gyro': renderGyro(); break;
+      }
+      requestAnimationFrame(frame);
+    }
+
+    function startAnimation(){
+      modeBadge.textContent = `Mode: ${state.mode}`;
+      speedBadge.textContent = `Speed: ${state.speed}`;
+      modeSelect.value = state.mode;
+      if(!animTimer){
+        lastFrame = performance.now();
+        requestAnimationFrame(frame);
+      }
+    }
+    startAnimation();
+
+    // --- Animations ---
+    function renderFade(){
+      const [r,g,b] = state.baseColor;
+      const t = (Math.sin(animPhase*2*Math.PI*0.25)+1)/2;
+      const L = clamp(Math.round(20 + t*80), 0, 100);
+      const col = applyBrightnessSaturation([r,g,b], L, state.saturation);
+      const css = rgbStr(col);
+      for(const led of leds){
+        led.style.background = css;
+        led.style.boxShadow = `0 0 10px ${css}`;
+      }
+      preview.style.background = css;
+    }
+
+    function renderBlink(){
+      const on = Math.floor(animPhase*2) % 2 === 0;
+      const [r,g,b] = state.baseColor;
+      const col = applyBrightnessSaturation([r,g,b], on?state.brightness:0, state.saturation);
+      const css = rgbStr(col);
+      for(const led of leds){
+        led.style.background = css;
+        led.style.boxShadow = on ? `0 0 12px ${css}` : '0 0 8px rgba(0,0,0,0)';
+      }
+      preview.style.background = css;
+    }
+
+    function renderPulse(){
+      const center = Math.floor(leds.length/2);
+      const base = state.baseColor.slice();
+      for(let i=0;i<leds.length;i++){
+        const dist = Math.abs(i - center);
+        const phase = animPhase - dist*0.08;
+        const t = (Math.sin(phase*2*Math.PI*0.5)+1)/2;
+        const L = clamp(Math.round(30 + t*70), 0, 100);
+        const col = applyBrightnessSaturation(base, L, state.saturation);
+        const css = rgbStr(col);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 ${6 + Math.round(t*10)}px ${css}`;
+      }
+      preview.style.background = rgbStr(applyBrightnessSaturation(base, state.brightness, state.saturation));
+    }
+
+    const jumpColors = [
+      [255,0,0],[255,128,0],[255,210,0],[0,255,0],[0,200,180],[0,0,255],[160,64,255],[255,64,160],[255,255,255]
+    ];
+    function renderJump(){
+      const idx = Math.floor(animPhase*2) % jumpColors.length;
+      const base = jumpColors[idx];
+      const col = applyBrightnessSaturation(base, state.brightness, state.saturation);
+      const css = rgbStr(col);
+      for(const led of leds){
+        led.style.background = css;
+        led.style.boxShadow = `0 0 10px ${css}`;
+      }
+      preview.style.background = css;
+    }
+
+    function renderStrobe(){
+      const on = Math.floor(animPhase*10) % 2 === 0;
+      const base = state.baseColor.slice();
+      const col = applyBrightnessSaturation(base, on?100:20, state.saturation);
+      const css = rgbStr(col);
+      for(const led of leds){
+        led.style.background = css;
+        led.style.boxShadow = on? `0 0 16px ${css}` : '0 0 4px rgba(0,0,0,0.3)';
+      }
+      preview.style.background = css;
+    }
+
+    // Fire
+    function renderFire() {
+      for (let i = 0; i < leds.length; i++) {
+        if (i === leds.length - 1) {
+          state.fireBuffer[i] = Math.random() * 100;
+        } else {
+          state.fireBuffer[i] = (state.fireBuffer[i + 1] * 0.9 + Math.random() * 20) * 0.95;
+        }
+        const intensity = clamp(state.fireBuffer[i], 0, 100);
+        const h = 10 + intensity * 0.1;
+        const [r, g, b] = hslToRgb(h, 80, intensity * 0.6);
+        const col = applyBrightnessSaturation([r, g, b], intensity, state.saturation);
+        const css = rgbStr(col);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 ${intensity * 0.2}px ${css}`;
+      }
+      preview.style.background = rgbStr([255, 100, 0]);
+    }
+
+    // Matrix
+    function initMatrix() {
+      state.matrixDrops = new Array(leds.length).fill(null).map(() => ({
+        pos: Math.random() * leds.length,
+        speed: Math.random() * 0.1 + 0.05,
+        trail: []
+      }));
+    }
+    function renderMatrix() {
+      if (state.matrixDrops.length === 0) initMatrix();
+      for (let i = 0; i < leds.length; i++) {
+        const drop = state.matrixDrops[i % state.matrixDrops.length];
+        drop.pos += drop.speed * getSpeedMul();
+        if (drop.pos > leds.length) {
+          drop.pos = 0;
+          drop.trail = [];
+        }
+        const dist = Math.abs(drop.pos - i);
+        const alpha = Math.exp(-dist * 0.5);
+        const g = Math.floor(255 * alpha);
+        const col = applyBrightnessSaturation([0, g, 0], state.brightness * alpha, state.saturation);
+        const css = rgbStr(col);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 ${alpha * 10}px ${css}`;
+      }
+      preview.style.background = 'rgb(0, 255, 0)';
+    }
+
+    // Chaser
+    function renderChaser() {
+      const pos = (animPhase * 5 * getSpeedMul()) % leds.length;
+      state.chaserPos = pos;
+      const trailLength = 5;
+      for (let i = 0; i < leds.length; i++) {
+        const dist = Math.abs((i - pos + leds.length) % leds.length);
+        const alpha = Math.exp(-dist / trailLength);
+        const col = applyBrightnessSaturation(state.baseColor, state.brightness * alpha * 100, state.saturation);
+        const css = rgbStr(col);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 ${alpha * 15}px ${css}`;
+      }
+      preview.style.background = rgbStr(currentColorRGB());
+    }
+
+    // Larson
+    function renderLarson() {
+      let pos = state.chaserPos;
+      pos += state.larsonDir * (getSpeedMul() * 0.1);
+      if (pos >= leds.length - 1 || pos <= 0) {
+        state.larsonDir *= -1;
+      }
+      state.chaserPos = clamp(pos, 0, leds.length - 1);
+      const headColor = [255, 0, 0];
+      const tailColor = [0, 0, 255];
+      for (let i = 0; i < leds.length; i++) {
+        const distToHead = Math.abs(i - state.chaserPos);
+        if (distToHead < 3) {
+          const t = 1 - (distToHead / 3);
+          const c = [
+            Math.round(headColor[0] * t + tailColor[0] * (1 - t)),
+            Math.round(headColor[1] * t + tailColor[1] * (1 - t)),
+            Math.round(headColor[2] * t + tailColor[2] * (1 - t))
+          ];
+          const col = applyBrightnessSaturation(c, state.brightness, state.saturation);
+          const css = rgbStr(col);
+          leds[i].style.background = css;
+          leds[i].style.boxShadow = `0 0 20px ${css}`;
+        } else {
+          leds[i].style.background = 'rgb(0,0,0)';
+          leds[i].style.boxShadow = 'none';
+        }
+      }
+      preview.style.background = rgbStr(headColor);
+    }
+
+    // Twinkle
+    function renderTwinkle() {
+      const speedMul = getSpeedMul();
+      for (let i = 0; i < leds.length; i++) {
+        state.twinkleStates[i] += (Math.random() - 0.5) * 0.2 * speedMul;
+        state.twinkleStates[i] = clamp(state.twinkleStates[i], 0, 1);
+        const alpha = Math.sin(state.twinkleStates[i] * Math.PI * 2) * 0.5 + 0.5;
+        const h = Math.random() * 360;
+        const [r, g, b] = hslToRgb(h, 100, 80);
+        const col = applyBrightnessSaturation([r, g, b], state.brightness * alpha, state.saturation);
+        const css = rgbStr(col);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 ${alpha * 15}px ${css}`;
+      }
+      preview.style.background = 'rgb(255, 255, 100)';
+    }
+
+    // Comet
+    function renderComet() {
+      const speedMul = getSpeedMul();
+      state.cometPos += 0.5 * speedMul;
+      if (state.cometPos > leds.length) {
+        state.cometPos = 0;
+        state.cometTrail = [];
+      }
+      state.cometTrail.push(state.cometPos);
+      if (state.cometTrail.length > 10) state.cometTrail.shift();
+      for (let i = 0; i < leds.length; i++) {
+        let alpha = 0;
+        const dist = Math.abs(i - state.cometPos);
+        if (dist < 1) alpha = 1;
+        else {
+          const trailIdx = state.cometTrail.findIndex(p => Math.abs(i - p) < 1);
+          if (trailIdx !== -1) alpha = 0.3 * (1 - trailIdx / state.cometTrail.length);
+        }
+        const col = applyBrightnessSaturation(state.baseColor, state.brightness * alpha * 100, state.saturation);
+        const css = rgbStr(col);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 ${alpha * 20}px ${css}`;
+      }
+      preview.style.background = rgbStr(currentColorRGB());
+    }
+
+    // Plasma
+    function renderPlasma() {
+      for (let i = 0; i < leds.length; i++) {
+        const x = (i / leds.length) * 4 * Math.PI;
+        const y = animPhase * 2 * getSpeedMul();
+        const value1 = Math.sin(x * 3 + y) * Math.sin(x * 2 - y * 2);
+        const value2 = Math.sin(x * 5 + y * 3) * Math.cos(x - y * 4);
+        const plasma = (value1 + value2 + 2) / 4;
+        const h = plasma * 360;
+        const [r, g, b] = hslToRgb(h, state.saturation, state.brightness * plasma);
+        const css = rgbStr([r, g, b]);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 12px ${css}`;
+      }
+      preview.style.background = 'rgb(100, 0, 255)';
+    }
+
+    // Bounce
+    function renderBounce() {
+      let pos = state.bouncePos;
+      pos += state.bounceDir * getSpeedMul() * 0.2;
+      if (pos >= leds.length - 1 || pos <= 0) {
+        state.bounceDir *= -1;
+      }
+      state.bouncePos = clamp(pos, 0, leds.length - 1);
+      for (let i = 0; i < leds.length; i++) {
+        const dist = Math.abs(i - state.bouncePos);
+        const alpha = dist < 2 ? 1 - dist : 0;
+        const col = applyBrightnessSaturation(state.baseColor, state.brightness * alpha * 100, state.saturation);
+        const css = rgbStr(col);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 ${alpha * 10}px ${css}`;
+      }
+      preview.style.background = rgbStr(currentColorRGB());
+    }
+
+    // Snake
+    function renderSnake() {
+      const speedMul = getSpeedMul();
+      for (let s = 0; s < state.snakePositions.length; s++) {
+        state.snakePositions[s] += speedMul * 0.3;
+        if (state.snakePositions[s] > leds.length) state.snakePositions[s] = 0;
+      }
+      for (let i = 0; i < leds.length; i++) {
+        let alpha = 0;
+        for (let s = 0; s < state.snakePositions.length; s++) {
+          const dist = Math.abs(i - state.snakePositions[s]);
+          alpha = Math.max(alpha, Math.exp(-dist / 2));
+        }
+        const col = applyBrightnessSaturation(state.baseColor, state.brightness * alpha * 100, state.saturation);
+        const css = rgbStr(col);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 ${alpha * 12}px ${css}`;
+      }
+      preview.style.background = rgbStr(currentColorRGB());
+    }
+
+    // Gyro
+    function renderGyro() {
+      const beta = state.gyroData.beta || 0;
+      const gamma = state.gyroData.gamma || 0;
+      const center = Math.floor(leds.length / 2);
+      for (let i = 0; i < leds.length; i++) {
+        const dist = (i - center) / center;
+        const tiltInfluence = Math.sin(beta * Math.PI / 180) * 50;
+        const sideInfluence = gamma / 90 * 50;
+        const brightnessMod = clamp(50 + dist * sideInfluence + tiltInfluence, 0, 100);
+        const col = applyBrightnessSaturation(state.baseColor, brightnessMod, state.saturation);
+        const css = rgbStr(col);
+        leds[i].style.background = css;
+        leds[i].style.boxShadow = `0 0 ${brightnessMod * 0.1}px ${css}`;
+      }
+      preview.style.background = rgbStr(currentColorRGB());
+    }
+
+    // --- Event helpers ---
+    function touch(){
+      state.lastInteractionTs = performance.now();
+    }
+    function setMode(m){ 
+      state.mode = m; 
+      modeSelect.value = m;
+      touch(); 
+      startAnimation();
+      // Inicjalizacje dla nowych trybów
+      if (m === 'fire') state.fireBuffer = new Array(leds.length).fill(0);
+      if (m === 'matrix') initMatrix();
+      if (m === 'larson' || m === 'bounce') { state.chaserPos = 0; state.larsonDir = 1; state.bounceDir = 1; }
+      if (m === 'comet') { state.cometPos = 0; state.cometTrail = []; }
+      if (m === 'twinkle') state.twinkleStates = new Array(leds.length).fill(0);
+      if (m === 'snake') state.snakePositions = new Array(Math.floor(leds.length / 3)).fill(0);
+    }
+    function setSpeed(s){ state.speed = s; touch(); }
+    function setPower(p){
+      state.power = p;
+      for(const led of leds){ led.classList.toggle('on', p); }
+      touch();
+    }
+    function setBaseColor(rgb){
+      state.baseColor = rgb.slice();
+      rSlider.value = rgb[0]; gSlider.value = rgb[1]; bSlider.value = rgb[2];
+      rVal.textContent = rSlider.value; gVal.textContent = gSlider.value; bVal.textContent = bSlider.value;
+      touch();
+      renderStatic();
+    }
+    function setBrightness(v){
+      state.brightness = clamp(Number(v),0,100);
+      brSlider.value = state.brightness; brVal.textContent = `${state.brightness}%`;
+      touch();
+      renderStatic();
+    }
+    function setSaturation(v){
+      state.saturation = clamp(Number(v),0,100);
+      satSlider.value = state.saturation; satVal.textContent = `${state.saturation}%`;
+      touch();
+      renderStatic();
+    }
+    function setLedCount(n){
+      state.ledCount = Number(n);
+      createStrip(state.ledCount);
+      touch();
+      renderStatic();
+    }
+
+    // Preset handler
+    function applyPreset(p) {
+      let rgb;
+      switch(p) {
+        case 'red': rgb = [255,0,0]; break;
+        case 'green': rgb = [0,255,0]; break;
+        case 'blue': rgb = [0,0,255]; break;
+        case 'white': rgb = [255,255,255]; break;
+        case 'rainbow': setMode('plasma'); setSaturation(100); return;
+        case 'fire': setMode('fire'); return;
+        case 'party': rgb = [Math.random()*255|0, Math.random()*255|0, Math.random()*255|0]; setMode('twinkle'); break;
+        case 'ocean': rgb = [0,100,200]; setMode('wave'); break;
+        default: return;
+      }
+      setBaseColor(rgb);
+    }
+
+    // --- Sliders events ---
+    function updateFromSliders(){
+      const r = Number(rSlider.value), g = Number(gSlider.value), b = Number(bSlider.value);
+      rVal.textContent = r; gVal.textContent = g; bVal.textContent = b;
+      setBaseColor([r,g,b]);
+    }
+    [rSlider,gSlider,bSlider].forEach(s => s.addEventListener('input', updateFromSliders));
+    brSlider.addEventListener('input', e => setBrightness(e.target.value));
+    satSlider.addEventListener('input', e => setSaturation(e.target.value));
+    updateFromSliders();
+
+    // --- Dropdown events ---
+    modeSelect.addEventListener('change', (e) => setMode(e.target.value));
+    presetSelect.addEventListener('change', (e) => applyPreset(e.target.value));
+    ledCountSel.addEventListener('change', e => setLedCount(e.target.value));
+
+    // --- Power buttons ---
+    btnOn.addEventListener('click', ()=> setPower(true));
+    btnOff.addEventListener('click', ()=> setPower(false));
+
+    // --- Lock DIY ---
+    btnLock.addEventListener('click', ()=>{
+      state.diyLocked = !state.diyLocked;
+      btnLock.textContent = state.diyLocked ? '🔓 Unlock DIY' : '🔒 Lock DIY';
+      diyBadge.textContent = `DIY: ${state.diyLocked ? 'locked' : (state.selectedDIY || 'none')}`;
+      touch();
+    });
+
+    // --- Advanced Toggle ---
+    btnAdvanced.addEventListener('click', () => {
+      state.advancedMode = !state.advancedMode;
+      editorPanel.classList.toggle('active', state.advancedMode);
+      btnAdvanced.textContent = state.advancedMode ? '🔙 Basic' : '⚡ Adv';
+      touch();
+    });
+
+    // --- Script Editor ---
+    loadScriptPresets();
+    scriptPresetSelect.addEventListener('change', (e) => {
+      const key = e.target.value;
+      if (key) {
+        scriptEditor.value = localStorage.getItem(key) || '';
+      }
+    });
+
+    runScript.addEventListener('click', () => {
+      try {
+        const code = scriptEditor.value;
+        if (code.trim()) {
+          eval(code);
+        }
+      } catch (err) {
+        alert(`Błąd skryptu: ${err.message}`);
+      }
+    });
+
+    saveScript.addEventListener('click', () => {
+      const scriptName = prompt('Nazwa presetu skryptu:');
+      if (scriptName) {
+        localStorage.setItem(`script_${scriptName}`, scriptEditor.value);
+        loadScriptPresets();
+        alert(`Zapisano jako ${scriptName}`);
+      }
+    });
+
+    clearScript.addEventListener('click', () => {
+      if (confirm('Wyczyścić edytor?')) {
+        scriptEditor.value = '';
+      }
+    });
+
+    // --- Pattern Drawing ---
+    ledStrip.addEventListener('mousedown', (e) => {
+      if (!state.drawMode) return;
+      isDrawing = true;
+      handleDraw(e);
+    });
+    ledStrip.addEventListener('mousemove', (e) => {
+      if (isDrawing) handleDraw(e);
+    });
+    ledStrip.addEventListener('mouseup', () => { isDrawing = false; });
+    ledStrip.addEventListener('mouseleave', () => { isDrawing = false; });
+
+    function handleDraw(e) {
+      const rect = ledStrip.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const ledIndex = Math.floor((x / rect.width) * leds.length);
+      if (ledIndex >= 0 && ledIndex < leds.length) {
+        const color = currentColorRGB();
+        const css = rgbStr(color);
+        leds[ledIndex].style.background = css;
+        leds[ledIndex].style.boxShadow = `0 0 15px ${css}`;
+        // Draw on canvas
+        patternCtx.clearRect(0, 0, patternCanvas.width, patternCanvas.height);
+        const ledRect = leds[ledIndex].getBoundingClientRect();
+        const canvasRect = patternCanvas.getBoundingClientRect();
+        const cx = ledRect.left - canvasRect.left + 11;
+        const cy = ledRect.top - canvasRect.top + 11;
+        patternCtx.beginPath();
+        patternCtx.arc(cx, cy, 11, 0, 2 * Math.PI);
+        patternCtx.fillStyle = css;
+        patternCtx.fill();
+      }
+    }
+
+    // --- Gyroscope ---
+    if (window.DeviceOrientationEvent) {
+      const initGyro = () => {
+        if (DeviceOrientationEvent.requestPermission) {
+          DeviceOrientationEvent.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              window.addEventListener('deviceorientation', (e) => {
+                if (!state.gyroEnabled) return;
+                state.gyroData = { alpha: e.alpha, beta: e.beta, gamma: e.gamma };
+                gyroIndicator.classList.add('active');
+              });
+            }
+          }).catch(console.error);
+        } else {
+          window.addEventListener('deviceorientation', (e) => {
+            if (!state.gyroEnabled) return;
+            state.gyroData = { alpha: e.alpha, beta: e.beta, gamma: e.gamma };
+            gyroIndicator.classList.add('active');
+          });
+        }
+      };
+      initGyro();
+    }
+
+    // --- Remote delegation ---
+    remote.addEventListener('click', (e)=>{
+      const t = e.target.closest('.btn');
+      if(!t) return;
+      const action = t.dataset.action;
+      if(!action) return;
+
+      t.style.transform = 'translateY(0) scale(0.98)';
+      setTimeout(()=> t.style.transform='', 120);
+
+      switch(action){
+        case 'mode':
+          setMode(t.dataset.mode);
+          break;
+        case 'color':
+          setBaseColor(presets[t.dataset.color]);
+          break;
+        case 'whiteBalance': {
+          const wb = t.dataset.wb;
+          if(wb==='warm') setBaseColor([255, 244, 229]);
+          else if(wb==='neutral') setBaseColor([240, 240, 240]);
+          else setBaseColor([229, 240, 255]);
+          setSaturation(0);
+          break;
+        }
+        case 'brightness': {
+          const step = Number(t.dataset.step.replace('+',''));
+          setBrightness(state.brightness + step);
+          break;
+        }
+        case 'saturation': {
+          const step = Number(t.dataset.step.replace('+',''));
+          setSaturation(state.saturation + step);
+          break;
+        }
+        case 'speed':
+          setSpeed(t.dataset.speed);
+          break;
+        case 'diy':
+          state.selectedDIY = t.dataset.slot;
+          diyBadge.textContent = `DIY: ${state.selectedDIY}`;
+          break;
+        case 'save':
+          if(!state.selectedDIY){ alert('Wybierz slot DIY (DIY1–DIY6).'); break; }
+          if(state.diyLocked){ alert('DIY jest zablokowane 🔒. Odblokuj, aby zapisać.'); break; }
+          if(localStorage.getItem(state.selectedDIY)){
+            const ok = confirm(`Nadpisać ${state.selectedDIY}?`);
+            if(!ok) break;
+          }
+          localStorage.setItem(state.selectedDIY, JSON.stringify({
+            baseColor: state.baseColor, brightness: state.brightness, saturation: state.saturation,
+            mode: state.mode, speed: state.speed, ledCount: state.ledCount
+          }));
+          diyBadge.textContent = `DIY: ${state.selectedDIY} saved`;
+          break;
+        case 'load':
+          if(!state.selectedDIY){ alert('Wybierz slot DIY (DIY1–DIY6).'); break; }
+          const data = localStorage.getItem(state.selectedDIY);
+          if(!data){ alert(`Brak danych w ${state.selectedDIY}.`); break; }
+          try{
+            const obj = JSON.parse(data);
+            setBaseColor(obj.baseColor || state.baseColor);
+            setBrightness(obj.brightness ?? state.brightness);
+            setSaturation(obj.saturation ?? state.saturation);
+            setMode(obj.mode || state.mode);
+            setSpeed(obj.speed || state.speed);
+            setLedCount(obj.ledCount || state.ledCount);
+            diyBadge.textContent = `DIY: ${state.selectedDIY} loaded`;
+          }catch(err){ alert('Błędny zapis DIY.'); }
+          break;
+        case 'clear':
+          if(!state.selectedDIY){ alert('Wybierz slot DIY.'); break; }
+          if(state.diyLocked){ alert('DIY jest zablokowane 🔒.'); break; }
+          localStorage.removeItem(state.selectedDIY);
+          diyBadge.textContent = `DIY: ${state.selectedDIY} cleared`;
+          break;
+        case 'shuffle':
+          for(const led of leds){
+            const c = [Math.floor(Math.random()*256), Math.floor(Math.random()*256), Math.floor(Math.random()*256)];
+            const col = applyBrightnessSaturation(c, state.brightness, state.saturation);
+            const css = rgbStr(col);
+            led.style.background = css; led.style.boxShadow = `0 0 10px ${css}`;
+          }
+          break;
+        case 'mirror': {
+          const half = Math.floor(leds.length/2);
+          for(let i=0;i<half;i++){
+            leds[leds.length-1-i].style.background = leds[i].style.background;
+            leds[leds.length-1-i].style.boxShadow = leds[i].style.boxShadow;
+          }
+          break;
+        }
+        case 'gradient': {
+          // Animowany gradient
+          setMode('static');
+          const start = state.baseColor.slice();
+          const end = [255,255,255];
+          for(let i=0;i<leds.length;i++){
+            const t = (i/(leds.length-1) + state.gradientPhase) % 1;
+            const c = [
+              Math.round(start[0]*(1-t) + end[0]*t),
+              Math.round(start[1]*(1-t) + end[1]*t),
+              Math.round(start[2]*(1-t) + end[2]*t)
+            ];
+            const col = applyBrightnessSaturation(c, state.brightness, state.saturation);
+            const css = rgbStr(col);
+            leds[i].style.background = css; leds[i].style.boxShadow = `0 0 10px ${css}`;
+          }
+          break;
+        }
+        case 'power':
+          setPower(t.dataset.power==='on');
+          break;
+        case 'combo': {
+          const combo = t.dataset.combo;
+          if(combo==='color+pulse'){ setMode('pulse'); }
+          else if(combo==='strobe+blue'){ setBaseColor(presets.blue); setMode('strobe'); }
+          else if(combo==='jump+rainbow'){ setMode('jump'); setSaturation(100); }
+          break;
+        }
+        case 'reset':
+          setPower(true);
+          setBaseColor([255,255,255]);
+          setBrightness(100);
+          setSaturation(100);
+          setMode('static');
+          setSpeed('normal');
+          break;
+        case 'invert': {
+          const [r,g,b] = state.baseColor;
+          setBaseColor([255-r,255-g,255-b]);
+          break;
+        }
+        case 'centerPulse':
+          setMode('pulse');
+          break;
+        case 'edges':
+          const cssEdge = rgbStr(applyBrightnessSaturation([255,128,0], state.brightness, state.saturation));
+          const cssMid = rgbStr(applyBrightnessSaturation(state.baseColor, state.brightness, state.saturation));
+          for(let i=0;i<leds.length;i++){
+            const nearEdge = i<3 || i>(leds.length-4);
+            const css = nearEdge ? cssEdge : cssMid;
+            leds[i].style.background = css; leds[i].style.boxShadow = `0 0 10px ${css}`;
+          }
+          break;
+        case 'rainbow':
+          for(let i=0;i<leds.length;i++){
+            const h = Math.round(360 * (i/leds.length));
+            const [r,g,b] = hslToRgb(h, state.saturation, state.brightness);
+            const css = `rgb(${r}, ${g}, ${b})`;
+            leds[i].style.background = css; leds[i].style.boxShadow = `0 0 10px ${css}`;
+          }
+          break;
+        case 'wave':
+          setMode('pulse');
+          break;
+        case 'random':
+          setBaseColor([Math.floor(Math.random()*256), Math.floor(Math.random()*256), Math.floor(Math.random()*256)]);
+          break;
+        // Advanced
+        case 'twinkle':
+          setMode('twinkle');
+          break;
+        case 'comet':
+          setMode('comet');
+          break;
+        case 'plasma':
+          setMode('plasma');
+          break;
+        case 'bounce':
+          setMode('bounce');
+          break;
+        case 'snake':
+          setMode('snake');
+          break;
+        case 'gyro':
+          state.gyroEnabled = !state.gyroEnabled;
+          setMode('gyro');
+          gyroIndicator.classList.toggle('active', state.gyroEnabled);
+          break;
+        case 'draw':
+          state.drawMode = !state.drawMode;
+          patternCanvas.classList.toggle('active', state.drawMode);
+          for (const led of leds) {
+            led.classList.toggle('editable', state.drawMode);
+          }
+          break;
+      }
+    });
+
+    // --- Keyboard quick controls ---
+    window.addEventListener('keydown', (e)=>{
+      if(e.key===' ') { setPower(!state.power); }
+      if(e.key==='1') setMode('fade');
+      if(e.key==='2') setMode('blink');
+      if(e.key==='3') setMode('pulse');
+      if(e.key==='4') setMode('jump');
+      if(e.key==='5') setMode('strobe');
+      if(e.key==='6') setMode('fire');
+      if(e.key==='7') setMode('matrix');
+      if(e.key==='8') setMode('chaser');
+      if(e.key==='9') setMode('larson');
+      if(e.key==='0') setMode('twinkle');
+    });
+
+    // Initial render
+    renderStatic();
+	</script>
+</body>
+
+</html>

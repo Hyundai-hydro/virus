@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Zaawansowany Kalendarz z Wydarzeniami</title>
+	<style>
+		/* Ciemny motyw */
+		body {
+			background: #121212;
+			color: #eee;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+
+		header {
+			padding: 1rem;
+			text-align: center;
+			background-color: #1f1f1f;
+		}
+
+		h1 {
+			margin: 0;
+			font-weight: 600;
+		}
+
+		.calendar {
+			max-width: 700px;
+			margin: 20px auto;
+			background: #222;
+			border-radius: 10px;
+			padding: 15px;
+			box-shadow: 0 0 15px #000;
+		}
+
+		.calendar-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 15px;
+		}
+
+		button {
+			background: #333;
+			color: #eee;
+			border: none;
+			padding: 8px 15px;
+			border-radius: 5px;
+			cursor: pointer;
+			font-weight: 600;
+		}
+
+		button:hover {
+			background: #555;
+		}
+
+		.month-year {
+			font-size: 1.3rem;
+		}
+
+		.weekdays,
+		.days {
+			display: grid;
+			grid-template-columns: repeat(7, 1fr);
+			text-align: center;
+		}
+
+		.weekdays div {
+			padding: 10px 0;
+			font-weight: 600;
+			border-bottom: 1px solid #444;
+		}
+
+		.days div {
+			padding: 12px 0;
+			border-radius: 6px;
+			cursor: pointer;
+			user-select: none;
+			position: relative;
+		}
+
+		.days div:hover {
+			background: #555;
+		}
+
+		.today {
+			background: #008080;
+		}
+
+		.empty {
+			cursor: default;
+		}
+
+		.event-dot {
+			display: block;
+			margin: 5px auto 0;
+			width: 6px;
+			height: 6px;
+			background: #f39c12;
+			border-radius: 50%;
+			position: absolute;
+			bottom: 5px;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		/* Formularz wydarzenia */
+		.event-form {
+			max-width: 700px;
+			margin: 10px auto 30px;
+			background: #1e1e1e;
+			padding: 15px;
+			border-radius: 10px;
+		}
+
+		.event-form label {
+			display: block;
+			margin-bottom: 6px;
+			font-weight: 600;
+		}
+
+		.event-form input[type="text"],
+		.event-form input[type="date"],
+		.event-form input[type="time"],
+		.event-form textarea {
+			width: 100%;
+			padding: 7px 8px;
+			margin-bottom: 12px;
+			border: none;
+			border-radius: 6px;
+			background: #333;
+			color: #eee;
+			font-size: 1rem;
+		}
+
+		.event-form textarea {
+			resize: vertical;
+		}
+
+		.event-form button {
+			width: 100%;
+			padding: 10px;
+			font-weight: 700;
+			font-size: 1rem;
+			background: #008080;
+			border-radius: 6px;
+			color: #fff;
+			border: none;
+			cursor: pointer;
+		}
+
+		.event-form button:hover {
+			background: #00b0b0;
+		}
+
+		/* Lista wydarzeń */
+		.events-list {
+			max-width: 700px;
+			margin: 0 auto 50px;
+			background: #222;
+			border-radius: 10px;
+			padding: 15px;
+			color: #ddd;
+		}
+
+		.events-list h2 {
+			margin-top: 0;
+		}
+
+		.event-item {
+			border-bottom: 1px solid #444;
+			padding: 8px 0;
+		}
+
+		.event-item:last-child {
+			border-bottom: none;
+		}
+
+		.event-date {
+			font-weight: 700;
+		}
+
+		/* Komunikaty */
+		.message {
+			max-width: 700px;
+			margin: 10px auto;
+			padding: 10px;
+			background: #d9534f;
+			/* czerwony */
+			color: #fff;
+			border-radius: 8px;
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+
+	<header>
+		<h1>Zaawansowany Kalendarz</h1>
+	</header>
+
+	<div class="calendar">
+		<div class="calendar-header">
+			<button id="prevMonth">&lt;</button>
+			<div class="month-year" id="monthYear"></div>
+			<button id="nextMonth">&gt;</button>
+		</div>
+		<div class="weekdays">
+			<div>Pon</div>
+			<div>Wt</div>
+			<div>Śr</div>
+			<div>Czw</div>
+			<div>Pt</div>
+			<div>Sob</div>
+			<div>Nd</div>
+		</div>
+		<div class="days" id="days"></div>
+	</div>
+
+	<div class="event-form">
+		<h2>Stwórz wydarzenie</h2>
+		<form id="eventForm">
+			<label for="eventTitle">Tytuł wydarzenia:</label>
+			<input type="text" id="eventTitle" name="eventTitle" required />
+
+			<label for="eventDate">Data wydarzenia:</label>
+			<input type="date" id="eventDate" name="eventDate" required />
+
+			<label for="eventTime">Godzina wydarzenia:</label>
+			<input type="time" id="eventTime" name="eventTime" required />
+
+			<label for="eventDesc">Opis (opcjonalnie):</label>
+			<textarea id="eventDesc" name="eventDesc" rows="3"></textarea>
+
+			<button type="submit">Zapisz wydarzenie</button>
+		</form>
+	</div>
+
+	<div class="events-list" id="eventsList">
+		<h2>Wydarzenia</h2>
+		<div id="eventsContainer">Brak wydarzeń.</div>
+	</div>
+
+	<div id="message" class="message" style="display:none;"></div>
+
+	<script>
+		(() => {
+			const daysEl = document.getElementById('days');
+			const monthYearEl = document.getElementById('monthYear');
+			const prevBtn = document.getElementById('prevMonth');
+			const nextBtn = document.getElementById('nextMonth');
+
+			const messageEl = document.getElementById('message');
+			const eventsContainer = document.getElementById('eventsContainer');
+			const eventForm = document.getElementById('eventForm');
+
+			let today = new Date();
+			let currentYear = today.getFullYear();
+			let currentMonth = today.getMonth();
+
+			// Wydarzenia z localStorage
+			let events = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+
+			function isLeapYear(year) {
+				if (year % 400 === 0) return true;
+				if (year % 100 === 0) return false;
+				if (year % 4 === 0) return true;
+				return false;
+			}
+
+			function getDaysInMonth(year, month) {
+				// Obsługa lat od 1 do 9999
+				if (year < 1) return 31; // domyślnie, chociaż rok <1 nie ma sensu
+				if (year > 9999) return 31; // ograniczenie
+
+				// Październik 1582: 1-4 i 15-31 (21 dni)
+				if (year === 1582 && month === 9) {
+					return 21;
+				}
+				switch (month) {
+					case 1:
+						return isLeapYear(year) ? 29 : 28;
+					case 3:
+					case 5:
+					case 8:
+					case 10:
+						return 30;
+					default:
+						return 31;
+				}
+			}
+
+			// Zwraca dzień tygodnia (0 = Poniedziałek, ..., 6 = Niedziela) z obsługą kalendarza juliańskiego przed 1582-10-15
+			function getDayOfWeek(year, month, day) {
+				if (year === 1582 && month === 9 && day >= 5 && day <= 14) {
+					// Te dni nie istniały
+					return -1;
+				}
+
+				// Używamy algorytmu Zeller'a, ale zmodyfikowanego, aby Poniedziałek był 0.
+				// Zeller oryginalnie zwraca: 0=Saturday,1=Sunday,...,5=Thursday,6=Friday
+
+				let Y = year;
+				let M = month + 1; // bo w JS miesiące od 0 do 11, a w Zeller od 3 do 14 (marzec = 3)
+				let D = day;
+
+				if (M < 3) {
+					M += 12;
+					Y -= 1;
+				}
+
+				let K = Y % 100;
+				let J = Math.floor(Y / 100);
+
+				let h;
+				if (
+					year < 1582 ||
+					(year === 1582 && (month < 9 || (month === 9 && day < 15)))
+				) {
+					// Julian calendar
+					h = (D + Math.floor((13 * (M + 1)) / 5) + K + Math.floor(K / 4) + 5 - J * 2) % 7;
+				} else {
+					// Gregorian calendar
+					h =
+						(D +
+							Math.floor((13 * (M + 1)) / 5) +
+							K +
+							Math.floor(K / 4) +
+							Math.floor(J / 4) -
+							2 * J) %
+						7;
+				}
+				// h: 0=Saturday,1=Sunday,...,5=Thursday,6=Friday
+
+				// Konwersja: Saturday=0 → 6, Sunday=1 → 0, Monday=2 → 1, Tuesday=3 → 2 itd.
+				// Chcemy 0 = Poniedziałek
+				let dayOfWeek = (h + 5) % 7;
+
+				return dayOfWeek;
+			}
+
+			// Zwraca pierwszy dzień miesiąca wg kalendarza z Poniedziałkiem=0
+			function getFirstWeekDay(year, month) {
+				// Obsługa października 1582 (dzień 1 = piątek 1582-10-01) normalnie
+				// ale uwzględniamy, że 5-14 października nie istnieje i puste dni zostaną dodane
+
+				// Sprawdź, czy miesiąc to październik 1582
+				if (year === 1582 && month === 9) {
+					// 1 października 1582 był piątkiem
+					// Zwróć dzień tygodnia 1.10.1582
+					return getDayOfWeek(1582, 9, 1);
+				}
+
+				return getDayOfWeek(year, month, 1);
+			}
+
+			function renderCalendar(year, month) {
+				daysEl.innerHTML = '';
+
+				let monthNames = [
+					"Styczeń",
+					"Luty",
+					"Marzec",
+					"Kwiecień",
+					"Maj",
+					"Czerwiec",
+					"Lipiec",
+					"Sierpień",
+					"Wrzesień",
+					"Październik",
+					"Listopad",
+					"Grudzień"
+				];
+
+				monthYearEl.textContent = `${monthNames[month]} ${year}`;
+
+				let daysInMonth = getDaysInMonth(year, month);
+
+				let firstWeekDay = getFirstWeekDay(year, month);
+
+				if (firstWeekDay === -1) {
+					showMessage('Wybrany miesiąc zawiera nieistniejące dni w kalendarzu (październik 1582).');
+					return;
+				} else {
+					hideMessage();
+				}
+
+				// Obliczamy ile pustych komórek na początku (pierwszy dzień miesiąca to Poniedziałek=0)
+				let emptyStartDays = firstWeekDay;
+
+				// Wstawiamy puste komórki przed pierwszym dniem miesiąca
+				for (let i = 0; i < emptyStartDays; i++) {
+					const emptyDiv = document.createElement('div');
+					emptyDiv.classList.add('empty');
+					daysEl.appendChild(emptyDiv);
+				}
+
+				// Obsługa specjalnego przypadku października 1582 - pominąć dni 5-14
+				// Dni 1-4 normalne, potem skok do 15
+
+				for (let day = 1; day <= daysInMonth; day++) {
+					// W październiku 1582 dni 5-14 nie istnieją
+					if (year === 1582 && month === 9 && day >= 5 && day <= 14) {
+						continue;
+					}
+
+					const dayDiv = document.createElement('div');
+					dayDiv.textContent = day;
+
+					// Podświetlenie dzisiejszego dnia (jeśli miesiąc i rok się zgadzają)
+					if (
+						year === today.getFullYear() &&
+						month === today.getMonth() &&
+						day === today.getDate()
+					) {
+						dayDiv.classList.add('today');
+					}
+
+					// Pokazanie kropki dla dni z wydarzeniami
+					const dayEvents = events.filter(ev => ev.date === formatDate(year, month, day));
+					if (dayEvents.length > 0) {
+						const dot = document.createElement('span');
+						dot.classList.add('event-dot');
+						dayDiv.appendChild(dot);
+					}
+
+					// Kliknięcie na dzień ustawia datę w formularzu
+					dayDiv.addEventListener('click', () => {
+						document.getElementById('eventDate').value = formatDate(year, month, day);
+						document.getElementById('eventTitle').focus();
+					});
+
+					daysEl.appendChild(dayDiv);
+				}
+
+				renderEventsList();
+			}
+
+			// Format daty YYYY-MM-DD z zerami na początku miesiąca/dnia
+			function formatDate(year, month, day) {
+				let mm = (month + 1).toString().padStart(2, '0');
+				let dd = day.toString().padStart(2, '0');
+				return `${year}-${mm}-${dd}`;
+			}
+
+			function showMessage(text) {
+				messageEl.textContent = text;
+				messageEl.style.display = 'block';
+			}
+
+			function hideMessage() {
+				messageEl.style.display = 'none';
+			}
+
+			prevBtn.addEventListener('click', () => {
+				currentMonth--;
+				if (currentMonth < 0) {
+					currentMonth = 11;
+					currentYear--;
+					if (currentYear < 1) currentYear = 1; // minimalny rok
+				}
+				renderCalendar(currentYear, currentMonth);
+			});
+
+			nextBtn.addEventListener('click', () => {
+				currentMonth++;
+				if (currentMonth > 11) {
+					currentMonth = 0;
+					currentYear++;
+					if (currentYear > 9999) currentYear = 9999; // maksymalny rok
+				}
+				renderCalendar(currentYear, currentMonth);
+			});
+
+			eventForm.addEventListener('submit', (e) => {
+				e.preventDefault();
+
+				const title = eventForm.eventTitle.value.trim();
+				const date = eventForm.eventDate.value;
+				const time = eventForm.eventTime.value;
+				const desc = eventForm.eventDesc.value.trim();
+
+				if (!title || !date || !time) {
+					showMessage('Proszę wypełnić wszystkie wymagane pola.');
+					return;
+				}
+
+				// Sprawdzenie czy data nie jest w "lukach" kalendarza (5-14 października 1582)
+				if (date.startsWith('1582-10-')) {
+					const day = parseInt(date.slice(8, 10));
+					if (day >= 5 && day <= 14) {
+						showMessage('Wybrana data nie istnieje w kalendarzu (październik 1582).');
+						return;
+					}
+				}
+
+				events.push({
+					title,
+					date,
+					time,
+					description: desc,
+				});
+
+				localStorage.setItem('calendarEvents', JSON.stringify(events));
+
+				eventForm.reset();
+				hideMessage();
+				renderCalendar(currentYear, currentMonth);
+			});
+
+			function renderEventsList() {
+				if (events.length === 0) {
+					eventsContainer.textContent = 'Brak wydarzeń.';
+					return;
+				}
+
+				// Sortowanie wydarzeń po dacie i godzinie
+				events.sort((a, b) => {
+					if (a.date === b.date) return a.time.localeCompare(b.time);
+					return a.date.localeCompare(b.date);
+				});
+
+				eventsContainer.innerHTML = '';
+
+				for (const ev of events) {
+					const evDiv = document.createElement('div');
+					evDiv.classList.add('event-item');
+
+					evDiv.innerHTML = `<span class="event-date">${ev.date} ${ev.time}</span> — <strong>${ev.title}</strong>`;
+					if (ev.description) {
+						const descP = document.createElement('p');
+						descP.textContent = ev.description;
+						evDiv.appendChild(descP);
+					}
+					eventsContainer.appendChild(evDiv);
+				}
+			}
+
+			// Inicjalizacja
+			renderCalendar(currentYear, currentMonth);
+		})();
+	</script>
+
+</body>
+
+</html>

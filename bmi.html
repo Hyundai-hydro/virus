@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zaawansowany Kalkulator BMI z Efektem iOS 26 Glass</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; padding: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #a3c9ff, #4a90e2);
+    color: #222;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  h1 {
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255 255 255 / 0.5);
+  }
+  .container {
+    max-width: 900px;
+    width: 100%;
+    background: rgba(255 255 255 / 0.1);
+    border-radius: 30px;
+    box-shadow: 0 8px 40px rgba(0 0 0 / 0.15);
+    backdrop-filter: saturate(200%) blur(26px);
+    -webkit-backdrop-filter: saturate(200%) blur(26px);
+    border: 1px solid rgba(255 255 255 / 0.25);
+    padding: 30px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    color: #0a0a0add;
+    transition: box-shadow 0.3s ease;
+  }
+  .container:hover {
+    box-shadow: 0 12px 60px rgba(0 0 0 / 0.25);
+  }
+  form {
+    flex: 1 1 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  label {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  input, select {
+    padding: 10px 14px;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: none;
+    background: rgba(255 255 255 / 0.65);
+    box-shadow: inset 0 2px 8px rgba(0 0 0 / 0.1);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    outline-offset: 2px;
+    outline-color: #4a90e2;
+  }
+  input:focus, select:focus {
+    background: rgba(255 255 255 / 0.9);
+    box-shadow: 0 0 10px #4a90e2aa;
+  }
+  button {
+    background: linear-gradient(135deg, #4a90e2, #6bb7ff);
+    border: none;
+    padding: 14px 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #fff;
+    border-radius: 24px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 8px 20px rgba(74 144 226 / 0.6);
+  }
+  button:hover {
+    background: linear-gradient(135deg, #2e65c3, #3e88ff);
+    transform: translateY(-3px);
+  }
+  button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(74 144 226 / 0.8);
+  }
+  #result {
+    flex: 1 1 400px;
+    background: rgba(255 255 255 / 0.3);
+    border-radius: 30px;
+    padding: 25px 30px;
+    box-shadow: inset 0 0 20px rgba(255 255 255 / 0.6);
+    font-size: 1.1rem;
+    color: #1a1a1a;
+    min-height: 300px;
+    overflow-y: auto;
+    user-select: text;
+    backdrop-filter: saturate(180%) blur(26px);
+  }
+  #bmiTableWindow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 350px;
+    max-width: 90vw;
+    max-height: 80vh;
+    background: rgba(255 255 255 / 0.18);
+    border-radius: 28px;
+    box-shadow: 0 20px 50px rgba(0 0 0 / 0.2);
+    backdrop-filter: saturate(180%) blur(26px);
+    -webkit-backdrop-filter: saturate(180%) blur(26px);
+    border: 1.5px solid rgba(255 255 255 / 0.3);
+    padding: 20px 25px;
+    overflow-y: auto;
+    color: #222;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+    opacity: 0;
+    z-index: 1000;
+  }
+  #bmiTableWindow.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  #bmiTableWindow h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.4rem;
+  }
+  #bmiTableWindow table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    user-select: text;
+  }
+  #bmiTableWindow th, #bmiTableWindow td {
+    border: 1px solid rgba(0 0 0 / 0.1);
+    padding: 8px 10px;
+    text-align: center;
+    border-radius: 10px;
+  }
+  #bmiTableWindow th {
+    background: rgba(255 255 255 / 0.35);
+    font-weight: 600;
+  }
+  #bmiTableWindow tbody tr:hover {
+    background: rgba(74 144 226 / 0.2);
+  }
+  #bmiTableWindow .closeBtn {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: rgba(255 255 255 / 0.35);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+    color: #333;
+    user-select: none;
+    transition: background 0.2s ease;
+  }
+  #bmiTableWindow .closeBtn:hover {
+    background: rgba(255 255 255 / 0.7);
+  }
+  #showBmiTableBtn {
+    margin-top: 15px;
+    background: linear-gradient(135deg, #00bfa5, #1de9b6);
+    box-shadow: 0 6px 16px rgba(29 233 182 / 0.6);
+  }
+  #showBmiTableBtn:hover {
+    background: linear-gradient(135deg, #008e75, #13d9a3);
+  }
+  @media (max-width: 700px) {
+    .container {
+      flex-direction: column;
+      padding: 25px 20px;
+    }
+    #result {
+      min-height: 250px;
+    }
+  }
+</style>
+</head>
+<body>
+<h1>Zaawansowany Kalkulator BMI i Zdrowia</h1>
+<div class="container" role="main" aria-label="Formularz kalkulatora BMI i wyników">
+  <form id="bmiForm" aria-describedby="result">
+    <label for="gender">Płeć:</label>
+    <select id="gender" aria-required="true">
+      <option value="male" selected>Mężczyzna</option>
+      <option value="female">Kobieta</option>
+    </select>
+    <label for="age">Wiek (domyślnie 30):</label>
+    <input type="number" id="age" min="1" max="120" placeholder="30" aria-describedby="ageHelp" />
+    <small id="ageHelp">Podaj swój wiek (1-120 lat), jeśli puste, będzie 30.</small>
+    <label for="height">Wzrost (cm):</label>
+    <input type="number" id="height" min="30" max="300" required aria-required="true" />
+    <label for="weight">Waga (kg):</label>
+    <input type="number" id="weight" min="1" max="500" required aria-required="true" />
+    <label for="waist">Obwód talii (cm):</label>
+    <input type="number" id="waist" min="20" max="300" placeholder="opcjonalnie" />
+    <label for="hip">Obwód bioder (cm):</label>
+    <input type="number" id="hip" min="20" max="300" placeholder="opcjonalnie" />
+    <label for="neck">Obwód szyi (cm):</label>
+    <input type="number" id="neck" min="20" max="100" placeholder="opcjonalnie" />
+    <label for="activity">Poziom aktywności:</label>
+    <select id="activity">
+      <option value="1.2">Brak aktywności (siedzący tryb)</option>
+      <option value="1.375">Lekka aktywność (1-3 dni/tydzień)</option>
+      <option value="1.55" selected>Umiarkowana aktywność (3-5 dni/tydzień)</option>
+      <option value="1.725">Duża aktywność (6-7 dni/tydzień)</option>
+      <option value="1.9">Bardzo duża aktywność (praca fizyczna/sport)</option>
+    </select>
+    <label for="includeDietCheckbox" style="display:flex; align-items:center; gap:6px; margin-top:15px; font-weight:600; cursor:pointer;">
+      <input type="checkbox" id="includeDiet" />
+      Uwzględnij wpływ diety
+    </label>
+    <label for="diet" id="dietLabel" style="display:none;">
+      Jakość diety:
+      <select id="diet" aria-describedby="dietHelp">
+        <option value="0.7">Tragiczna</option>
+        <option value="0.85">Zła</option>
+        <option value="1" selected>Przeciętna</option>
+        <option value="1.15">Dobra</option>
+        <option value="1.3">Super</option>
+      </select>
+      <small id="dietHelp">Wpływ diety na kalorie (zmniejsza lub zwiększa zapotrzebowanie)</small>
+    </label>
+    <button type="button" id="calcBtn" aria-describedby="result">Oblicz</button>
+    <button type="button" id="showBmiTableBtn" aria-label="Pokaż tabelę BMI i wyjaśnienia">Tabela BMI i Informacje</button>
+  </form>
+  <section id="result" tabindex="0" aria-live="polite" aria-label="Wyniki kalkulacji">
+    <em>Wprowadź dane i kliknij "Oblicz"</em>
+  </section>
+</div>
+<div id="bmiTableWindow" role="dialog" aria-modal="true" aria-labelledby="bmiTableTitle" tabindex="-1">
+  <button class="closeBtn" aria-label="Zamknij okno tabeli BMI">&times;</button>
+  <h2 id="bmiTableTitle">Tabela BMI i Informacje</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Zakres BMI</th>
+        <th>Interpretacja</th>
+        <th>Ryzyko zdrowotne</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>&lt; 16.0</td><td>Wygłodzenie</td><td>Wysokie</td></tr>
+      <tr><td>16.0 - 16.9</td><td"Wychudzenie</td><td>Wysokie</td></tr>
+      <tr><td>17.0 - 18.4</td><td>Niedowaga</td><td>Podwyższone</td></tr>
+      <tr><td>18.5 - 24.9</td><td>Waga prawidłowa</td><td>Norma</td></tr>
+      <tr><td>25.0 - 29.9</td><td>Nadwaga</td><td>Podwyższone</td></tr>
+      <tr><td>30.0 - 34.9</td><td>Otyłość I stopnia</td><td>Wysokie</td></tr>
+      <tr><td>35.0 - 39.9</td><td>Otyłość II stopnia</td><td>Bardzo wysokie</td></tr>
+      <tr><td>≥ 40.0</td><td>Otyłość III stopnia</td><td>Ekstremalne</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  (() => {
+    const form = document.getElementById("bmiForm");
+    const result = document.getElementById("result");
+    const calcBtn = document.getElementById("calcBtn");
+    const bmiTableWindow = document.getElementById("bmiTableWindow");
+    const showBmiTableBtn = document.getElementById("showBmiTableBtn");
+    const closeBmiTableBtn = bmiTableWindow.querySelector(".closeBtn");
+    const dietCheckbox = document.getElementById("includeDiet");
+    const dietLabel = document.getElementById("dietLabel");
+    const dietSelect = document.getElementById("diet");
+
+    dietCheckbox.addEventListener("change", () => {
+      dietLabel.style.display = dietCheckbox.checked ? "block" : "none";
+    });
+
+    function round2(x) {
+      return Math.round(x * 100) / 100;
+    }
+
+    function interpretBMI(bmi) {
+      if (bmi < 16) return "Wygłodzenie";
+      if (bmi < 17) return "Wychudzenie";
+      if (bmi < 18.5) return "Niedowaga";
+      if (bmi < 25) return "Waga prawidłowa";
+      if (bmi < 30) return "Nadwaga";
+      if (bmi < 35) return "Otyłość I stopnia";
+      if (bmi < 40) return "Otyłość II stopnia";
+      return "Otyłość III stopnia";
+    }
+
+    function healthRisk(bmi) {
+      if (bmi < 16.9) return "Wysokie";
+      if (bmi < 18.5) return "Podwyższone";
+      if (bmi < 25) return "Norma";
+      if (bmi < 30) return "Podwyższone";
+      if (bmi < 35) return "Wysokie";
+      if (bmi < 40) return "Bardzo wysokie";
+      return "Ekstremalne";
+    }
+
+    function calculateBMI(weight, heightCm) {
+      const heightM = heightCm / 100;
+      return weight / (heightM * heightM);
+    }
+
+    // Body Fat % formula (U.S. Navy Method) requires waist, neck, hip (hip only for females)
+    // All measurements in cm
+    function calculateBodyFat(gender, waist, neck, hip, height) {
+      if (gender === "male") {
+        if (!(waist && neck && height)) return null;
+        // male formula
+        return 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(height)) - 450;
+      } else {
+        if (!(waist && neck && hip && height)) return null;
+        // female formula
+        return 495 / (1.29579 - 0.35004 * Math.log10(waist + hip - neck) + 0.22100 * Math.log10(height)) - 450;
+      }
+    }
+
+    function calculateBMR(gender, weight, height, age) {
+      if (gender === "male") {
+        return 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age;
+      } else {
+        return 447.593 + 9.247 * weight + 3.098 * height - 4.330 * age;
+      }
+    }
+
+    calcBtn.addEventListener("click", () => {
+      const gender = form.gender.value;
+      const ageRaw = form.age.value;
+      const age = (ageRaw && ageRaw >= 1 && ageRaw <= 120) ? Number(ageRaw) : 30;
+      const height = Number(form.height.value);
+      const weight = Number(form.weight.value);
+      const waist = Number(form.waist.value) || null;
+      const hip = Number(form.hip.value) || null;
+      const neck = Number(form.neck.value) || null;
+      const activity = Number(form.activity.value);
+      const includeDiet = dietCheckbox.checked;
+      const dietMultiplier = includeDiet ? Number(dietSelect.value) : 1;
+
+      if (!(height > 30 && height < 300)) {
+        result.textContent = "Proszę wprowadzić poprawny wzrost (30-300 cm).";
+        return;
+      }
+      if (!(weight > 1 && weight < 500)) {
+        result.textContent = "Proszę wprowadzić poprawną wagę (1-500 kg).";
+        return;
+      }
+
+      const bmi = calculateBMI(weight, height);
+      const bmiInterpr = interpretBMI(bmi);
+      const bmiRisk = healthRisk(bmi);
+
+      let bodyFatPercent = null;
+      let bodyFatInterpretation = "";
+
+      if ((gender === "male" && waist && neck) || (gender === "female" && waist && neck && hip)) {
+        bodyFatPercent = calculateBodyFat(gender, waist, neck, hip, height);
+        if (bodyFatPercent !== null && !isNaN(bodyFatPercent)) {
+          bodyFatPercent = round2(bodyFatPercent);
+          if (gender === "male") {
+            if (bodyFatPercent < 6) bodyFatInterpretation = "Zbyt niska tkanka tłuszczowa";
+            else if (bodyFatPercent <= 24) bodyFatInterpretation = "Zdrowy poziom tłuszczu";
+            else bodyFatInterpretation = "Wysoki poziom tłuszczu";
+          } else {
+            if (bodyFatPercent < 14) bodyFatInterpretation = "Zbyt niska tkanka tłuszczowa";
+            else if (bodyFatPercent <= 31) bodyFatInterpretation = "Zdrowy poziom tłuszczu";
+            else bodyFatInterpretation = "Wysoki poziom tłuszczu";
+          }
+        } else {
+          bodyFatPercent = null;
+        }
+      }
+
+      const bmr = calculateBMR(gender, weight, height, age);
+      const calories = bmr * activity * dietMultiplier;
+
+      let advice = "";
+      if (bmi < 18.5) advice = "Zaleca się zwiększyć masę ciała i poprawić dietę.";
+      else if (bmi >= 25) advice = "Zaleca się kontrolować wagę, zwiększyć aktywność fizyczną i zdrową dietę.";
+      else advice = "Twoja waga jest prawidłowa, utrzymuj zdrowy styl życia.";
+
+      let bodyFatAdvice = "";
+      if (bodyFatPercent !== null) {
+        if (bodyFatInterpretation.includes("niska")) bodyFatAdvice = "Uważaj, zbyt niska tkanka tłuszczowa może być niezdrowa.";
+        else if (bodyFatInterpretation.includes("wysoki")) bodyFatAdvice = "Zalecana kontrola poziomu tkanki tłuszczowej i stylu życia.";
+        else bodyFatAdvice = "Poziom tkanki tłuszczowej jest w normie.";
+      }
+
+      result.innerHTML = `
+      <h3>Twoje wyniki:</h3>
+      <p><strong>BMI:</strong> ${round2(bmi)} (${bmiInterpr})<br><em>Ryzyko zdrowotne: ${bmiRisk}</em></p>
+      ${bodyFatPercent !== null ? `<p><strong>Procent tkanki tłuszczowej:</strong> ${bodyFatPercent}% (${bodyFatInterpretation})<br><em>${bodyFatAdvice}</em></p>` : "<p><em>Brak danych do obliczenia procentu tkanki tłuszczowej (potrzebne: obwód talii, szyi i bioder dla kobiet).</em></p>"}
+      <p><strong>Podstawowa przemiana materii (BMR):</strong> ${round2(bmr)} kcal/dzień</p>
+      <p><strong>Zapotrzebowanie kaloryczne (z aktywnością i dietą):</strong> ${round2(calories)} kcal/dzień</p>
+      <p><strong>Porada:</strong> ${advice}</p>
+      `;
+      result.focus();
+    });
+
+    showBmiTableBtn.addEventListener("click", () => {
+      bmiTableWindow.classList.add("show");
+      bmiTableWindow.focus();
+    });
+
+    closeBmiTableBtn.addEventListener("click", () => {
+      bmiTableWindow.classList.remove("show");
+      calcBtn.focus();
+    });
+
+    // Close BMI table with Escape
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && bmiTableWindow.classList.contains("show")) {
+        bmiTableWindow.classList.remove("show");
+        calcBtn.focus();
+      }
+    });
+  })();
+</script>
+</body>
+</html>

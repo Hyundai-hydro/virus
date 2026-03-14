@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Recorder 2026 – Pro</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --warning: #d97706;
+            --gray: #6b7280;
+        }
+        body {
+            font-family: system-ui, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+            color: #111;
+            margin: 0;
+            padding: 20px 16px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 0.4rem; }
+        .subtitle { text-align: center; color: #475569; margin-bottom: 1.8rem; font-style: italic; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.09);
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.6rem;
+        }
+        label { display: block; margin: 0.9rem 0 0.4rem; font-weight: 600; color: #334155; }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+        .checkbox-group {
+            margin: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2.2rem 0 1.8rem;
+        }
+        button {
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-start { background: var(--primary); color: white; }
+        .btn-start:hover { background: var(--primary-dark); }
+        .btn-stop  { background: var(--danger); color: white; }
+        .btn-stop:hover  { background: #b91c1c; }
+        .btn-save  { background: var(--success); color: white; }
+        .btn-save:hover  { background: #15803d; }
+        .btn-control { background: var(--gray); color: white; }
+        .btn-control:hover { background: #475569; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        #timer {
+            font-size: 3.6rem;
+            font-weight: 700;
+            color: #1e40af;
+            text-align: center;
+            margin: 1.2rem 0;
+            letter-spacing: -1px;
+        }
+        #status {
+            text-align: center;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.2rem 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .success { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
+        .warning { background: #fffbeb; color: #92400e; border: 1px solid #fcd34d; }
+        .error   { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        #overlay {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            z-index: 9999;
+            display: none;
+        }
+        #preview {
+            width: 100%;
+            max-height: 540px;
+            border-radius: 10px;
+            background: #000;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Screen Recorder 2026</h1>
+    <div class="subtitle">wysoka jakość • dużo opcji • zero watermarków</div>
+
+    <div class="card">
+        <div class="grid">
+            <div>
+                <label>Rozdzielczość</label>
+                <select id="resolution">
+                    <option value="256x144">144p (256×144)</option>
+                    <option value="426x240">240p (426×240)</option>
+                    <option value="640x360">360p</option>
+                    <option value="854x480">480p</option>
+                    <option value="960x540">540p</option>
+                    <option value="1280x720">720p HD</option>
+                    <option value="1366x768">HD+ (1366×768)</option>
+                    <option value="1600x900">900p</option>
+                    <option value="1920x1080" selected>1080p Full HD</option>
+                    <option value="2560x1440">1440p 2K / QHD</option>
+                    <option value="3840x2160">2160p 4K UHD</option>
+                </select>
+
+                <label>Klatki na sekundę (FPS)</label>
+                <select id="fps">
+                    <option value="24">24 fps (filmowy)</option>
+                    <option value="30">30 fps</option>
+                    <option value="48">48 fps</option>
+                    <option value="50">50 fps</option>
+                    <option value="60" selected>60 fps</option>
+                    <option value="90">90 fps</option>
+                    <option value="120">120 fps</option>
+                    <option value="144">144 fps</option>
+                    <option value="240">240 fps (ultra płynne)</option>
+                </select>
+
+                <label>Kodek wideo</label>
+                <select id="codec">
+                    <option value="vp9" selected>VP9 (najlepszy stosunek)</option>
+                    <option value="av1">AV1 (najlepsza jakość)</option>
+                    <option value="vp8">VP8 (maks kompatybilność)</option>
+                </select>
+
+                <label>Bitrate (jakość)</label>
+                <select id="bitrate">
+                    <option value="800">Niska (~0.8 Mbps)</option>
+                    <option value="2000">Dobra (~2 Mbps)</option>
+                    <option value="4000" selected>Świetna (~4 Mbps)</option>
+                    <option value="8000">Bardzo wysoka (~8 Mbps)</option>
+                    <option value="15000">Maksymalna (~15 Mbps)</option>
+                </select>
+
+                <label>Dziel plik co (minuty, 0 = bez)</label>
+                <input type="number" id="splitEvery" min="0" value="15" step="5">
+            </div>
+
+            <div>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="forceHighQuality" checked> Wymus lepszą jakość (wyższy bitrate + lepszy kodek)</label>
+                    <label><input type="checkbox" id="crushQuality"> Crush quality / retro styl</label>
+                    <label><input type="checkbox" id="systemAudio" checked> Dźwięk systemowy</label>
+                    <label><input type="checkbox" id="micAudio"> Mikrofon</label>
+                    <label><input type="checkbox" id="silentMode"> Tryb cichy (bez dźwięku)</label>
+                    <label><input type="checkbox" id="loopMode"> Nagrywanie w pętli (nadpisuj najstarszy po limicie)</label>
+                </div>
+
+                <label>Limit rozmiaru pętli (MB, 0 = bez limitu)</label>
+                <input type="number" id="loopSizeLimit" min="0" value="2048" step="256">
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-start" id="startBtn">● NAGRYWAJ</button>
+            <button class="btn-stop" id="stopBtn" disabled>■ STOP</button>
+            <button class="btn-save" id="saveNowBtn" disabled>💾 Zapisz teraz</button>
+            <button class="btn-control" id="pauseBtn" disabled>❚❚ Pauza</button>
+            <button class="btn-control" id="resumeBtn" disabled>▶ Wznów</button>
+            <button class="btn-control" id="screenshotBtn" disabled>📸 Zrzut</button>
+        </div>
+
+        <div id="timer">00:00:00</div>
+        <div id="status"></div>
+    </div>
+
+    <div id="overlay">Rozmiar: 0.0 MB</div>
+    <video id="preview" autoplay muted playsinline></video>
+</div>
+
+<script>
+// ──────────────────────────────────────────────
+//  SCREEN RECORDER PRO 2026 – z zapisem w trakcie + must-have opcjami
+// ──────────────────────────────────────────────
+
+let mediaRecorder, stream, timerInterval, elapsed = 0, isPaused = false;
+let recordedChunks = [], allChunks = [];
+let canvas, ctx, sourceVideo, drawInterval;
+let splitTimer, currentFileIndex = 1;
+
+const els = {
+    startBtn:     document.getElementById('startBtn'),
+    stopBtn:      document.getElementById('stopBtn'),
+    saveNowBtn:   document.getElementById('saveNowBtn'),
+    pauseBtn:     document.getElementById('pauseBtn'),
+    resumeBtn:    document.getElementById('resumeBtn'),
+    screenshotBtn:document.getElementById('screenshotBtn'),
+    preview:      document.getElementById('preview'),
+    timer:        document.getElementById('timer'),
+    overlay:      document.getElementById('overlay'),
+    status:       document.getElementById('status'),
+    resolution:   document.getElementById('resolution'),
+    fps:          document.getElementById('fps'),
+    codec:        document.getElementById('codec'),
+    bitrate:      document.getElementById('bitrate'),
+    forceHighQuality: document.getElementById('forceHighQuality'),
+    crushQuality: document.getElementById('crushQuality'),
+    systemAudio:  document.getElementById('systemAudio'),
+    micAudio:     document.getElementById('micAudio'),
+    silentMode:   document.getElementById('silentMode'),
+    loopMode:     document.getElementById('loopMode'),
+    splitEvery:   document.getElementById('splitEvery'),
+    loopSizeLimit:document.getElementById('loopSizeLimit')
+};
+
+function formatTime(s) {
+    const h = Math.floor(s / 3600).toString().padStart(2,'0');
+    const m = Math.floor((s % 3600) / 60).toString().padStart(2,'0');
+    const sec = (s % 60).toString().padStart(2,'0');
+    return `${h}:${m}:${sec}`;
+}
+
+function updateOverlay() {
+    if (!mediaRecorder || mediaRecorder.state !== 'recording') return;
+    const total = allChunks.reduce((sum, b) => sum + b.size, 0);
+    const mb = (total / 1024 / 1024).toFixed(1);
+    els.overlay.textContent = `Rozmiar całkowity: ${mb} MB`;
+}
+
+function showStatus(msg, type = '') {
+    els.status.textContent = msg;
+    els.status.className = type ? `status ${type}` : '';
+}
+
+function saveCurrentChunk(filenameSuffix = '') {
+    if (recordedChunks.length === 0) return;
+
+    const blob = new Blob(recordedChunks, {type: 'video/webm'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const dateStr = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+    a.download = `recording_${dateStr}${filenameSuffix ? '_' + filenameSuffix : ''}.webm`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    // Zachowujemy do pętli jeśli włączona
+    if (els.loopMode.checked) {
+        allChunks.push(...recordedChunks);
+        const totalSizeMB = allChunks.reduce((sum, b) => sum + b.size, 0) / 1024 / 1024;
+        const limit = parseInt(els.loopSizeLimit.value);
+        if (limit > 0 && totalSizeMB > limit) {
+            // Usuwamy najstarsze chunki (przybliżone)
+            while (totalSizeMB > limit && allChunks.length > 0) {
+                allChunks.shift();
+            }
+        }
+    }
+
+    recordedChunks = [];
+    showStatus(`Zapisano fragment: ${filenameSuffix || 'manualny'}`, 'success');
+}
+
+async function startRecording() {
+    try {
+        let [w, h] = els.resolution.value.split('x').map(Number);
+        let fpsVal = parseInt(els.fps.value);
+
+        if (els.forceHighQuality.checked) {
+            if (fpsVal < 60) fpsVal = 60;
+            if (w < 1920) [w, h] = [1920, 1080];
+        }
+
+        let displayStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { width: {ideal: w}, height: {ideal: h}, frameRate: {ideal: fpsVal} },
+            audio: els.systemAudio.checked && !els.silentMode.checked
+        });
+
+        if (els.micAudio.checked && !els.silentMode.checked) {
+            try {
+                const mic = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mic.getAudioTracks().forEach(t => displayStream.addTrack(t));
+            } catch {}
+        }
+
+        sourceVideo = document.createElement('video');
+        sourceVideo.srcObject = displayStream;
+        sourceVideo.muted = true;
+        await sourceVideo.play();
+
+        canvas = document.createElement('canvas');
+        canvas.width = sourceVideo.videoWidth || w || 1920;
+        canvas.height = sourceVideo.videoHeight || h || 1080;
+        ctx = canvas.getContext('2d');
+
+        function draw() {
+            if (!ctx || !sourceVideo.videoWidth) return;
+            ctx.drawImage(sourceVideo, 0, 0, canvas.width, canvas.height);
+
+            if (els.crushQuality.checked) {
+                ctx.filter = 'contrast(1.35) brightness(0.88) saturate(0.55)';
+                ctx.globalAlpha = 0.09;
+                ctx.fillStyle = '#000';
+                for(let i = 0; i < 280; i++){
+                    ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2.8, 2.8);
+                }
+                ctx.globalAlpha = 1;
+                ctx.filter = 'none';
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        drawInterval = setInterval(draw, 1000 / fpsVal);
+
+        stream = canvas.captureStream(fpsVal);
+        displayStream.getAudioTracks().forEach(t => stream.addTrack(t));
+
+        els.preview.srcObject = stream;
+
+        let mime = 'video/webm';
+        let codecs = els.codec.value === 'av1' ? 'av1,opus' : (els.codec.value === 'vp8' ? 'vp8,opus' : 'vp9,opus');
+
+        let bitrate = parseInt(els.bitrate.value) * 1000;
+        if (els.forceHighQuality.checked) bitrate = Math.max(bitrate, 8000 * 1000);
+
+        mediaRecorder = new MediaRecorder(stream, {
+            mimeType: `video/webm;codecs=${codecs}`,
+            videoBitsPerSecond: bitrate
+        });
+
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) {
+                recordedChunks.push(e.data);
+            }
+        };
+
+        mediaRecorder.onstop = () => {
+            saveCurrentChunk('final');
+            cleanUp();
+        };
+
+        mediaRecorder.start(10000); // chunk co 10 sekund – bezpieczniej
+
+        elapsed = 0;
+        els.timer.textContent = '00:00:00';
+        timerInterval = setInterval(() => {
+            if (!isPaused) {
+                elapsed++;
+                els.timer.textContent = formatTime(elapsed);
+            }
+        }, 1000);
+
+        setInterval(updateOverlay, 1500);
+
+        // Automatyczne dzielenie plików
+        const splitMin = parseInt(els.splitEvery.value);
+        if (splitMin > 0) {
+            splitTimer = setInterval(() => {
+                if (mediaRecorder.state === 'recording') {
+                    saveCurrentChunk(`part${currentFileIndex++}`);
+                }
+            }, splitMin * 60 * 1000);
+        }
+
+        els.startBtn.disabled = true;
+        els.stopBtn.disabled = false;
+        els.saveNowBtn.disabled = false;
+        els.pauseBtn.disabled = false;
+        els.screenshotBtn.disabled = false;
+
+        const autoMin = parseInt(els.autoStop.value);
+        if (autoMin > 0) {
+            setTimeout(() => mediaRecorder?.state === 'recording' && mediaRecorder.stop(), autoMin * 60000);
+        }
+
+        showStatus('Nagrywanie uruchomione! ●', 'success');
+
+    } catch (err) {
+        showStatus('Błąd startu: ' + err.message, 'error');
+    }
+}
+
+function saveNow() {
+    saveCurrentChunk('manual');
+}
+
+function takeScreenshot() {
+    if (!canvas) return;
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `screenshot_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.png`;
+    a.click();
+    showStatus('Zrzut zapisany!', 'success');
+}
+
+function cleanUp() {
+    clearInterval(timerInterval);
+    clearInterval(drawInterval);
+    clearInterval(splitTimer);
+    stream?.getTracks().forEach(t => t.stop());
+    if (sourceVideo) sourceVideo.srcObject = null;
+    canvas = ctx = sourceVideo = null;
+    els.preview.srcObject = null;
+}
+
+function stopRecording() {
+    mediaRecorder?.stop();
+    isPaused = false;
+    els.startBtn.disabled = false;
+    els.stopBtn.disabled = true;
+    els.saveNowBtn.disabled = true;
+    els.pauseBtn.disabled = true;
+    els.resumeBtn.disabled = true;
+    els.screenshotBtn.disabled = true;
+}
+
+els.startBtn.onclick     = startRecording;
+els.stopBtn.onclick      = stopRecording;
+els.saveNowBtn.onclick   = saveNow;
+els.pauseBtn.onclick     = () => {
+    mediaRecorder?.pause();
+    isPaused = true;
+    els.pauseBtn.disabled = true;
+    els.resumeBtn.disabled = false;
+};
+els.resumeBtn.onclick    = () => {
+    mediaRecorder?.resume();
+    isPaused = false;
+    els.pauseBtn.disabled = false;
+    els.resumeBtn.disabled = true;
+};
+els.screenshotBtn.onclick = takeScreenshot;
+</script>
+</body>
+</html>

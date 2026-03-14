@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Number Guesser – Totalny Chaos</title>
+    <style>
+        body { font-family: Comic Sans MS, sans-serif; text-align: center; background: #000; color: #0f0; }
+        button { padding: 15px 30px; margin: 10px; background: #f00; color: #fff; border: none; cursor: pointer; }
+        button:hover { background: #0ff; }
+        input { padding: 10px; background: #333; color: #fff; border: 2px solid #0f0; }
+        .warning { 
+            display: none; 
+            font-size: 80px; 
+            color: red; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            animation: blink 0.5s infinite; 
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Zgadnij albo giń!</h1>
+    <p>Wybierz tryb, dawaj:</p>
+    <button onclick="startGame(1)">Tryb 1 (Chill)</button>
+    <button onclick="startGame(2)">Tryb 2 (youtubeHub)</button>
+    <button onclick="startGame(3)">Tryb 3 (Lagi)</button>
+    <button onclick="startGame(4)">Tryb 4 (Masakra)</button>
+    <button onclick="startGame(5)">Tryb 5 (WSZYSTKO)</button>
+    <button onclick="startGame(6)">Tryb 6 (Lag intensywny)</button>
+    <button onclick="startGame(7)">Tryb 7 (WSZYSTKO NA RAZ)</button>
+    <button onclick="startGame(8)">Tryb 8 (Minecraft + youtubeHub po 1 min)</button>
+    <button onclick="startGame(8.1)">Tryb 8.1 (Safe: Minecraft + Rickroll po 1 min)</button>
+    <button onclick="startGame(9)">Tryb 9 (Telefon w szkole + SpeedTest)</button>
+    <button onclick="startGame(10)">Tryb 10 (Eksperyment MAX – CPU/GPU Killer)</button>
+    <div id="game" style="display:none;">
+        <p>Zgadnij od 1 do 100, ziom:</p>
+        <input type="number" id="guessInput">
+        <button onclick="checkGuess()">Sprawdź, kurde!</button>
+        <p id="message"></p>
+    </div>
+    <div id="warning" class="warning">KORZYSTAŁEM Z TELEFONU W SZKOLE</div>
+    <script>
+        let number, mode;
+        function startGame(selectedMode) {
+            mode = selectedMode;
+            number = Math.floor(Math.random() * 100) + 1;
+            document.getElementById("game").style.display = "block";
+            document.getElementById("message").innerText = "Dawaj, zgaduj!";
+        }
+        function checkGuess() {
+            const guess = parseInt(document.getElementById("guessInput").value);
+            if (guess < number) {
+                document.getElementById("message").innerText = "Za mało, ziom!";
+            } else if (guess > number) {
+                document.getElementById("message").innerText = "Za dużo, ogarnij!";
+            } else {
+                document.getElementById("message").innerText = "Zgadłeś, kurde!";
+                endGame();
+            }
+        }
+        function endGame() {
+            if (mode === 1) alert("Git, zgadłeś!");
+            else if (mode === 2) window.open("https://www.pornhub.com");
+            else if (mode === 3) {
+                window.open("https://www.pornhub.com");
+                window.open("https://webglsamples.org/aquarium/aquarium.html");
+                window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+            } else if (mode === 4) {
+                window.open("https://webglsamples.org/aquarium/aquarium.html");
+                window.open("https://stressmygpu.com");
+                window.open("https://www.pornhub.com");
+                window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+            } else if (mode === 5) {
+                alert("Trzymaj się, bo będzie masakra!");
+                window.open("https://webglsamples.org/aquarium/aquarium.html");
+                window.open("https://stressmygpu.com");
+                window.open("https://www.shadertoy.com/view/XsXXDn");
+                window.open("https://webglreport.com");
+                window.open("https://cantyouhandlethis.com");
+                window.open("https://www.pornhub.com");
+                window.open("https://www.speedtest.net");
+                window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+                window.open("https://webglsamples.org/field/field.html");
+                window.open("https://www.shadertoy.com/view/4dXGR8");
+                window.open("https://www.netflix.com");
+                window.open("https://www.twitch.tv");
+                window.open("https://www.google.com/maps");
+                window.open("https://zoom.us");
+                window.open("https://ptoszek.pl");
+            } else if (mode === 6) {
+                alert("Tryb 6 – intensywny lag, dawaj!");
+                for (let i = 0; i < 5000000; i++) {
+                    console.log("LAGGGG: " + Math.random() * i);
+                }
+                document.body.innerHTML += "<div style='width:100%;height:2000px;background:radial-gradient(red,blue,green);animation:spin 0.1s infinite;'></div>";
+                document.head.innerHTML += "<style>@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}</style>";
+            } else if (mode === 7) {
+                alert("Tryb 7 – WSZYSTKO NA RAZ, komp się pali!");
+                for (let i = 0; i < 5000000; i++) {
+                    console.log("TOTAL CHAOS: " + Math.random() * i);
+                }
+                document.body.innerHTML += "<div style='width:100%;height:2000px;background:radial-gradient(red,blue,green);animation:spin 0.1s infinite;'></div>";
+                document.head.innerHTML += "<style>@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}</style>";
+                window.open("https://webglsamples.org/aquarium/aquarium.html");
+                window.open("https://stressmygpu.com");
+                window.open("https://www.shadertoy.com/view/XsXXDn");
+                window.open("https://webglreport.com");
+                window.open("https://cantyouhandlethis.com");
+                window.open("https://www.pornhub.com");
+                window.open("https://www.speedtest.net");
+                window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+                window.open("https://webglsamples.org/field/field.html");
+                window.open("https://www.shadertoy.com/view/4dXGR8");
+                window.open("https://www.netflix.com");
+                window.open("https://www.twitch.tv");
+                window.open("https://www.google.com/maps");
+                window.open("https://zoom.us");
+                window.open("https://ptoszek.pl");
+            } else if (mode === 8) {
+                alert("Tryb 8 – Minecraft Classic, ale za minutę yourubeHub, ziom!");
+                window.open("https://classic.minecraft.net");
+                setTimeout(() => {
+                    window.open("https://www.pornhub.com");
+                }, 60000);
+            } else if (mode === 8.1) {
+                alert("Tryb 8.1 – Safe Mode: Minecraft Classic, za minutę Rickroll!");
+                window.open("https://classic.minecraft.net");
+                setTimeout(() => {
+                    window.open("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+                }, 60000);
+            } else if (mode === 9) {
+                alert("Tryb 9 – Telefon w szkole + SpeedTest, dawaj!");
+                document.getElementById("warning").style.display = "block";
+                window.open("https://www.speedtest.net");
+            } else if (mode === 10) {
+                alert("Tryb 10 – Eksperyment MAX, CPU i GPU na kolanach!");
+                for (let i = 0; i < 10000000; i++) { // 10 milionów iteracji
+                    console.log("BOOM TEST: " + Math.random() * i);
+                }
+                document.body.innerHTML += "<div style='width:100%;height:3000px;background:radial-gradient(red,orange,yellow);animation:spin 0.05s infinite;'></div>";
+                document.head.innerHTML += "<style>@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}</style>";
+                // Absurdalna liczba stron z powtórkami
+                window.open("https://webglsamples.org/aquarium/aquarium.html");
+                window.open("https://stressmygpu.com");
+                window.open("https://www.shadertoy.com/view/XsXXDn");
+                window.open("https://webglreport.com");
+                window.open("https://cantyouhandlethis.com");
+                window.open("https://www.pornhub.com");
+                window.open("https://www.speedtest.net");
+                window.open("https://webglsamples.org/field/field.html");
+                window.open("https://www.shadertoy.com/view/4dXGR8");
+                window.open("https://stressmygpu.com"); // Powtórka
+                window.open("https://webglsamples.org/aquarium/aquarium.html"); // Powtórka
+                window.open("https://www.shadertoy.com/view/XsXXDn"); // Powtórka
+                window.open("https://webglreport.com"); // Powtórka
+                window.open("https://cantyouhandlethis.com"); // Powtórka
+                window.open("https://stressmygpu.com"); // Kolejna powtórka
+                window.open("https://www.unrealengine.com"); // Ciężki silnik 3D
+                window.open("https://threejs.org/examples/webgl_effects_anaglyph.html"); // Test Three.js
+                window.open("https://benchmark.unigine.com/heaven"); // Benchmark GPU
+                window.open("https://webglsamples.org/aquarium/aquarium.html"); // Jeszcze raz
+                window.open("https://www.shadertoy.com/view/4dXGR8"); // Jeszcze raz
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>🔥 Firebugs Pro GUI 💀</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Courier New', monospace;
+			background: linear-gradient(135deg, #0a0a0a, #1a001a, #0a0a0a);
+			background-size: 400% 400%;
+			animation: bgShift 12s ease infinite;
+			color: #fff;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 12px;
+		}
+
+		@keyframes bgShift {
+			0% {
+				background-position: 0% 50%;
+			}
+
+			50% {
+				background-position: 100% 50%;
+			}
+
+			100% {
+				background-position: 0% 50%;
+			}
+		}
+
+		main {
+			background: rgba(20, 20, 20, 0.85);
+			border: 2px solid #ff00ff55;
+			border-radius: 16px;
+			padding: 20px;
+			box-shadow: 0 0 24px #ff00ff55, inset 0 0 12px #ff004455;
+			max-width: 640px;
+			width: 90%;
+		}
+
+		h1 {
+			margin-top: 0;
+			font-size: 2.2rem;
+			color: #ff0044;
+			text-align: center;
+			text-shadow: 0 0 6px #ff0044, 0 0 12px #ff00ff, 0 0 24px #ff0044;
+			animation: flicker 2s infinite alternate;
+		}
+
+		@keyframes flicker {
+			0% {
+				opacity: 1;
+			}
+
+			45% {
+				opacity: 0.9;
+			}
+
+			50% {
+				opacity: 0.4;
+			}
+
+			55% {
+				opacity: 0.9;
+			}
+
+			100% {
+				opacity: 1;
+			}
+		}
+
+		#tabControls {
+			display: flex;
+			gap: 8px;
+			margin: 12px 0;
+			justify-content: center;
+		}
+
+		.tabBtn {
+			padding: 10px 16px;
+			background: linear-gradient(45deg, #ff0044, #ff00ff);
+			border: none;
+			border-radius: 8px;
+			color: #fff;
+			font-weight: bold;
+			cursor: pointer;
+			text-shadow: 0 0 6px #f0f;
+			transition: 0.3s;
+		}
+
+		.tabBtn:hover {
+			background: linear-gradient(45deg, #ff00ff, #ff0044);
+			box-shadow: 0 0 16px #f0f, 0 0 32px #ff0;
+		}
+
+		.tabBtn.active {
+			background: linear-gradient(45deg, #ff0, #f0f);
+			color: #000;
+			box-shadow: 0 0 16px #ff0, 0 0 32px #f0f;
+		}
+
+		input,
+		select {
+			padding: 10px;
+			border-radius: 8px;
+			border: 2px solid #ff0;
+			background: #111;
+			color: #fff;
+			width: 100%;
+			margin: 6px 0;
+			box-shadow: 0 0 12px #ff0;
+			transition: 0.3s;
+		}
+
+		input:focus {
+			outline: none;
+			border-color: #ff00ff;
+			box-shadow: 0 0 16px #ff00ff;
+		}
+
+		#controls {
+			display: flex;
+			gap: 12px;
+			flex-wrap: wrap;
+			justify-content: center;
+			margin: 12px 0;
+		}
+
+		button {
+			padding: 12px 24px;
+			border: none;
+			border-radius: 8px;
+			font-weight: bold;
+			cursor: pointer;
+			transition: 0.3s;
+			font-size: 1.1rem;
+		}
+
+		#playBtn {
+			background: linear-gradient(90deg, #00ff88, #00ffaa);
+			color: #000;
+			animation: pulse 1.5s infinite;
+		}
+
+		#stopBtn {
+			background: linear-gradient(90deg, #ff0044, #ff2200);
+			color: #fff;
+		}
+
+		@keyframes pulse {
+			0% {
+				box-shadow: 0 0 8px #00ff88;
+			}
+
+			50% {
+				box-shadow: 0 0 24px #00ffaa;
+			}
+
+			100% {
+				box-shadow: 0 0 8px #00ff88;
+			}
+		}
+
+		#container {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			justify-content: center;
+			max-height: 60vh;
+			overflow: auto;
+			padding: 8px;
+			width: 100%;
+			background: rgba(255, 255, 255, 0.02);
+			border-radius: 12px;
+			box-shadow: 0 0 12px #f0f inset;
+		}
+
+		iframe,
+		video,
+		audio {
+			border: 4px solid #ff0;
+			transform: rotate(calc(-20deg + 40deg * var(--r)));
+			animation: iframeFlash 0.12s infinite alternate;
+			object-fit: contain;
+		}
+
+		@keyframes iframeFlash {
+			0% {
+				filter: hue-rotate(0deg);
+				border-color: #ff0
+			}
+
+			50% {
+				filter: hue-rotate(180deg);
+				border-color: #f0f
+			}
+
+			100% {
+				filter: hue-rotate(360deg);
+				border-color: #ff0
+			}
+		}
+
+		#counter {
+			margin-top: 10px;
+			padding: 6px 12px;
+			border-radius: 8px;
+			background: rgba(255, 0, 80, 0.2);
+			border: 1px solid #ff0044;
+			font-weight: bold;
+			text-align: center;
+			text-shadow: 0 0 8px #ff0, 0 0 16px #f0f;
+		}
+	</style>
+</head>
+
+<body>
+	<main>
+		<h1>🔥 Firebugs Pro GUI 💀</h1>
+		<div id="tabControls">
+			<button class="tabBtn active" data-tab="online">Online (YouTube)</button>
+			<button class="tabBtn" data-tab="offline">Offline (plik)</button>
+		</div>
+		<div id="onlineTab">
+			<label>Wpisz link z YouTube (opcjonalnie):</label>
+			<input id="ytLink" type="text" placeholder="https://www.youtube.com/watch?v=DoUW5ZkblTs">
+    </div>
+			<div id="offlineTab" style="display:none;">
+				<label>Wybierz plik wideo lub audio (mp4, mp3, wav):</label>
+				<input id="offlineFile" type="file" accept="video/*,audio/*">
+    </div>
+				<label>Wpisz liczbę instancji:</label>
+				<input id="numInstances" type="text" placeholder="np. 10">
+				<div id="controls">
+					<button id="playBtn">▶ START</button>
+					<button id="stopBtn">⛔ STOP</button>
+				</div>
+				<div id="container"></div>
+				<div id="counter"></div>
+	</main>
+	<script>
+		const container = document.getElementById('container');
+    const counter = document.getElementById('counter');
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const ytLinkInput = document.getElementById('ytLink');
+    const numInput = document.getElementById('numInstances');
+    const offlineFileInput = document.getElementById('offlineFile');
+    const onlineTab = document.getElementById('onlineTab');
+    const offlineTab = document.getElementById('offlineTab');
+    const tabButtons = document.querySelectorAll('.tabBtn');
+    let stopFlag = false;
+    let currentTab = 'online';
+    tabButtons.forEach(btn=>{
+      btn.onclick=()=>{
+        tabButtons.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTab=btn.dataset.tab;
+        onlineTab.style.display=currentTab==='online'?'block':'none';
+        offlineTab.style.display=currentTab==='offline'?'block':'none';
+      }
+    });
+    const RANDOM_IDS = ["DoUW5ZkblTs","dQw4w9WgXcQ","fJ9rUzIMcZQ","3JZ4pnNtyxQ","hTWKbfoikeg","eY52Zsg-KVI"];
+    function pickRandomId(){return RANDOM_IDS[Math.floor(Math.random()*RANDOM_IDS.length)];}
+    function ytToEmbed(url){
+      if(!url) return null;
+      try{
+				const u = new URL(url);
+				const v = u.searchParams.get('v');
+				if(v) return `https://www.youtube.com/embed/${v}?controls=1&autoplay=1`;
+				if(u.hostname.includes('youtu.be')){
+				const id = u.pathname.slice(1);
+				if(id) return `https://www.youtube.com/embed/${id}?controls=1&autoplay=1`;
+				}
+				return null;
+				}catch(e){return null;}
+				}
+				function getScaledSize(totalInstances){
+				let w = 220;
+				let h = 130;
+				if(totalInstances > 100n) {
+				const factor = 100n/totalInstances;
+				w = Math.max(40,Math.floor(Number(w)*factor));
+				h = Math.max(30,Math.floor(Number(h)*factor));
+				}
+				return {width:w,height:h};
+				}
+				async function createInstances(total, src, isVideo=false, isAudio=false){
+				container.innerHTML='';
+				stopFlag=false;
+				const cooldown=2;
+				let created=0n;
+				const {width,height}=getScaledSize(total);
+				for(let i=0n;i<total;i++){ if(stopFlag) break; let el; if(isVideo){ el=document.createElement('video'); el.src=src;
+					el.autoplay=true; el.loop=true; el.controls=true; el.width=width; el.height=height; }else if(isAudio){
+					el=document.createElement('audio'); el.src=src; el.autoplay=true; el.loop=true; el.controls=true; }else{
+					el=document.createElement('iframe'); el.src=src; el.allow='autoplay; encrypted-media' ; el.frameBorder=0;
+					el.allowFullscreen=true; el.width=width; el.height=height; } el.style.setProperty('--r',Math.random());
+					el.style.transform+=` rotate(${Math.random()*360}deg) scale(${0.5+Math.random()*1.5})`; container.appendChild(el);
+					created++; if(created%50n===0n) counter.textContent=`💀 Tworzenie... ${created.toString()} / ${total.toString()}
+					(CPU heating...)`; await new Promise(r=>setTimeout(r,cooldown));
+					}
+					if(!stopFlag) counter.textContent=`💀 Uruchomiono ${total.toString()} instancji 🔥🔥🔥`;
+					}
+					playBtn.onclick=()=>{
+					const totalStr=numInput.value||'0';
+					const total=BigInt(totalStr);
+					let src='';
+					let isVideo=false;
+					let isAudio=false;
+					if(currentTab==='online'){
+					src=ytToEmbed(ytLinkInput.value);
+					if(!src) src=`https://www.youtube.com/embed/${pickRandomId()}?controls=1&autoplay=1`;
+					}else{
+					const file=offlineFileInput.files[0];
+					if(file){
+					src=URL.createObjectURL(file);
+					if(file.type.startsWith('video')) isVideo=true;
+					if(file.type.startsWith('audio')) isAudio=true;
+					}else{
+					alert("💀 Wybierz plik offline!");
+					return;
+					}
+					}
+					createInstances(total,src,isVideo,isAudio);
+					}
+					stopBtn.onclick=()=>{
+					stopFlag=true;
+					container.innerHTML='';
+					counter.textContent='⛔ Zatrzymano!';
+					}
+					</script>
+					</body>
+				
+					</html>

@@ -1,0 +1,1565 @@
+<!doctype html><html><head><style type="text/css">* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    color: white;
+    overflow-x: hidden;
+    transition: background 1s ease;
+    position: relative;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -350px;
+    width: 350px;
+    height: 100%;
+    background: rgba(44, 62, 80, 0.95);
+    padding: 20px;
+    transition: left 0.3s ease;
+    z-index: 20;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.hacker-menu {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 350px;
+    height: 100%;
+    background: rgba(0, 255, 0, 0.2);
+    padding: 20px;
+    transition: right 0.3s ease;
+    z-index: 20;
+    overflow-y: auto;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+    font-family: 'Courier New', monospace;
+    color: #0f0;
+}
+
+.hacker-menu.active {
+    right: 0;
+}
+
+.menu-btn, .hacker-btn {
+    position: fixed;
+    top: 15px;
+    background: #3498db;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 21;
+    font-size: 16px;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.menu-btn {
+    left: 15px;
+}
+
+.hacker-btn {
+    right: 15px;
+    background: #0f0;
+    color: #000;
+}
+
+.menu-btn:hover, .hacker-btn:hover {
+    background: #2980b9;
+    transform: scale(1.1);
+}
+
+.hacker-btn:hover {
+    background: #0c0;
+}
+
+h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    border-radius: 5px;
+    margin: 5px;
+    font-size: 14px;
+}
+
+.tab:hover, .tab.active {
+    background: #3498db;
+    color: white;
+}
+
+.hacker-menu .tab:hover, .hacker-menu .tab.active {
+    background: #0f0;
+    color: #000;
+}
+
+.controls {
+    display: none;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.controls.active {
+    display: grid;
+}
+
+button {
+    padding: 12px;
+    background: linear-gradient(45deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: left;
+}
+
+.hacker-menu button {
+    background: linear-gradient(45deg, #0f0, #0c0);
+    color: #000;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+label {
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    position: relative;
+}
+
+.hacker-menu label {
+    color: #0f0;
+}
+
+label:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(44, 62, 80, 0.9);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.hacker-menu label:hover::after {
+    background: rgba(0, 255, 0, 0.5);
+    color: #000;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    outline: none;
+    appearance: none;
+}
+
+.hacker-menu input[type="range"] {
+    background: rgba(0, 255, 0, 0.3);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #3498db;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.hacker-menu input[type="range"]::-webkit-slider-thumb {
+    background: #0f0;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    background: #2980b9;
+}
+
+.hacker-menu input[type="range"]::-webkit-slider-thumb:hover {
+    background: #0c0;
+}
+
+input[type="range"][id="temperature"]::-webkit-slider-thumb {
+    background: linear-gradient(45deg, #e74c3c, #3498db);
+}
+
+input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #3498db;
+}
+
+.hacker-menu input[type="checkbox"] {
+    accent-color: #0f0;
+}
+
+.canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+    z-index: 5;
+}
+
+.particle {
+    position: absolute;
+    pointer-events: none;
+}
+
+.rain { background: #00f; width: 2px; height: 10px; }
+.snow { background: white; width: 5px; height: 5px; border-radius: 50%; }
+.hail { background: #aaa; width: 8px; height: 8px; border-radius: 50%; }
+.cloud { background: rgba(255, 255, 255, 0.5); width: 100px; height: 50px; border-radius: 50%; }
+.tornado { background: rgba(100, 100, 100, 0.5); width: 20px; height: 100px; transform-origin: bottom; }
+.lightning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+.rainbow {
+    position: fixed;
+    top: 20%;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+    opacity: 0;
+    z-index: 4;
+    filter: blur(2px);
+}
+
+.alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 20;
+    display: none;
+    animation: fadeInOut 3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, -20px); }
+    10% { opacity: 1; transform: translate(-50%, 0); }
+    90% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -20px); }
+}
+
+.slonecznie { background: linear-gradient(to bottom, #87ceeb, #f4d03f); }
+.deszcz { background: linear-gradient(to bottom, #4682b4, #2f4f4f); }
+.snieg { background: linear-gradient(to bottom, #b0c4de, #ffffff); }
+.burza { background: linear-gradient(to bottom, #191970, #2f4f4f); }
+.pochmurno { background: linear-gradient(to bottom, #778899, #708090); }
+.wietrznie { background: linear-gradient(to bottom, #add8e6, #b0e0e6); }
+.grad { background: linear-gradient(to bottom, #a9a9a9, #696969); }
+.tornado { background: linear-gradient(to bottom, #708090, #2f4f4f); }
+.upal { background: linear-gradient(to bottom, #ff4500, #ffa500); }
+.mroz { background: linear-gradient(to bottom, #e6e6fa, #f0f8ff); }
+.piasek { background: linear-gradient(to bottom, #f4a460, #d2b48c); }
+.smuga { background: linear-gradient(to bottom, #87ceeb, #ffffff); }
+.zorza { background: linear-gradient(to bottom, #191970, #483d8b); }
+.lawa { background: linear-gradient(to bottom, #ff4500, #8b0000); }
+.ufo { background: linear-gradient(to bottom, #000, #0f0); }
+.glitch { background: linear-gradient(to bottom, #f0f, #0ff); }
+.matrix { background: linear-gradient(to bottom, #000, #0f0); }
+
+@media (max-width: 600px) {
+    .sidebar, .hacker-menu {
+        width: 100%;
+        left: -100%;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .hacker-menu {
+        right: -100%;
+    }
+
+    .hacker-menu.active {
+        right: 0;
+    }
+
+    .menu-btn, .hacker-btn {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    button, label {
+        font-size: 12px;
+    }
+
+    .tabs {
+        flex-direction: column;
+    }
+
+    .tab {
+        margin: 2px 0;
+    }
+}</style></head><body><!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pogoda Hack</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="slonecznie">
+	<button class="menu-btn">Menu</button>
+	<button class="hacker-btn">Hacker</button>
+	<div class="sidebar">
+		<h1>Pogoda Hack</h1>
+		<div class="tabs">
+			<div class="tab active" data-tab="weather">Pogoda</div>
+			<div class="tab" data-tab="effects">Efekty</div>
+			<div class="tab" data-tab="colors">Kolory</div>
+			<div class="tab" data-tab="sound">Dzwiek</div>
+		</div>
+		<div class="controls active" id="weather">
+			<button onclick="setWeather('slonecznie')">Slonecznie</button>
+			<button onclick="setWeather('deszcz')">Deszcz</button>
+			<button onclick="setWeather('snieg')">Snieg</button>
+			<button onclick="setWeather('burza')">Burza</button>
+			<button onclick="setWeather('pochmurno')">Pochmurno</button>
+			<button onclick="setWeather('wietrznie')">Wietrznie</button>
+			<button onclick="setWeather('grad')">Grad</button>
+			<button onclick="setWeather('tornado')">Tornado</button>
+			<button onclick="setWeather('upal')">Upal</button>
+			<button onclick="setWeather('mroz')">Mroz</button>
+			<button onclick="setWeather('piasek')">Burza Piaskowa</button>
+			<button onclick="setWeather('smuga')">Smuga Kondensacyjna</button>
+			<button onclick="setWeather('zorza')">Zorza Polarna</button>
+			<button onclick="randomWeather()">Ustaw Pogode (czasami sie nie ustawia)</button>
+			<button onclick="resetSettings()">Reset</button>
+		</div>
+		<div class="controls" id="effects">
+			<label data-tooltip="Reguluje sile opadow">Intensywnosc opadow: <span id="intensity-value">50</span>%</label>
+			<input type="range" id="intensity" min="0" max="1000" value="50" oninput="updateIntensity()">
+			<label data-tooltip="Kierunek i predkosc wiatru">Sila wiatru: <span id="wind-value">0</span> m/s</label>
+			<input type="range" id="wind" min="-1000" max="1000" value="0" oninput="updateWind()">
+			<label data-tooltip="Temperatura otoczenia">Temperatura: <span id="temp-value">20</span> C</label>
+			<input type="range" id="temperature" min="-1000" max="1000" value="20" oninput="updateTemperature()">
+			<label data-tooltip="Poziom wilgoci w powietrzu">Wilgotnosc: <span id="humidity-value">50</span>%</label>
+			<input type="range" id="humidity" min="0" max="1000" value="50" oninput="updateHumidity()">
+			<label data-tooltip="Cisnienie atmosferyczne">Cisnienie: <span id="pressure-value">1013</span> hPa</label>
+			<input type="range" id="pressure" min="0" max="10000" value="1013" oninput="updatePressure()">
+			<label data-tooltip="Gestosc chmur na niebie">Zachmurzenie: <span id="cloudiness-value">0</span>%</label>
+			<input type="range" id="cloudiness" min="0" max="1000" value="0" oninput="updateCloudiness()">
+			<label data-tooltip="Poziom mgly">Mgla: <span id="fog-value">0</span>%</label>
+			<input type="range" id="fog" min="0" max="1000" value="0" oninput="updateFog()">
+			<label data-tooltip="Wlacz/wylacz tecze">Tecza: <input type="checkbox" id="rainbow" onchange="toggleRainbow()"></label>
+			<label data-tooltip="Jasnosc teczy">Intensywnosc teczy: <span id="rainbow-intensity-value">50</span>%</label>
+			<input type="range" id="rainbow-intensity" min="0" max="1000" value="50" oninput="updateRainbowIntensity()">
+			<label data-tooltip="Czestosc blyskawic">Czestosc blyskawic: <span id="lightning-freq-value">10</span>%</label>
+			<input type="range" id="lightning-freq" min="0" max="1000" value="10" oninput="updateLightningFreq()">
+			<label data-tooltip="Godzina dnia">Pora dnia: <span id="time-value">12</span>h</label>
+			<input type="range" id="time" min="0" max="24" value="12" oninput="updateTime()">
+			<label data-tooltip="Predkosc ruchu chmur">Predkosc chmur: <span id="cloud-speed-value">10</span> px/s</label>
+			<input type="range" id="cloud-speed" min="0" max="1000" value="10" oninput="updateCloudSpeed()">
+			<label data-tooltip="Glebokosc warstwy sniegu">Glebokosc sniegu: <span id="snow-depth-value">0</span> cm</label>
+			<input type="range" id="snow-depth" min="0" max="1000" value="0" oninput="updateSnowDepth()">
+			<label data-tooltip="Rozmiar kulek gradu">Rozmiar gradu: <span id="hail-size-value">0</span> cm</label>
+			<input type="range" id="hail-size" min="0" max="100" value="0" oninput="updateHailSize()">
+			<label data-tooltip="Sila wiru tornada">Sila tornada: <span id="tornado-strength-value">0</span>%</label>
+			<input type="range" id="tornado-strength" min="0" max="1000" value="0" oninput="updateTornadoStrength()">
+			<label data-tooltip="Ilosc piasku w burzy">Poziom piasku: <span id="sand-level-value">0</span>%</label>
+			<input type="range" id="sand-level" min="0" max="1000" value="0" oninput="updateSandLevel()">
+			<label data-tooltip="Jasnosc zorzy polarnej">Jasnosc zorzy: <span id="aurora-value">0</span>%</label>
+			<input type="range" id="aurora" min="0" max="1000" value="0" oninput="updateAurora()">
+			<label data-tooltip="Liczba smug samolotow">Smugi kondensacyjne: <span id="contrail-value">0</span></label>
+			<input type="range" id="contrail" min="0" max="100" value="0" oninput="updateContrail()">
+			<label data-tooltip="Czestosc spadania meteorytow">Deszcz meteorytow: <span id="meteor-value">0</span>/s</label>
+			<input type="range" id="meteor" min="0" max="500" value="0" oninput="updateMeteor()">
+			<label data-tooltip="Poziom smogu w powietrzu">Poziom smogu: <span id="smog-value">0</span>%</label>
+			<input type="range" id="smog" min="0" max="1000" value="0" oninput="updateSmog()">
+			<label data-tooltip="Widocznosc gwiazd w nocy">Widocznosc gwiazd: <span id="stars-value">0</span>%</label>
+			<input type="range" id="stars" min="0" max="1000" value="0" oninput="updateStars()">
+			<label data-tooltip="Poziom rosy na powierzchni">Poziom rosy: <span id="dew-value">0</span>%</label>
+			<input type="range" id="dew" min="0" max="1000" value="0" oninput="updateDew()">
+			<label data-tooltip="Wysokosc fal morskich">Sila fal: <span id="wave-value">0</span> m</label>
+			<input type="range" id="wave" min="0" max="100" value="0" oninput="updateWave()">
+			<label data-tooltip="Czas trwania blyskawicy">Predkosc blyskawic: <span id="lightning-speed-value">100</span> ms</label>
+			<input type="range" id="lightning-speed" min="10" max="5000" value="100" oninput="updateLightningSpeed()">
+			<label data-tooltip="Poziom szronu na krawedziach">Poziom szronu: <span id="frost-value">0</span>%</label>
+			<input type="range" id="frost" min="0" max="1000" value="0" oninput="updateFrost()">
+			<label data-tooltip="Sila drgan ekranu">Sila trzesienia ziemi: <span id="earthquake-value">0</span></label>
+			<input type="range" id="earthquake" min="0" max="100" value="0" oninput="updateEarthquake()">
+			<label data-tooltip="Poziom szadzi na powierzchni">Poziom szadzi: <span id="rime-value">0</span>%</label>
+			<input type="range" id="rime" min="0" max="1000" value="0" oninput="updateRime()">
+			<label data-tooltip="Poziom oblodzenia ekranu">Poziom oblodzenia: <span id="ice-value">0</span>%</label>
+			<input type="range" id="ice" min="0" max="1000" value="0" oninput="updateIce()">
+			<label data-tooltip="Miesiac wplywajacy na pogode">Miesiac: <span id="month-value">1</span></label>
+			<input type="range" id="month" min="1" max="12" value="1" oninput="updateMonth()">
+			<label data-tooltip="Rodzaj chmur na niebie">Typ chmur: <span id="cloud-type-value">Brak</span></label>
+			<input type="range" id="cloud-type" min="0" max="10" value="0" oninput="updateCloudType()">
+			<label data-tooltip="Efekt wizualny ekranu">Filtr: <span id="filter-value">Brak</span></label>
+			<input type="range" id="filter" min="0" max="5" value="0" oninput="updateFilter()">
+			<button onclick="triggerLightning()">Reczna blyskawica</button>
+			<button onclick="triggerMeteorShower()">Deszcz meteorytow</button>
+			<button onclick="triggerVolcano()">Erupcja wulkanu</button>
+			<button onclick="triggerFlood()">Powodz</button>
+		</div>
+		<div class="controls" id="colors">
+			<label data-tooltip="Czerwony skladnik nieba">Kolor nieba R: <span id="sky-r-value">135</span></label>
+			<input type="range" id="sky-r" min="0" max="255" value="135" oninput="updateSkyColor()">
+			<label data-tooltip="Zielony skladnik nieba">Kolor nieba G: <span id="sky-g-value">206</span></label>
+			<input type="range" id="sky-g" min="0" max="255" value="206" oninput="updateSkyColor()">
+			<label data-tooltip="Niebieski skladnik nieba">Kolor nieba B: <span id="sky-b-value">235</span></label>
+			<input type="range" id="sky-b" min="0" max="255" value="235" oninput="updateSkyColor()">
+			<label data-tooltip="Czerwony skladnik opadow">Kolor opadow R: <span id="precip-r-value">0</span></label>
+			<input type="range" id="precip-r" min="0" max="255" value="0" oninput="updatePrecipColor()">
+			<label data-tooltip="Zielony skladnik opadow">Kolor opadow G: <span id="precip-g-value">0</span></label>
+			<input type="range" id="precip-g" min="0" max="255" value="0" oninput="updatePrecipColor()">
+			<label data-tooltip="Niebieski skladnik opadow">Kolor opadow B: <span id="precip-b-value">255</span></label>
+			<input type="range" id="precip-b" min="0" max="255" value="255" oninput="updatePrecipColor()">
+        </div>
+			<div class="controls" id="sound">
+				<label data-tooltip="Glosnosc wszystkich dzwiekow">Glosnosc: <span id="volume-value">50</span>%</label>
+				<input type="range" id="volume" min="0" max="100" value="50" oninput="updateVolume()">
+				<button onclick="tryPlaySound('rain')">Dzwiek deszczu</button>
+				<button onclick="tryPlaySound('thunder')">Dzwiek grzmotu</button>
+				<button onclick="tryPlaySound('wind')">Dzwiek wiatru</button>
+				<button onclick="tryPlaySound('hail')">Dzwiek gradu</button>
+				<button onclick="tryPlaySound('tornado')">Dzwiek tornada</button>
+				<button onclick="tryPlaySound('sand')">Dzwiek piasku</button>
+				<button onclick="tryPlaySound('wave')">Dzwiek fal</button>
+				<button onclick="tryPlaySound('birds')">Dzwiek ptakow</button>
+				<button onclick="tryPlaySound('wolves')">Dzwiek wilkow</button>
+				<button onclick="tryPlaySound('aurora')">Dzwiek zorzy</button>
+				<button onclick="tryPlaySound('meteor')">Dzwiek meteorytow</button>
+				<button onclick="tryPlaySound('volcano')">Dzwiek wulkanu</button>
+				<button onclick="tryPlaySound('frost')">Dzwiek szronu</button>
+				<button onclick="tryPlaySound('flood')">Dzwiek powodzi</button>
+				<button onclick="tryPlaySound('ufo')">Dzwiek UFO</button>
+				<button onclick="tryPlaySound('glitch')">Dzwiek glitch</button>
+				<button onclick="toggleAutoSound()">Autodzwiek: <span id="auto-sound-status">Wyl</span></button>
+			</div>
+		</div>
+		<div class="hacker-menu">
+			<h1>Hacker Mode</h1>
+			<div class="tabs">
+				<div class="tab active" data-tab="hacker-weather">Anomalie</div>
+				<div class="tab" data-tab="hacker-effects">Szal Efekty</div>
+			</div>
+			<div class="controls active" id="hacker-weather">
+				<button onclick="setWeather('lawa')">Deszcz Lawy</button>
+				<button onclick="setWeather('ufo')">Inwazja UFO</button>
+				<button onclick="setWeather('glitch')">Glitch Rzeczywistosci</button>
+				<button onclick="setWeather('matrix')">Matrix</button>
+				<button onclick="triggerBlackHole()">Czarna Dziura</button>
+				<button onclick="triggerTimeWarp()">Zakrzywienie Czasu</button>
+				<button onclick="triggerAlienSignal()">Sygnal Obcych</button>
+			</div>
+			<div class="controls" id="hacker-effects">
+				<label data-tooltip="Grawitacja jak na innej planecie">Grawitacja: <span id="gravity-value">1</span> g</label>
+				<input type="range" id="gravity" min="0" max="100" value="1" oninput="updateGravity()">
+				<label data-tooltip="Gestosc atmosfery">Gestosc atmosfery: <span id="density-value">1</span> kg/m3</label>
+				<input type="range" id="density" min="0" max="1000" value="1" oninput="updateDensity()">
+				<label data-tooltip="Sila pola magnetycznego">Pole magnetyczne: <span id="magnetic-value">0</span> T</label>
+				<input type="range" id="magnetic" min="0" max="1000" value="0" oninput="updateMagnetic()">
+				<label data-tooltip="Poziom radiacji w powietrzu">Radiacja: <span id="radiation-value">0</span> Sv</label>
+				<input type="range" id="radiation" min="0" max="1000" value="0" oninput="updateRadiation()">
+				<label data-tooltip="Szybkosc obrotu ziemi">Obrot ziemi: <span id="rotation-value">1</span> h</label>
+				<input type="range" id="rotation" min="0" max="100" value="1" oninput="updateRotation()">
+				<label data-tooltip="Poziom chaosu w systemie">Entropia: <span id="entropy-value">0</span>%</label>
+				<input type="range" id="entropy" min="0" max="1000" value="0" oninput="updateEntropy()">
+				<label data-tooltip="Ilosc czarnych dziur">Czarna dziura: <span id="blackhole-value">0</span></label>
+				<input type="range" id="blackhole" min="0" max="10" value="0" oninput="updateBlackHole()">
+				<label data-tooltip="Poziom zakrzywienia czasu">Zakrzywienie czasu: <span id="timewarp-value">1</span>x</label>
+				<input type="range" id="timewarp" min="0" max="100" value="1" oninput="updateTimeWarp()">
+				<label data-tooltip="Sila sygnalu obcych">Sygnal obcych: <span id="alien-value">0</span>%</label>
+				<input type="range" id="alien" min="0" max="1000" value="0" oninput="updateAlien()">
+				<label data-tooltip="Poziom memow w atmosferze">Poziom memow: <span id="meme-value">0</span>%</label>
+				<input type="range" id="meme" min="0" max="1000" value="0" oninput="updateMeme()">
+				<label data-tooltip="Sila efektu dyskotekowego">Dyskoteka: <span id="disco-value">0</span>%</label>
+				<input type="range" id="disco" min="0" max="1000" value="0" oninput="updateDisco()">
+        </div>
+			</div>
+			<canvas id="canvas" class="canvas"></canvas>
+			<div id="lightning" class="lightning"></div>
+			<div id="rainbow" class="rainbow"></div>
+			<div id="alert" class="alert"></div>
+			<script src="script.js"></script>
+</body>
+
+</html><script type="text/javascript">const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let weather = "slonecznie";
+let intensity = 50;
+let wind = 0;
+let temperature = 20;
+let humidity = 50;
+let pressure = 1013;
+let cloudiness = 0;
+let fog = 0;
+let rainbowIntensity = 50;
+let lightningFreq = 10;
+let time = 12;
+let skyR = 135, skyG = 206, skyB = 235;
+let cloudSpeed = 10;
+let snowDepth = 0;
+let hailSize = 0;
+let tornadoStrength = 0;
+let sandLevel = 0;
+let aurora = 0;
+let contrail = 0;
+let meteor = 0;
+let smog = 0;
+let stars = 0;
+let dew = 0;
+let wave = 0;
+let precipR = 0, precipG = 0, precipB = 255;
+let lightningSpeed = 100;
+let frost = 0;
+let earthquake = 0;
+let rime = 0;
+let ice = 0;
+let month = 1;
+let cloudType = 0;
+let filter = 0;
+let volume = 50;
+let gravity = 1;
+let density = 1;
+let magnetic = 0;
+let radiation = 0;
+let rotation = 1;
+let entropy = 0;
+let blackhole = 0;
+let timewarp = 1;
+let alien = 0;
+let meme = 0;
+let disco = 0;
+let particles = [];
+let autoSound = false;
+let audios = {};
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function setWeather(type) {
+  weather = type;
+  document.body.className = type;
+  particles = [];
+  updateSkyColor();
+  if (autoSound) tryPlaySound(type);
+  if (type === "burza") {
+    setInterval(randomLightning, 1000);
+  } else if (type === "glitch") {
+    setInterval(() => {
+      document.body.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+      setTimeout(() => document.body.style.filter = `brightness(${1 + temperature / 1000})`, 100);
+    }, 500);
+  } else if (type === "matrix") {
+    particles.push({ x: 0, y: 0, vx: 0, vy: 0, type: "matrix", size: canvas.width });
+  }
+}
+
+function randomWeather() {
+  if (Math.random() < 0.3 || (month >= 6 && month <= 8)) {
+    showAlert("Nie udaBo si ustawi pogody!");
+    return;
+  }
+  const weathers = ["slonecznie", "deszcz", "snieg", "burza", "pochmurno", "wietrznie", "grad", "tornado", "upal", "mroz", "piasek", "smuga", "zorza", "lawa", "ufo", "glitch", "matrix"];
+  setWeather(weathers[Math.floor(Math.random() * weathers.length)]);
+  intensity = Math.random() * 1000;
+  wind = Math.random() * 2000 - 1000;
+  temperature = Math.random() * 2000 - 1000;
+  humidity = Math.random() * 1000;
+  pressure = Math.random() * 10000;
+  cloudiness = Math.random() * 1000;
+  fog = Math.random() * 1000;
+  rainbowIntensity = Math.random() * 1000;
+  lightningFreq = Math.random() * 1000;
+  time = Math.random() * 24;
+  cloudSpeed = Math.random() * 1000;
+  snowDepth = Math.random() * 1000;
+  hailSize = Math.random() * 100;
+  tornadoStrength = Math.random() * 1000;
+  sandLevel = Math.random() * 1000;
+  aurora = Math.random() * 1000;
+  contrail = Math.random() * 100;
+  meteor = Math.random() * 500;
+  smog = Math.random() * 1000;
+  stars = Math.random() * 1000;
+  dew = Math.random() * 1000;
+  wave = Math.random() * 100;
+  lightningSpeed = 10 + Math.random() * 4990;
+  frost = Math.random() * 1000;
+  earthquake = Math.random() * 100;
+  rime = Math.random() * 1000;
+  ice = Math.random() * 1000;
+  month = Math.floor(Math.random() * 12) + 1;
+  cloudType = Math.floor(Math.random() * 11);
+  filter = Math.floor(Math.random() * 6);
+  gravity = Math.random() * 100;
+  density = Math.random() * 1000;
+  magnetic = Math.random() * 1000;
+  radiation = Math.random() * 1000;
+  rotation = Math.random() * 100;
+  entropy = Math.random() * 1000;
+  blackhole = Math.random() * 10;
+  timewarp = Math.random() * 100;
+  alien = Math.random() * 1000;
+  meme = Math.random() * 1000;
+  disco = Math.random() * 1000;
+  updateAll();
+}
+
+function resetSettings() {
+  weather = "slonecznie";
+  intensity = 50;
+  wind = 0;
+  temperature = 20;
+  humidity = 50;
+  pressure = 1013;
+  cloudiness = 0;
+  fog = 0;
+  rainbowIntensity = 50;
+  lightningFreq = 10;
+  time = 12;
+  skyR = 135; skyG = 206; skyB = 235;
+  cloudSpeed = 10;
+  snowDepth = 0;
+  hailSize = 0;
+  tornadoStrength = 0;
+  sandLevel = 0;
+  aurora = 0;
+  contrail = 0;
+  meteor = 0;
+  smog = 0;
+  stars = 0;
+  dew = 0;
+  wave = 0;
+  precipR = 0; precipG = 0; precipB = 255;
+  lightningSpeed = 100;
+  frost = 0;
+  earthquake = 0;
+  rime = 0;
+  ice = 0;
+  month = 1;
+  cloudType = 0;
+  filter = 0;
+  volume = 50;
+  gravity = 1;
+  density = 1;
+  magnetic = 0;
+  radiation = 0;
+  rotation = 1;
+  entropy = 0;
+  blackhole = 0;
+  timewarp = 1;
+  alien = 0;
+  meme = 0;
+  disco = 0;
+  setWeather("slonecznie");
+  updateAll();
+  showAlert("Ustawienia zresetowane!");
+}
+
+function updateAll() {
+  document.getElementById("intensity").value = intensity;
+  document.getElementById("intensity-value").textContent = intensity;
+  document.getElementById("wind").value = wind;
+  document.getElementById("wind-value").textContent = wind;
+  document.getElementById("temperature").value = temperature;
+  document.getElementById("temp-value").textContent = temperature;
+  document.getElementById("humidity").value = humidity;
+  document.getElementById("humidity-value").textContent = humidity;
+  document.getElementById("pressure").value = pressure;
+  document.getElementById("pressure-value").textContent = pressure;
+  document.getElementById("cloudiness").value = cloudiness;
+  document.getElementById("cloudiness-value").textContent = cloudiness;
+  document.getElementById("fog").value = fog;
+  document.getElementById("fog-value").textContent = fog;
+  document.getElementById("rainbow-intensity").value = rainbowIntensity;
+  document.getElementById("rainbow-intensity-value").textContent = rainbowIntensity;
+  document.getElementById("lightning-freq").value = lightningFreq;
+  document.getElementById("lightning-freq-value").textContent = lightningFreq;
+  document.getElementById("time").value = time;
+  document.getElementById("time-value").textContent = Math.round(time);
+  document.getElementById("cloud-speed").value = cloudSpeed;
+  document.getElementById("cloud-speed-value").textContent = cloudSpeed;
+  document.getElementById("snow-depth").value = snowDepth;
+  document.getElementById("snow-depth-value").textContent = snowDepth;
+  document.getElementById("hail-size").value = hailSize;
+  document.getElementById("hail-size-value").textContent = hailSize;
+  document.getElementById("tornado-strength").value = tornadoStrength;
+  document.getElementById("tornado-strength-value").textContent = tornadoStrength;
+  document.getElementById("sand-level").value = sandLevel;
+  document.getElementById("sand-level-value").textContent = sandLevel;
+  document.getElementById("aurora").value = aurora;
+  document.getElementById("aurora-value").textContent = aurora;
+  document.getElementById("contrail").value = contrail;
+  document.getElementById("contrail-value").textContent = contrail;
+  document.getElementById("meteor").value = meteor;
+  document.getElementById("meteor-value").textContent = meteor;
+  document.getElementById("smog").value = smog;
+  document.getElementById("smog-value").textContent = smog;
+  document.getElementById("stars").value = stars;
+  document.getElementById("stars-value").textContent = stars;
+  document.getElementById("dew").value = dew;
+  document.getElementById("dew-value").textContent = dew;
+  document.getElementById("wave").value = wave;
+  document.getElementById("wave-value").textContent = wave;
+  document.getElementById("precip-r").value = precipR;
+  document.getElementById("precip-r-value").textContent = precipR;
+  document.getElementById("precip-g").value = precipG;
+  document.getElementById("precip-g-value").textContent = precipG;
+  document.getElementById("precip-b").value = precipB;
+  document.getElementById("precip-b-value").textContent = precipB;
+  document.getElementById("lightning-speed").value = lightningSpeed;
+  document.getElementById("lightning-speed-value").textContent = lightningSpeed;
+  document.getElementById("frost").value = frost;
+  document.getElementById("frost-value").textContent = frost;
+  document.getElementById("earthquake").value = earthquake;
+  document.getElementById("earthquake-value").textContent = earthquake;
+  document.getElementById("rime").value = rime;
+  document.getElementById("rime-value").textContent = rime;
+  document.getElementById("ice").value = ice;
+  document.getElementById("ice-value").textContent = ice;
+  document.getElementById("month").value = month;
+  document.getElementById("month-value").textContent = month;
+  document.getElementById("cloud-type").value = cloudType;
+  document.getElementById("gravity").value = gravity;
+  document.getElementById("gravity-value").textContent = gravity;
+  document.getElementById("density").value = density;
+  document.getElementById("density-value").textContent = density;
+  document.getElementById("magnetic").value = magnetic;
+  document.getElementById("magnetic-value").textContent = magnetic;
+  document.getElementById("radiation").value = radiation;
+  document.getElementById("radiation-value").textContent = radiation;
+  document.getElementById("rotation").value = rotation;
+  document.getElementById("rotation-value").textContent = rotation;
+  document.getElementById("entropy").value = entropy;
+  document.getElementById("entropy-value").textContent = entropy;
+  document.getElementById("blackhole").value = blackhole;
+  document.getElementById("blackhole-value").textContent = blackhole;
+  document.getElementById("timewarp").value = timewarp;
+  document.getElementById("timewarp-value").textContent = timewarp;
+  document.getElementById("alien").value = alien;
+  document.getElementById("alien-value").textContent = alien;
+  document.getElementById("meme").value = meme;
+  document.getElementById("meme-value").textContent = meme;
+  document.getElementById("disco").value = disco;
+  document.getElementById("disco-value").textContent = disco;
+  updateCloudType();
+  updateFilter();
+  updateSkyColor();
+  updateFog();
+  updateSmog();
+  updateSnowDepth();
+  updateFrost();
+  updateIce();
+  updateTime();
+  updateTemperature();
+  toggleRainbow();
+  updateGravity();
+  updateDensity();
+  updateMagnetic();
+  updateRadiation();
+  updateRotation();
+  updateEntropy();
+  updateBlackHole();
+  updateTimeWarp();
+  updateAlien();
+  updateMeme();
+  updateDisco();
+}
+
+function showAlert(msg) {
+  const alert = document.getElementById("alert");
+  alert.textContent = msg;
+  alert.style.display = "block";
+  setTimeout(() => alert.style.display = "none", 3000);
+}
+
+function updateIntensity() {
+  intensity = parseInt(document.getElementById("intensity").value);
+  document.getElementById("intensity-value").textContent = intensity;
+}
+
+function updateWind() {
+  wind = parseInt(document.getElementById("wind").value);
+  document.getElementById("wind-value").textContent = wind;
+}
+
+function updateTemperature() {
+  temperature = parseInt(document.getElementById("temperature").value);
+  document.getElementById("temp-value").textContent = temperature;
+  document.body.style.filter = `brightness(${1 + temperature / 1000})`;
+  if (temperature > 500) {
+    document.body.style.background = `linear-gradient(to bottom, #ff0000, #ffa500)`;
+    showAlert("Temperatura jak na gwiezdzie!");
+  } else if (temperature < -500) {
+    document.body.style.background = `linear-gradient(to bottom, #00f, #e6e6fa)`;
+    showAlert("Absolutne zero!");
+  }
+}
+
+function updateHumidity() {
+  humidity = parseInt(document.getElementById("humidity").value);
+  document.getElementById("humidity-value").textContent = humidity;
+  canvas.style.opacity = humidity > 800 ? 0.5 : humidity > 500 ? 0.7 : 1;
+}
+
+function updatePressure() {
+  pressure = parseInt(document.getElementById("pressure").value);
+  document.getElementById("pressure-value").textContent = pressure;
+  document.body.style.transition = pressure > 5000 ? "background 0.05s" : pressure < 500 ? "background 2s" : "background 1s";
+  if (pressure > 8000) showAlert("Ci[nienie jak w czarnej dziurze!");
+}
+
+function updateCloudiness() {
+  cloudiness = parseInt(document.getElementById("cloudiness").value);
+  document.getElementById("cloudiness-value").textContent = cloudiness;
+}
+
+function updateFog() {
+  fog = parseInt(document.getElementById("fog").value);
+  document.getElementById("fog-value").textContent = fog;
+  canvas.style.background = `rgba(255, 255, 255, ${fog / 1000})`;
+}
+
+function toggleRainbow() {
+  const rainbow = document.getElementById("rainbow");
+  rainbow.style.opacity = document.getElementById("rainbow").checked ? rainbowIntensity / 1000 : 0;
+}
+
+function updateRainbowIntensity() {
+  rainbowIntensity = parseInt(document.getElementById("rainbow-intensity").value);
+  document.getElementById("rainbow-intensity-value").textContent = rainbowIntensity;
+  toggleRainbow();
+  if (rainbowIntensity > 800) {
+    document.getElementById("rainbow").style.background = `linear-gradient(to right, ${getRandomColor()}, ${getRandomColor()}, ${getRandomColor()})`;
+    showAlert("Tcza wariuje!");
+  }
+}
+
+function updateLightningFreq() {
+  lightningFreq = parseInt(document.getElementById("lightning-freq").value);
+  document.getElementById("lightning-freq-value").textContent = lightningFreq;
+  if (lightningFreq > 800) showAlert("BByskawice szalej!");
+}
+
+function updateTime() {
+  time = parseInt(document.getElementById("time").value);
+  document.getElementById("time-value").textContent = Math.round(time);
+  let brightness = time < 6 || time > 18 ? 0.5 : 1;
+  document.body.style.filter = `brightness(${brightness * (1 + temperature / 1000)})`;
+}
+
+function updateSkyColor() {
+  skyR = parseInt(document.getElementById("sky-r").value);
+  skyG = parseInt(document.getElementById("sky-g").value);
+  skyB = parseInt(document.getElementById("sky-b").value);
+  document.getElementById("sky-r-value").textContent = skyR;
+  document.getElementById("sky-g-value").textContent = skyG;
+  document.getElementById("sky-b-value").textContent = skyB;
+  if (weather !== "lawa" && weather !== "ufo" && weather !== "glitch" && weather !== "matrix") {
+    document.body.style.background = `linear-gradient(to bottom, rgb(${skyR}, ${skyG}, ${skyB}), #fff)`;
+  }
+}
+
+function updateCloudSpeed() {
+  cloudSpeed = parseInt(document.getElementById("cloud-speed").value);
+  document.getElementById("cloud-speed-value").textContent = cloudSpeed;
+  if (cloudSpeed > 800) showAlert("Chmury w nadprzestrzeni!");
+}
+
+function updateSnowDepth() {
+  snowDepth = parseInt(document.getElementById("snow-depth").value);
+  document.getElementById("snow-depth-value").textContent = snowDepth;
+  canvas.style.borderBottom = snowDepth > 0 ? `${snowDepth}px solid #fff` : "none";
+  if (snowDepth > 800) showAlert("Znieg zasypaB wszystko!");
+}
+
+function updateHailSize() {
+  hailSize = parseInt(document.getElementById("hail-size").value);
+  document.getElementById("hail-size-value").textContent = hailSize;
+  if (hailSize > 80) showAlert("Grad jak meteory!");
+}
+
+function updateTornadoStrength() {
+  tornadoStrength = parseInt(document.getElementById("tornado-strength").value);
+  document.getElementById("tornado-strength-value").textContent = tornadoStrength;
+  if (tornadoStrength > 800) showAlert("Tornado niszczy wszech[wiat!");
+}
+
+function updateSandLevel() {
+  sandLevel = parseInt(document.getElementById("sand-level").value);
+  document.getElementById("sand-level-value").textContent = sandLevel;
+}
+
+function updateAurora() {
+  aurora = parseInt(document.getElementById("aurora").value);
+  document.getElementById("aurora-value").textContent = aurora;
+  if (aurora > 800) showAlert("Zorza jak neonowy rave!");
+}
+
+function updateContrail() {
+  contrail = parseInt(document.getElementById("contrail").value);
+  document.getElementById("contrail-value").textContent = contrail;
+}
+
+function updateMeteor() {
+  meteor = parseInt(document.getElementById("meteor").value);
+  document.getElementById("meteor-value").textContent = meteor;
+  if (meteor > 400) showAlert("Apokalipsa meteorytów!");
+}
+
+function updateSmog() {
+  smog = parseInt(document.getElementById("smog").value);
+  document.getElementById("smog-value").textContent = smog;
+  canvas.style.background = `rgba(128, 128, 128, ${smog / 1000})`;
+}
+
+function updateStars() {
+  stars = parseInt(document.getElementById("stars").value);
+  document.getElementById("stars-value").textContent = stars;
+  if (stars > 800) showAlert("Niebo peBne gwiazd!");
+}
+
+function updateDew() {
+  dew = parseInt(document.getElementById("dew").value);
+  document.getElementById("dew-value").textContent = dew;
+}
+
+function updateWave() {
+  wave = parseInt(document.getElementById("wave").value);
+  document.getElementById("wave-value").textContent = wave;
+  if (wave > 80) showAlert("Tsunami nadchodzi!");
+}
+
+function updatePrecipColor() {
+  precipR = parseInt(document.getElementById("precip-r").value);
+  precipG = parseInt(document.getElementById("precip-g").value);
+  precipB = parseInt(document.getElementById("precip-b").value);
+  document.getElementById("precip-r-value").textContent = precipR;
+  document.getElementById("precip-g-value").textContent = precipG;
+  document.getElementById("precip-b-value").textContent = precipB;
+}
+
+function updateLightningSpeed() {
+  lightningSpeed = parseInt(document.getElementById("lightning-speed").value);
+  document.getElementById("lightning-speed-value").textContent = lightningSpeed;
+  if (lightningSpeed > 4000) showAlert("BByskawice w zwolnionym tempie!");
+}
+
+function updateFrost() {
+  frost = parseInt(document.getElementById("frost").value);
+  document.getElementById("frost-value").textContent = frost;
+  document.body.style.border = frost > 0 ? `${frost / 10}px solid #e6e6fa` : "none";
+}
+
+function updateEarthquake() {
+  earthquake = parseInt(document.getElementById("earthquake").value);
+  document.getElementById("earthquake-value").textContent = earthquake;
+  document.body.style.animation = earthquake > 0 ? `shake ${1 / earthquake}s infinite` : "none";
+  if (earthquake > 80) showAlert("Trzsienie ziemi rozwala ekran!");
+}
+
+function updateRime() {
+  rime = parseInt(document.getElementById("rime").value);
+  document.getElementById("rime-value").textContent = rime;
+}
+
+function updateIce() {
+  ice = parseInt(document.getElementById("ice").value);
+  document.getElementById("ice-value").textContent = ice;
+  canvas.style.filter = ice > 0 ? `blur(${ice / 200}px)` : "none";
+  if (ice > 800) showAlert("Wszystko zamro|one!");
+}
+
+function updateMonth() {
+  month = parseInt(document.getElementById("month").value);
+  document.getElementById("month-value").textContent = month;
+}
+
+function updateCloudType() {
+  cloudType = parseInt(document.getElementById("cloud-type").value);
+  const types = ["Brak", "Cumulus", "Stratus", "Cirrus", "Nimbus", "Altostratus", "Cumulonimbus", "Stratocumulus", "Cirrostratus", "Cirrocumulus", "Altocumulus"];
+  document.getElementById("cloud-type-value").textContent = types[cloudType];
+}
+
+function updateFilter() {
+  filter = parseInt(document.getElementById("filter").value);
+  const filters = ["Brak", "Sepia", "Czarno-biaBe", "Neon", "Invert", "Pixel"];
+  document.getElementById("filter-value").textContent = filters[filter];
+  document.body.style.filter = filter == 1 ? "sepia(1)" : filter == 2 ? "grayscale(1)" : filter == 3 ? "contrast(2)" : filter == 4 ? "invert(1)" : filter == 5 ? "url(#pixelate)" : `brightness(${1 + temperature / 1000})`;
+  if (filter == 5) {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.innerHTML = `<filter id="pixelate"><feFlood x="0" y="0" height="5" width="5"/><feComposite width="10" height="10"/><feTile result="a"/><feComposite in="SourceGraphic" in2="a" operator="in"/><feMorphology operator="dilate" radius="5"/></filter>`;
+    document.body.appendChild(svg);
+  }
+}
+
+function updateVolume() {
+  volume = parseInt(document.getElementById("volume").value);
+  document.getElementById("volume-value").textContent = volume;
+  Object.values(audios).forEach(audio => {
+    if (audio) audio.volume = volume / 100;
+  });
+}
+
+function updateGravity() {
+  gravity = parseInt(document.getElementById("gravity").value);
+  document.getElementById("gravity-value").textContent = gravity;
+  if (gravity > 80) showAlert("Grawitacja jak na Jowiszu!");
+}
+
+function updateDensity() {
+  density = parseInt(document.getElementById("density").value);
+  document.getElementById("density-value").textContent = density;
+  if (density > 800) showAlert("Atmosfera jak na Wenus!");
+}
+
+function updateMagnetic() {
+  magnetic = parseInt(document.getElementById("magnetic").value);
+  document.getElementById("magnetic-value").textContent = magnetic;
+  if (magnetic > 800) showAlert("Magnetyzm wariuje!");
+}
+
+function updateRadiation() {
+  radiation = parseInt(document.getElementById("radiation").value);
+  document.getElementById("radiation-value").textContent = radiation;
+  if (radiation > 800) {
+    canvas.style.filter = `sepia(0.5) hue-rotate(${Math.random() * 360}deg)`;
+    showAlert("Radiacja poza skal!");
+  }
+}
+
+function updateRotation() {
+  rotation = parseInt(document.getElementById("rotation").value);
+  document.getElementById("rotation-value").textContent = rotation;
+  if (rotation > 80) showAlert("Ziemia obraca si jak bczek!");
+}
+
+function updateEntropy() {
+  entropy = parseInt(document.getElementById("entropy").value);
+  document.getElementById("entropy-value").textContent = entropy;
+  if (entropy > 800) showAlert("Chaos przejmuje kontrol!");
+}
+
+function updateBlackHole() {
+  blackhole = parseInt(document.getElementById("blackhole").value);
+  document.getElementById("blackhole-value").textContent = blackhole;
+  if (blackhole > 8) showAlert("Czarna dziura pochBania wszystko!");
+}
+
+function updateTimeWarp() {
+  timewarp = parseInt(document.getElementById("timewarp").value);
+  document.getElementById("timewarp-value").textContent = timewarp;
+  if (timewarp > 80) showAlert("Czas szaleje!");
+}
+
+function updateAlien() {
+  alien = parseInt(document.getElementById("alien").value);
+  document.getElementById("alien-value").textContent = alien;
+  if (alien > 800) {
+    if (autoSound) tryPlaySound("ufo");
+    showAlert("Obcy nadchodz!");
+  }
+}
+
+function updateMeme() {
+  meme = parseInt(document.getElementById("meme").value);
+  document.getElementById("meme-value").textContent = meme;
+  if (meme > 800) {
+    document.body.style.fontFamily = "Comic Sans MS";
+    showAlert("MEMY ZAAADNAY!");
+  } else {
+    document.body.style.fontFamily = "Roboto, sans-serif";
+  }
+}
+
+function updateDisco() {
+  disco = parseInt(document.getElementById("disco").value);
+  document.getElementById("disco-value").textContent = disco;
+  if (disco > 800) {
+    setInterval(() => {
+      document.body.style.background = `linear-gradient(to bottom, ${getRandomColor()}, ${getRandomColor()})`;
+    }, 100);
+    showAlert("Dyskoteka level 9000!");
+  }
+}
+
+function getRandomColor() {
+  return `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+}
+
+function toggleAutoSound() {
+  autoSound = !autoSound;
+  document.getElementById("auto-sound-status").textContent = autoSound ? "WB" : "WyB";
+}
+
+function triggerLightning() {
+  const lightning = document.getElementById("lightning");
+  lightning.style.opacity = 1;
+  setTimeout(() => lightning.style.opacity = 0, lightningSpeed);
+  if (autoSound) tryPlaySound("thunder");
+}
+
+function randomLightning() {
+  if (weather === "burza" && Math.random() < lightningFreq / 1000) {
+    triggerLightning();
+  }
+}
+
+function triggerMeteorShower() {
+  meteor = 500;
+  document.getElementById("meteor").value = meteor;
+  document.getElementById("meteor-value").textContent = meteor;
+  if (autoSound) tryPlaySound("meteor");
+  setTimeout(() => {
+    meteor = 0;
+    document.getElementById("meteor").value = meteor;
+    document.getElementById("meteor-value").textContent = meteor;
+  }, 5000);
+}
+
+function triggerVolcano() {
+  particles.push({ x: canvas.width / 2, y: canvas.height, vx: 0, vy: -10, type: "volcano", size: 100 });
+  if (autoSound) tryPlaySound("volcano");
+}
+
+function triggerFlood() {
+  canvas.style.background = `linear-gradient(to top, #4682b4 ${humidity}%, rgba(255, 255, 255, ${fog / 1000}))`;
+  if (autoSound) tryPlaySound("flood");
+  setTimeout(() => canvas.style.background = `rgba(255, 255, 255, ${fog / 1000})`, 5000);
+}
+
+function triggerBlackHole() {
+  particles.push({ x: canvas.width / 2, y: canvas.height / 2, vx: 0, vy: 0, type: "blackhole", size: 100 });
+  if (autoSound) tryPlaySound("ufo");
+  showAlert("Czarna dziura aktywowana!");
+}
+
+function triggerTimeWarp() {
+  document.body.style.animation = `timewarp 1s infinite`;
+  setTimeout(() => document.body.style.animation = earthquake > 0 ? `shake ${1 / earthquake}s infinite` : "none", 3000);
+  if (autoSound) tryPlaySound("glitch");
+  showAlert("Czas zakrzywiony!");
+}
+
+function triggerAlienSignal() {
+  if (autoSound) tryPlaySound("ufo");
+  canvas.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+  setTimeout(() => canvas.style.filter = ice > 0 ? `blur(${ice / 200}px)` : "none", 2000);
+  showAlert("SygnaB obcych wykryty!");
+}
+
+function tryPlaySound(type) {
+  if (!audios[type]) {
+    audios[type] = new Audio();
+    audios[type].volume = volume / 100;
+    const soundFiles = {
+      thunder: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      rain: "https://cdn.pixabay.com/audio/2023/07/27/10-49-05-246_960.mp3",
+      wind: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      hail: "https://cdn.pixabay.com/audio/2023/07/27/10-49-05-246_960.mp3",
+      tornado: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      sand: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      wave: "https://cdn.pixabay.com/audio/2023/07/27/10-49-05-246_960.mp3",
+      birds: "https://cdn.pixabay.com/audio/2023/07/27/10-49-05-246_960.mp3",
+      wolves: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      aurora: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      meteor: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      volcano: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      frost: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      flood: "https://cdn.pixabay.com/audio/2023/07/27/10-49-05-246_960.mp3",
+      ufo: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      glitch: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      slonecznie: "https://cdn.pixabay.com/audio/2023/07/27/10-49-05-246_960.mp3",
+      deszcz: "https://cdn.pixabay.com/audio/2023/07/27/10-49-05-246_960.mp3",
+      burza: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3",
+      wietrznie: "https://cdn.pixabay.com/audio/2022/03/24/02-32-18-452_960.mp3"
+    };
+    audios[type].src = soundFiles[type] || soundFiles.rain;
+    audios[type].loop = ["rain", "wind", "hail", "tornado", "sand", "wave", "birds", "wolves", "aurora", "flood", "ufo", "glitch", "deszcz", "wietrznie"].includes(type);
+  }
+  audios[type].volume = volume / 100;
+  if (!audios[type].paused) {
+    audios[type].pause();
+    audios[type].currentTime = 0;
+  }
+  audios[type].play().catch(e => {
+    console.warn(`Nie udaBo si odtworzy dzwiku ${type}: ${e.message}`);
+    showAlert(`BBd dzwiku: ${type}`);
+  });
+}
+
+function createParticle() {
+  if (particles.length >= 1000) return;
+  if (entropy > 800 && Math.random() < entropy / 1000) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 20,
+      vy: (Math.random() - 0.5) * 20,
+      type: "chaos",
+      size: Math.random() * 20
+    });
+  }
+  if (weather === "deszcz" || weather === "burza") {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: 0,
+      vx: wind / 100 + (Math.random() - 0.5) * entropy / 100,
+      vy: (5 + intensity / 100) * gravity,
+      type: "rain",
+      size: 2
+    });
+  } else if (weather === "snieg") {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: 0,
+      vx: wind / 200 + (Math.random() - 0.5) * entropy / 100,
+      vy: (2 + intensity / 500) * gravity,
+      type: "snow",
+      size: 3
+    });
+  } else if (weather === "grad") {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: 0,
+      vx: wind / 150 + (Math.random() - 0.5) * entropy / 100,
+      vy: (5 + intensity / 200) * gravity,
+      type: "hail",
+      size: hailSize || 8
+    });
+  } else if (weather === "tornado" && tornadoStrength > 0) {
+    particles.push({
+      x: canvas.width / 2 + Math.random() * 50 - 25,
+      y: canvas.height,
+      vx: (Math.random() - 0.5) * tornadoStrength / 100,
+      vy: -tornadoStrength / 100,
+      type: "tornado",
+      size: tornadoStrength
+    });
+  } else if (weather === "piasek" && sandLevel > 0) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: canvas.height,
+      vx: wind / 50 + (Math.random() - 0.5) * entropy / 100,
+      vy: -sandLevel / 200,
+      type: "sand",
+      size: sandLevel / 100
+    });
+  } else if (weather === "smuga" && contrail > 0) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height / 4,
+      vx: -contrail * 5,
+      vy: 0,
+      type: "contrail",
+      size: contrail * 10
+    });
+  } else if (weather === "zorza" && aurora > 0) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height / 4,
+      vx: 0,
+      vy: 0,
+      type: "aurora",
+      size: aurora / 10
+    });
+  } else if (weather === "lawa") {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: 0,
+      vx: wind / 100 + (Math.random() - 0.5) * entropy / 100,
+      vy: (5 + intensity / 100) * gravity,
+      type: "lava",
+      size: hailSize || 5
+    });
+  } else if (weather === "ufo" && alien > 0) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height / 4,
+      vx: (Math.random() - 0.5) * alien / 100,
+      vy: (Math.random() - 0.5) * alien / 100,
+      type: "ufo",
+      size: alien / 20
+    });
+  } else if (meteor > 0) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: 0,
+      vx: (Math.random() - 0.5) * 20,
+      vy: 20 * gravity,
+      type: "meteor",
+      size: 5
+    });
+  }
+  if (cloudiness > 0) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height / 4,
+      vx: wind / 500 + cloudSpeed / 100 + (Math.random() - 0.5) * entropy / 100,
+      vy: 0,
+      type: "cloud",
+      size: 50 + cloudiness / 20
+    });
+  }
+  if (stars > 0 && time > 18) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: 0,
+      vy: 0,
+      type: "star",
+      size: stars / 200
+    });
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if ((weather === "deszcz" || weather === "burza" || weather === "snieg" || weather === "grad" || weather === "lawa" || weather === "ufo") && Math.random() < intensity / 1000) {
+    createParticle();
+  }
+  if ((cloudiness > 0 && Math.random() < cloudiness / 5000) || meteor > 0 || sandLevel > 0 || contrail > 0 || aurora > 0 || stars > 0 || blackhole > 0 || alien > 0 || meme > 0 || disco > 0) {
+    createParticle();
+  }
+
+  particles = particles.filter(particle => particle.y < canvas.height + (particle.size || 10) && particle.x < canvas.width + (particle.size || 10) && particle.x > -(particle.size || 10) && particle.y > -(particle.size || 10));
+  particles.forEach(particle => {
+    particle.x += particle.vx * timewarp;
+    particle.y += particle.vy * timewarp;
+    if (blackhole > 0 && particle.type !== "blackhole") {
+      const dx = canvas.width / 2 - particle.x;
+      const dy = canvas.height / 2 - particle.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > 10) {
+        particle.vx += (dx / dist) * blackhole / 10;
+        particle.vy += (dy / dist) * blackhole / 10;
+      }
+    }
+    if (magnetic > 0 && particle.type !== "blackhole") {
+      particle.vx += (Math.random() - 0.5) * magnetic / 100;
+      particle.vy += (Math.random() - 0.5) * magnetic / 100;
+    }
+    ctx.beginPath();
+    if (particle.type === "rain") {
+      ctx.fillStyle = `rgb(${precipR}, ${precipG}, ${precipB})`;
+      ctx.fillRect(particle.x, particle.y, 2, 10);
+    } else if (particle.type === "snow") {
+      ctx.fillStyle = `rgb(${precipR}, ${precipG}, ${precipB})`;
+      ctx.arc(particle.x, particle.y, particle.size || 3, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "hail") {
+      ctx.fillStyle = `rgb(${precipR}, ${precipG}, ${precipB})`;
+      ctx.arc(particle.x, particle.y, particle.size || 8, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "cloud") {
+      ctx.fillStyle = `rgba(255, 255, 255, ${cloudiness / 1000})`;
+      ctx.ellipse(particle.x, particle.y, particle.size || 50, (particle.size || 50) / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "tornado") {
+      ctx.fillStyle = `rgba(100, 100, 100, ${tornadoStrength / 1000})`;
+      ctx.fillRect(particle.x, particle.y, (particle.size || 50) / 5, particle.size || 50);
+    } else if (particle.type === "sand") {
+      ctx.fillStyle = `rgba(210, 180, 140, ${sandLevel / 1000})`;
+      ctx.arc(particle.x, particle.y, particle.size || 5, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "contrail") {
+      ctx.fillStyle = `rgba(255, 255, 255, ${contrail / 100})`;
+      ctx.fillRect(particle.x, particle.y, particle.size || 10, 2);
+    } else if (particle.type === "aurora") {
+      ctx.fillStyle = `rgba(0, 255, 0, ${aurora / 1000})`;
+      ctx.arc(particle.x, particle.y, particle.size || 10, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "meteor") {
+      ctx.fillStyle = "#ff4500";
+      ctx.arc(particle.x, particle.y, particle.size || 5, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "star") {
+      ctx.fillStyle = `rgba(255, 255, 255, ${stars / 1000})`;
+      ctx.arc(particle.x, particle.y, particle.size || 2, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "volcano") {
+      ctx.fillStyle = "#ff4500";
+      ctx.arc(particle.x, particle.y, particle.size || 100, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "lava") {
+      ctx.fillStyle = `rgb(255, ${Math.random() * 100}, 0)`;
+      ctx.arc(particle.x, particle.y, particle.size || 5, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "ufo") {
+      ctx.fillStyle = `rgba(0, 255, 0, ${alien / 1000})`;
+      ctx.moveTo(particle.x, particle.y - (particle.size || 10));
+      ctx.lineTo(particle.x + (particle.size || 10), particle.y + (particle.size || 10));
+      ctx.lineTo(particle.x - (particle.size || 10), particle.y + (particle.size || 10));
+      ctx.closePath();
+      ctx.fill();
+    } else if (particle.type === "blackhole") {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
+      ctx.arc(particle.x, particle.y, particle.size || 100, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "chaos") {
+      ctx.fillStyle = getRandomColor();
+      ctx.arc(particle.x, particle.y, particle.size || 10, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (particle.type === "meme") {
+      ctx.fillStyle = getRandomColor();
+      ctx.font = `${particle.size || 50}px Comic Sans MS`;
+      ctx.fillText("LOL", particle.x, particle.y);
+    } else if (particle.type === "matrix") {
+      ctx.fillStyle = "#0f0";
+      ctx.font = "20px Courier New";
+      for (let i = 0; i < canvas.width / 20; i++) {
+        ctx.fillText(String.fromCharCode(33 + Math.random() * 94), i * 20, particle.y + (Math.random() * canvas.height));
+        particle.y += 10;
+        if (particle.y > canvas.height) particle.y = 0;
+      }
+    }
+  });
+
+  if (wave > 0) {
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(0, 105, 148, ${humidity / 1000})`;
+    for (let x = 0; x < canvas.width; x += 10) {
+      let y = canvas.height - 50 + Math.sin(x / 50 + Date.now() / (1000 / timewarp)) * wave * 10;
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.lineTo(0, canvas.height);
+    ctx.fill();
+  }
+
+  if (disco > 0) {
+    ctx.fillStyle = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${disco / 1000})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  if (radiation > 800) {
+    ctx.fillStyle = `rgba(0, 255, 0, ${Math.random() * 0.2})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  requestAnimationFrame(animate);
+}
+
+canvas.addEventListener("click", (e) => {
+  if (meme > 800) {
+    particles.push({
+      x: e.clientX,
+      y: e.clientY,
+      vx: 0,
+      vy: 0,
+      type: "meme",
+      size: 50
+    });
+  } else {
+    particles.push({
+      x: e.clientX,
+      y: e.clientY,
+      vx: 0,
+      vy: 0,
+      type: "cloud",
+      size: 50
+    });
+  }
+  if (autoSound) tryPlaySound(meme > 800 ? "glitch" : "wind");
+});
+
+const style = document.createElement("style");
+style.textContent = `
+    @keyframes shake {
+        0% { transform: translate(0, 0); }
+        25% { transform: translate(${earthquake}px, ${earthquake}px); }
+        50% { transform: translate(-${earthquake}px, -${earthquake}px); }
+        75% { transform: translate(${earthquake}px, -${earthquake}px); }
+        100% { transform: translate(0, 0); }
+    }
+    @keyframes timewarp {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.5) rotate(180deg); }
+        100% { transform: scale(1); }
+    }
+`;
+document.head.appendChild(style);
+
+document.querySelector(".menu-btn").addEventListener("click", () => {
+  document.querySelector(".sidebar").classList.toggle("active");
+  document.querySelector(".hacker-menu").classList.remove("active");
+});
+
+document.querySelector(".hacker-btn").addEventListener("click", () => {
+  document.querySelector(".hacker-menu").classList.toggle("active");
+  document.querySelector(".sidebar").classList.remove("active");
+});
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    const parent = tab.closest(".sidebar, .hacker-menu");
+    parent.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    parent.querySelectorAll(".controls").forEach(c => c.classList.remove("active"));
+    tab.classList.add("active");
+    parent.querySelector(`#${tab.dataset.tab}`).classList.add("active");
+  });
+});</script></body><html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Zegar AMOLED Friendly</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000; /* Pełna czerń */
+      color: #444;      /* Bardzo ciemna szarość */
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    h1 {
+      font-size: 8em;
+      font-weight: 700; /* Grubszy font */
+      letter-spacing: 0.05em;
+      margin: 0;
+      color: #444;
+    }
+
+    .date {
+      font-size: 1.4em;
+      color: #333; /* Jeszcze ciemniejsza szarość */
+      margin-top: 12px;
+      font-weight: 500;
+    }
+
+    .battery {
+      position: absolute;
+      bottom: 20px;
+      font-size: 1em;
+      color: #222;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .low {
+      color: #aa0000; /* Ciemnoczerwony zamiast jasnego */
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 4.5em;
+      }
+      .date {
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1 id="clock">--:--:--</h1>
+  <div class="date" id="date">Ładowanie daty...</div>
+  <div class="battery" id="battery" style="display: none;">
+    🔋 Bateria: --%
+    <div id="warning"></div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('date').textContent = now.toLocaleDateString('pl-PL', options);
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Obsługa poziomu baterii
+    if ('getBattery' in navigator) {
+      navigator.getBattery().then(battery => {
+        const batteryDiv = document.getElementById("battery");
+        const warning = document.getElementById("warning");
+
+        batteryDiv.style.display = "block";
+
+        function updateBattery() {
+          const level = Math.round(battery.level * 100);
+          batteryDiv.firstChild.textContent = `🔋 Bateria: ${level}%`;
+
+          if (level < 15) {
+            warning.innerHTML = '⚠️ <span class="low">UWAGA: Niski poziom baterii!</span>';
+          } else {
+            warning.innerHTML = '';
+          }
+        }
+
+        updateBattery();
+        battery.addEventListener('levelchange', updateBattery);
+      });
+    }
+  </script>
+</body>
+</html>

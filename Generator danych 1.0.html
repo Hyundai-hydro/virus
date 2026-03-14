@@ -1,0 +1,1340 @@
+<!doctype html><html><head></head><body><!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title data-i18n="title">Mega Generator Danych Windows Style</title>
+	<style>
+		body {
+			font-family: 'Segoe UI', sans-serif;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			margin: 0;
+			background: linear-gradient(to bottom, #e0eafc, #cfdef3);
+			transition: background 0.4s ease;
+		}
+
+		body.tryb-ciemny {
+			background: linear-gradient(to bottom, #2c2c2c, #1e1e1e);
+		}
+
+		.kontener {
+			background: rgba(255, 255, 255, 0.92);
+			padding: 20px;
+			border-radius: 14px;
+			box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+			max-width: 780px;
+			width: 95%;
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255, 255, 255, 0.25);
+			transition: background 0.4s ease, box-shadow 0.4s ease;
+		}
+
+		.tryb-ciemny .kontener {
+			background: rgba(30, 30, 30, 0.92);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+		}
+
+		h1 {
+			color: #1e1e1e;
+			font-size: 24px;
+			margin: 0 0 20px;
+			text-align: center;
+		}
+
+		.tryb-ciemny h1 {
+			color: #e0e0e0;
+		}
+
+		.zakladki {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 6px;
+			border-bottom: 2px solid #0078d4;
+			margin-bottom: 15px;
+		}
+
+		.zakladka {
+			padding: 8px 18px;
+			background: #f5f5f5;
+			border-radius: 8px 8px 0 0;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			color: #1e1e1e;
+			font-size: 14px;
+			font-weight: 500;
+		}
+
+		.tryb-ciemny .zakladka {
+			background: #3c3c3c;
+			color: #e0e0e0;
+		}
+
+		.zakladka:hover {
+			background: linear-gradient(to bottom, #dfe9f3, #ffffff);
+			transform: translateY(-2px);
+		}
+
+		.tryb-ciemny .zakladka:hover {
+			background: linear-gradient(to bottom, #4c4c4c, #5c5c5c);
+		}
+
+		.zakladka.aktywna {
+			background: #0078d4;
+			color: white;
+			box-shadow: inset 0 -2px 0 #005a9e;
+			transform: translateY(0);
+		}
+
+		.zawartosc {
+			display: none;
+			opacity: 0;
+			transform: translateY(10px);
+			transition: opacity 0.4s ease, transform 0.4s ease;
+		}
+
+		.zawartosc.aktywna {
+			display: block;
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		.wynik {
+			font-size: 15px;
+			color: #1e1e1e;
+			background: rgba(245, 245, 245, 0.9);
+			padding: 15px;
+			border-radius: 8px;
+			margin: 15px 0;
+			line-height: 1.6;
+			text-align: left;
+			max-height: 300px;
+			overflow-y: auto;
+			transition: background 0.4s ease;
+		}
+
+		.tryb-ciemny .wynik {
+			color: #e0e0e0;
+			background: rgba(60, 60, 60, 0.9);
+		}
+
+		.konsola-wynik {
+			font-family: 'Consolas', monospace;
+			font-size: 13px;
+			color: #d4d4d4;
+			background: #252526;
+			padding: 15px;
+			border-radius: 8px;
+			margin: 15px 0;
+			max-height: 300px;
+			overflow-y: auto;
+		}
+
+		.tryb-ciemny .konsola-wynik {
+			background: #1e1e1e;
+		}
+
+		.przyciski {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			justify-content: center;
+			margin-bottom: 15px;
+		}
+
+		button {
+			padding: 8px 18px;
+			font-size: 14px;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			background: linear-gradient(to bottom, #dfe9f3, #ffffff);
+			color: #1e1e1e;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+			transition: all 0.3s ease;
+		}
+
+		.tryb-ciemny button {
+			background: linear-gradient(to bottom, #5c5c5c, #4c4c4c);
+			color: #e0e0e0;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+		}
+
+		button:hover {
+			background: linear-gradient(to bottom, #ffffff, #dfe9f3);
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		}
+
+		.tryb-ciemny button:hover {
+			background: linear-gradient(to bottom, #6c6c6c, #5c5c5c);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+		}
+
+		button:active {
+			transform: translateY(0);
+			box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+		}
+
+		input[type="number"],
+		select,
+		input[type="text"] {
+			padding: 7px;
+			font-size: 14px;
+			border-radius: 5px;
+			border: 1px solid #ccc;
+			background: #fff;
+			transition: border-color 0.3s ease;
+		}
+
+		.tryb-ciemny input[type="number"],
+		.tryb-ciemny select,
+		.tryb-ciemny input[type="text"] {
+			background: #3c3c3c;
+			color: #e0e0e0;
+			border-color: #5c5c5c;
+		}
+
+		input[type="number"]:focus,
+		select:focus,
+		input[type="text"]:focus {
+			border-color: #0078d4;
+			outline: none;
+		}
+
+		input[type="checkbox"] {
+			margin: 0 5px 0 10px;
+		}
+
+		input[type="file"] {
+			padding: 7px;
+			font-size: 14px;
+		}
+
+		.ustawienia {
+			font-size: 13px;
+			margin: 12px 0;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.status {
+			font-size: 13px;
+			color: #0078d4;
+			margin-top: 10px;
+			text-align: center;
+			min-height: 20px;
+		}
+
+		.tryb-ciemny .status {
+			color: #4fc3f7;
+		}
+
+		#ladowanie {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.7);
+			justify-content: center;
+			align-items: center;
+			z-index: 1000;
+		}
+
+		.ladowanie-kontener {
+			background: #ffffff;
+			padding: 25px;
+			border-radius: 12px;
+			text-align: center;
+			box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+			transition: background 0.4s ease;
+		}
+
+		.tryb-ciemny .ladowanie-kontener {
+			background: #2c2c2c;
+			color: #e0e0e0;
+		}
+
+		.ladowanie-spinner {
+			width: 40px;
+			height: 40px;
+			border: 5px solid #0078d4;
+			border-top: 5px solid transparent;
+			border-radius: 50%;
+			animation: spin 0.7s linear infinite;
+			margin: 0 auto 12px;
+		}
+
+		.tryb-ciemny .ladowanie-spinner {
+			border-color: #4fc3f7;
+			border-top-color: transparent;
+		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+		@media (max-width: 600px) {
+			.kontener {
+				padding: 15px;
+			}
+
+			.zakladka {
+				padding: 6px 12px;
+				font-size: 13px;
+			}
+
+			button,
+			input[type="number"],
+			select,
+			input[type="text"] {
+				font-size: 13px;
+				padding: 6px 12px;
+			}
+
+			.wynik,
+			.konsola-wynik {
+				font-size: 14px;
+			}
+
+			.ustawienia {
+				flex-direction: column;
+				align-items: center;
+				gap: 8px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div id="ladowanie">
+		<div class="ladowanie-kontener">
+			<div class="ladowanie-spinner"></div>
+			<p data-i18n="loading">Generowanie danych...</p>
+		</div>
+	</div>
+	<div class="kontener">
+		<h1 data-i18n="title">Mega Generator Danych Windows Style</h1>
+		<div class="przyciski" style="justify-content: space-between;">
+			<select id="jezyk" onchange="zmienJezyk(this.value)">
+                <option value="pl">Polski</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+            </select>
+			<button onclick="przelaczTryb()" data-i18n="darkMode">Tryb Ciemny</button>
+			<button onclick="zapiszWszystko()" data-i18n="saveAll">Zapisz Wszystko</button>
+			<button onclick="eksportJSON()" data-i18n="exportJSON">Eksport JSON</button>
+			<button onclick="resetujWszystko()" data-i18n="reset">Resetuj</button>
+		</div>
+		<div class="zakladki">
+			<div class="zakladka aktywna" onclick="pokazZakladke('psc')" data-i18n="tabPsc">Paysafecard</div>
+			<div class="zakladka" onclick="pokazZakladke('adres')" data-i18n="tabAddress">Adres</div>
+			<div class="zakladka" onclick="pokazZakladke('karta')" data-i18n="tabCard">Karta Kredytowa</div>
+			<div class="zakladka" onclick="pokazZakladke('telefon')" data-i18n="tabPhone">Telefon</div>
+			<div class="zakladka" onclick="pokazZakladke('imie')" data-i18n="tabName">Imi i Nazwisko</div>
+			<div class="zakladka" onclick="pokazZakladke('email')" data-i18n="tabEmail">E-mail</div>
+			<div class="zakladka" onclick="pokazZakladke('pesel')" data-i18n="tabPesel">PESEL</div>
+			<div class="zakladka" onclick="pokazZakladke('haslo')" data-i18n="tabPassword">HasBo</div>
+			<div class="zakladka" onclick="pokazZakladke('iban')" data-i18n="tabIban">IBAN</div>
+			<div class="zakladka" onclick="pokazZakladke('data')" data-i18n="tabDate">Data Urodzenia</div>
+			<div class="zakladka" onclick="pokazZakladke('nazwa')" data-i18n="tabUsername">Nazwa U|ytkownika</div>
+			<div class="zakladka" onclick="pokazZakladke('nip')" data-i18n="tabNip">NIP</div>
+			<div class="zakladka" onclick="pokazZakladke('uuid')" data-i18n="tabUuid">UUID</div>
+			<div class="zakladka" onclick="pokazZakladke('tekst')" data-i18n="tabText">Losowy Tekst</div>
+			<div class="zakladka" onclick="pokazZakladke('kod')" data-i18n="tabZip">Kod Pocztowy</div>
+			<div class="zakladka" onclick="pokazZakladke('konsola')" data-i18n="tabConsole">Konsola</div>
+		</div>
+		<div id="psc" class="zawartosc aktywna">
+			<div class="przyciski">
+				<input type="number" id="psc-ilosc" value="1" min="1" max="10" title="Ilo[ kodów">
+				<button onclick="generuj('psc')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('psc-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('psc-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="psc-wynik" class="wynik" data-i18n="clickToGeneratePsc">Kliknij, aby wygenerowa kod PSC!</div>
+		</div>
+		<div id="adres" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="adres-ilosc" value="1" min="1" max="10" title="Ilo[ adresów">
+				<button onclick="generuj('adres')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('adres-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('adres-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="adres-wynik" class="wynik" data-i18n="clickToGenerateAddress">Kliknij, aby wygenerowa adres!</div>
+		</div>
+		<div id="karta" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="karta-ilosc" value="1" min="1" max="10" title="Ilo[ kart">
+				<button onclick="generuj('karta')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('karta-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('karta-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="karta-wynik" class="wynik" data-i18n="clickToGenerateCard">Kliknij, aby wygenerowa kart!</div>
+		</div>
+		<div id="telefon" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="telefon-ilosc" value="1" min="1" max="10" title="Ilo[ numerów">
+				<button onclick="generuj('telefon')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('telefon-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('telefon-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="telefon-wynik" class="wynik" data-i18n="clickToGeneratePhone">Kliknij, aby wygenerowa numer!</div>
+		</div>
+		<div id="imie" class="zawartosc">
+			<div class="ustawienia">
+				<select id="imie-plec">
+                    <option value="wszystkie" data-i18n="allGenders">Wszystkie pBcie</option>
+                    <option value="mezczyzna" data-i18n="male">M|czyzna</option>
+                    <option value="kobieta" data-i18n="female">Kobieta</option>
+                </select>
+				<select id="imie-kraj">
+                    <option value="pl" data-i18n="poland">Polska</option>
+                    <option value="de" data-i18n="germany">Niemcy</option>
+                    <option value="us" data-i18n="usa">USA</option>
+                </select>
+				<select id="imie-wiek">
+                    <option value="wszystkie" data-i18n="allAges">Wszystkie grupy wiekowe</option>
+                    <option value="mlode" data-i18n="young">MBode (18-35)</option>
+                    <option value="srednie" data-i18n="middle">Zrednie (36-60)</option>
+                    <option value="starsze" data-i18n="old">Starsze (60+)</option>
+                </select>
+			</div>
+			<div class="przyciski">
+				<input type="number" id="imie-ilosc" value="1" min="1" max="10" title="Ilo[ imion">
+				<button onclick="generuj('imie')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('imie-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('imie-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="imie-wynik" class="wynik" data-i18n="clickToGenerateName">Kliknij, aby wygenerowa imi!</div>
+		</div>
+		<div id="email" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="email-ilosc" value="1" min="1" max="10" title="Ilo[ e-maili">
+				<button onclick="generuj('email')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('email-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('email-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="email-wynik" class="wynik" data-i18n="clickToGenerateEmail">Kliknij, aby wygenerowa e-mail!</div>
+		</div>
+		<div id="pesel" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="pesel-ilosc" value="1" min="1" max="10" title="Ilo[ PESEL">
+				<button onclick="generuj('pesel')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('pesel-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('pesel-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="pesel-wynik" class="wynik" data-i18n="clickToGeneratePesel">Kliknij, aby wygenerowa PESEL!</div>
+		</div>
+		<div id="haslo" class="zawartosc">
+			<div class="ustawienia">
+				<label data-i18n="length"><span data-i18n="lengthLabel">DBugo[:</span> <input type="number" id="haslo-dlugosc" value="12" min="6" max="64"></label>
+				<label><input type="checkbox" id="haslo-litery" checked><span data-i18n="letters">Litery</span></label>
+				<label><input type="checkbox" id="haslo-cyfry" checked><span data-i18n="digits">Cyfry</span></label>
+				<label><input type="checkbox" id="haslo-znaki" checked><span data-i18n="specialChars">Znaki specjalne</span></label>
+				<label data-i18n="exclude"><span data-i18n="excludeLabel">Wyklucz:</span> <input type="text" id="haslo-wyklucz" placeholder="np. !@"></label>
+			</div>
+			<div class="przyciski">
+				<input type="number" id="haslo-ilosc" value="1" min="1" max="10" title="Ilo[ haseB">
+				<button onclick="generuj('haslo')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('haslo-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('haslo-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="haslo-wynik" class="wynik" data-i18n="clickToGeneratePassword">Kliknij, aby wygenerowa hasBo!
+			</div>
+		</div>
+		<div id="iban" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="iban-ilosc" value="1" min="1" max="10" title="Ilo[ IBAN">
+				<button onclick="generuj('iban')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('iban-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('iban-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="iban-wynik" class="wynik" data-i18n="clickToGenerateIban">Kliknij, aby wygenerowa IBAN!</div>
+		</div>
+		<div id="data" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="data-ilosc" value="1" min="1" max="10" title="Ilo[ dat">
+				<button onclick="generuj('data')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('data-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('data-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="data-wynik" class="wynik" data-i18n="clickToGenerateDate">Kliknij, aby wygenerowa dat!</div>
+		</div>
+		<div id="nazwa" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="nazwa-ilosc" value="1" min="1" max="10" title="Ilo[ nazw">
+				<button onclick="generuj('nazwa')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('nazwa-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('nazwa-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="nazwa-wynik" class="wynik" data-i18n="clickToGenerateUsername">Kliknij, aby wygenerowa nazw!
+			</div>
+		</div>
+		<div id="nip" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="nip-ilosc" value="1" min="1" max="10" title="Ilo[ NIP">
+				<button onclick="generuj('nip')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('nip-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('nip-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="nip-wynik" class="wynik" data-i18n="clickToGenerateNip">Kliknij, aby wygenerowa NIP!</div>
+		</div>
+		<div id="uuid" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="uuid-ilosc" value="1" min="1" max="10" title="Ilo[ UUID">
+				<button onclick="generuj('uuid')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('uuid-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('uuid-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="uuid-wynik" class="wynik" data-i18n="clickToGenerateUuid">Kliknij, aby wygenerowa UUID!</div>
+		</div>
+		<div id="tekst" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="tekst-ilosc" value="1" min="1" max="10" title="Ilo[ tekstów">
+				<button onclick="generuj('tekst')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('tekst-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('tekst-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="tekst-wynik" class="wynik" data-i18n="clickToGenerateText">Kliknij, aby wygenerowa tekst!</div>
+		</div>
+		<div id="kod" class="zawartosc">
+			<div class="przyciski">
+				<input type="number" id="kod-ilosc" value="1" min="1" max="10" title="Ilo[ kodów">
+				<button onclick="generuj('kod')" data-i18n="generate">Generuj</button>
+				<button onclick="kopiuj('kod-wynik')" data-i18n="copy">Kopiuj</button>
+				<button onclick="zapisz('kod-wynik')" data-i18n="save">Zapisz</button>
+			</div>
+			<div id="kod-wynik" class="wynik" data-i18n="clickToGenerateZip">Kliknij, aby wygenerowa kod pocztowy!
+			</div>
+		</div>
+		<div id="konsola" class="zawartosc">
+			<div class="ustawienia">
+				<input type="text" id="konsola-szukaj" data-i18n-placeholder="searchLogs" placeholder="Szukaj w logach...">
+				<button onclick="wyszukajWKonsoli()" data-i18n="search">Szukaj</button>
+			</div>
+			<div class="przyciski">
+				<button onclick="wyczyscKonsola()" data-i18n="clearConsole">Wyczy[ Konsol</button>
+				<button onclick="zapisz('konsola-wynik')" data-i18n="saveLogs">Zapisz Logi</button>
+				<input type="file" id="import-ustawien" accept=".json" onchange="importUstawien()">
+				<button onclick="zapiszSzablon()" data-i18n="saveTemplate">Zapisz Szablon</button>
+			</div>
+			<div id="konsola-wynik" class="konsola-wynik">Konsola gotowa do logów...</div>
+		</div>
+		<div class="status" id="status"></div>
+	</div>
+
+	<script>
+		const tlumaczenia = {
+            pl: {
+                title: "Mega Generator Danych Windows Style",
+                loading: "Generowanie danych...",
+                darkMode: "Tryb Ciemny",
+                lightMode: "Tryb Jasny",
+                saveAll: "Zapisz Wszystko",
+                exportJSON: "Eksport JSON",
+                reset: "Resetuj",
+                tabPsc: "Paysafecard",
+                tabAddress: "Adres",
+                tabCard: "Karta Kredytowa",
+                tabPhone: "Telefon",
+                tabName: "Imi i Nazwisko",
+                tabEmail: "E-mail",
+                tabPesel: "PESEL",
+                tabPassword: "HasBo",
+                tabIban: "IBAN",
+                tabDate: "Data Urodzenia",
+                tabUsername: "Nazwa U|ytkownika",
+                tabNip: "NIP",
+                tabUuid: "UUID",
+                tabText: "Losowy Tekst",
+                tabZip: "Kod Pocztowy",
+                tabConsole: "Konsola",
+                generate: "Generuj",
+                copy: "Kopiuj",
+                save: "Zapisz",
+                clickToGeneratePsc: "Kliknij, aby wygenerowa kod PSC!",
+                clickToGenerateAddress: "Kliknij, aby wygenerowa adres!",
+                clickToGenerateCard: "Kliknij, aby wygenerowa kart!",
+                clickToGeneratePhone: "Kliknij, aby wygenerowa numer!",
+                clickToGenerateName: "Kliknij, aby wygenerowa imi!",
+                clickToGenerateEmail: "Kliknij, aby wygenerowa e-mail!",
+                clickToGeneratePesel: "Kliknij, aby wygenerowa PESEL!",
+                clickToGeneratePassword: "Kliknij, aby wygenerowa hasBo!",
+                clickToGenerateIban: "Kliknij, aby wygenerowa IBAN!",
+                clickToGenerateDate: "Kliknij, aby wygenerowa dat!",
+                clickToGenerateUsername: "Kliknij, aby wygenerowa nazw!",
+                clickToGenerateNip: "Kliknij, aby wygenerowa NIP!",
+                clickToGenerateUuid: "Kliknij, aby wygenerowa UUID!",
+                clickToGenerateText: "Kliknij, aby wygenerowa tekst!",
+                clickToGenerateZip: "Kliknij, aby wygenerowa kod pocztowy!",
+                allGenders: "Wszystkie pBcie",
+                male: "M|czyzna",
+                female: "Kobieta",
+                poland: "Polska",
+                germany: "Niemcy",
+                usa: "USA",
+                allAges: "Wszystkie grupy wiekowe",
+                young: "MBode (18-35)",
+                middle: "Zrednie (36-60)",
+                old: "Starsze (60+)",
+                length: "DBugo[:",
+                lengthLabel: "DBugo[:",
+                letters: "Litery",
+                digits: "Cyfry",
+                specialChars: "Znaki specjalne",
+                exclude: "Wyklucz:",
+                excludeLabel: "Wyklucz:",
+                searchLogs: "Szukaj w logach...",
+                search: "Szukaj",
+                clearConsole: "Wyczy[ Konsol",
+                saveLogs: "Zapisz Logi",
+                saveTemplate: "Zapisz Szablon",
+                generated: "Wygenerowano {count} danych dla {type}!",
+                copied: "Skopiowano do schowka!",
+                saved: "Zapisano do pliku!",
+                noData: "Najpierw wygeneruj dane!",
+                errorGenerate: "WystpiB bBd podczas generowania!",
+                errorCopy: "BBd kopiowania!",
+                errorSave: "BBd zapisu!",
+                errorSaveAll: "BBd zapisu wszystkich danych!",
+                noDataToSave: "Brak danych do zapisania!",
+                resetDone: "Zresetowano wszystkie dane!",
+                errorReset: "BBd resetowania!",
+                consoleCleared: "Konsola wyczyszczona!",
+                noChars: "Wybierz przynajmniej jeden typ znaków!",
+                exportJsonDone: "Wyeksportowano dane do JSON!",
+                errorExportJson: "BBd eksportu JSON!",
+                noDataToExport: "Brak danych do eksportu!",
+                importDone: "Zaimportowano ustawienia!",
+                errorImport: "BBd importu ustawieD!",
+                noFile: "Wybierz plik JSON!",
+                templateSaved: "Zapisano szablon!",
+                errorTemplate: "BBd zapisu szablonu!",
+                searchCleared: "Wyczyszczono wyszukiwanie w konsoli",
+                noSearchResults: "Brak wyników wyszukiwania"
+            },
+            en: {
+                title: "Mega Data Generator Windows Style",
+                loading: "Generating data...",
+                darkMode: "Dark Mode",
+                lightMode: "Light Mode",
+                saveAll: "Save All",
+                exportJSON: "Export JSON",
+                reset: "Reset",
+                tabPsc: "Paysafecard",
+                tabAddress: "Address",
+                tabCard: "Credit Card",
+                tabPhone: "Phone",
+                tabName: "Name",
+                tabEmail: "Email",
+                tabPesel: "PESEL",
+                tabPassword: "Password",
+                tabIban: "IBAN",
+                tabDate: "Birth Date",
+                tabUsername: "Username",
+                tabNip: "NIP",
+                tabUuid: "UUID",
+                tabText: "Random Text",
+                tabZip: "Zip Code",
+                tabConsole: "Console",
+                generate: "Generate",
+                copy: "Copy",
+                save: "Save",
+                clickToGeneratePsc: "Click to generate a PSC code!",
+                clickToGenerateAddress: "Click to generate an address!",
+                clickToGenerateCard: "Click to generate a card!",
+                clickToGeneratePhone: "Click to generate a phone number!",
+                clickToGenerateName: "Click to generate a name!",
+                clickToGenerateEmail: "Click to generate an email!",
+                clickToGeneratePesel: "Click to generate a PESEL!",
+                clickToGeneratePassword: "Click to generate a password!",
+                clickToGenerateIban: "Click to generate an IBAN!",
+                clickToGenerateDate: "Click to generate a date!",
+                clickToGenerateUsername: "Click to generate a username!",
+                clickToGenerateNip: "Click to generate a NIP!",
+                clickToGenerateUuid: "Click to generate a UUID!",
+                clickToGenerateText: "Click to generate text!",
+                clickToGenerateZip: "Click to generate a zip code!",
+                allGenders: "All genders",
+                male: "Male",
+                female: "Female",
+                poland: "Poland",
+                germany: "Germany",
+                usa: "USA",
+                allAges: "All age groups",
+                young: "Young (18-35)",
+                middle: "Middle (36-60)",
+                old: "Older (60+)",
+                length: "Length:",
+                lengthLabel: "Length:",
+                letters: "Letters",
+                digits: "Digits",
+                specialChars: "Special characters",
+                exclude: "Exclude:",
+                excludeLabel: "Exclude:",
+                searchLogs: "Search in logs...",
+                search: "Search",
+                clearConsole: "Clear Console",
+                saveLogs: "Save Logs",
+                saveTemplate: "Save Template",
+                generated: "Generated {count} items for {type}!",
+                copied: "Copied to clipboard!",
+                saved: "Saved to file!",
+                noData: "Generate data first!",
+                errorGenerate: "Error during generation!",
+                errorCopy: "Copy error!",
+                errorSave: "Save error!",
+                errorSaveAll: "Error saving all data!",
+                noDataToSave: "No data to save!",
+                resetDone: "All data reset!",
+                errorReset: "Reset error!",
+                consoleCleared: "Console cleared!",
+                noChars: "Select at least one character type!",
+                exportJsonDone: "Exported data to JSON!",
+                errorExportJson: "JSON export error!",
+                noDataToExport: "No data to export!",
+                importDone: "Settings imported!",
+                errorImport: "Settings import error!",
+                noFile: "Select a JSON file!",
+                templateSaved: "Template saved!",
+                errorTemplate: "Template save error!",
+                searchCleared: "Console search cleared",
+                noSearchResults: "No search results"
+            },
+            de: {
+                title: "Mega Daten-Generator Windows Style",
+                loading: "Daten werden generiert...",
+                darkMode: "Dunkler Modus",
+                lightMode: "Heller Modus",
+                saveAll: "Alles Speichern",
+                exportJSON: "JSON Exportieren",
+                reset: "Zurücksetzen",
+                tabPsc: "Paysafecard",
+                tabAddress: "Adresse",
+                tabCard: "Kreditkarte",
+                tabPhone: "Telefon",
+                tabName: "Name",
+                tabEmail: "E-Mail",
+                tabPesel: "PESEL",
+                tabPassword: "Passwort",
+                tabIban: "IBAN",
+                tabDate: "Geburtsdatum",
+                tabUsername: "Benutzername",
+                tabNip: "NIP",
+                tabUuid: "UUID",
+                tabText: "Zufälliger Text",
+                tabZip: "Postleitzahl",
+                tabConsole: "Konsole",
+                generate: "Generieren",
+                copy: "Kopieren",
+                save: "Speichern",
+                clickToGeneratePsc: "Klicken, um einen PSC-Code zu generieren!",
+                clickToGenerateAddress: "Klicken, um eine Adresse zu generieren!",
+                clickToGenerateCard: "Klicken, um eine Karte zu generieren!",
+                clickToGeneratePhone: "Klicken, um eine Telefonnummer zu generieren!",
+                clickToGenerateName: "Klicken, um einen Namen zu generieren!",
+                clickToGenerateEmail: "Klicken, um eine E-Mail zu generieren!",
+                clickToGeneratePesel: "Klicken, um einen PESEL zu generieren!",
+                clickToGeneratePassword: "Klicken, um ein Passwort zu generieren!",
+                clickToGenerateIban: "Klicken, um einen IBAN zu generieren!",
+                clickToGenerateDate: "Klicken, um ein Datum zu generieren!",
+                clickToGenerateUsername: "Klicken, um einen Benutzernamen zu generieren!",
+                clickToGenerateNip: "Klicken, um einen NIP zu generieren!",
+                clickToGenerateUuid: "Klicken, um eine UUID zu generieren!",
+                clickToGenerateText: "Klicken, um Text zu generieren!",
+                clickToGenerateZip: "Klicken, um eine Postleitzahl zu generieren!",
+                allGenders: "Alle Geschlechter",
+                male: "Männlich",
+                female: "Weiblich",
+                poland: "Polen",
+                germany: "Deutschland",
+                usa: "USA",
+                allAges: "Alle Altersgruppen",
+                young: "Jung (18-35)",
+                middle: "Mittel (36-60)",
+                old: "Älter (60+)",
+                length: "Länge:",
+                lengthLabel: "Länge:",
+                letters: "Buchstaben",
+                digits: "Ziffern",
+                specialChars: "Sonderzeichen",
+                exclude: "Ausschließen:",
+                excludeLabel: "Ausschließen:",
+                searchLogs: "In Protokollen suchen...",
+                search: "Suchen",
+                clearConsole: "Konsole Löschen",
+                saveLogs: "Protokolle Speichern",
+                saveTemplate: "Vorlage Speichern",
+                generated: "{count} Daten für {type} generiert!",
+                copied: "In die Zwischenablage kopiert!",
+                saved: "In Datei gespeichert!",
+                noData: "Erst Daten generieren!",
+                errorGenerate: "Fehler beim Generieren!",
+                errorCopy: "Kopierfehler!",
+                errorSave: "Speicherfehler!",
+                errorSaveAll: "Fehler beim Speichern aller Daten!",
+                noDataToSave: "Keine Daten zum Speichern!",
+                resetDone: "Alle Daten zurückgesetzt!",
+                errorReset: "Zurücksetzungsfehler!",
+                consoleCleared: "Konsole gelöscht!",
+                noChars: "Wählen Sie mindestens einen Zeichentyp!",
+                exportJsonDone: "Daten als JSON exportiert!",
+                errorExportJson: "JSON-Exportfehler!",
+                noDataToExport: "Keine Daten zum Exportieren!",
+                importDone: "Einstellungen importiert!",
+                errorImport: "Fehler beim Importieren der Einstellungen!",
+                noFile: "Wählen Sie eine JSON-Datei!",
+                templateSaved: "Vorlage gespeichert!",
+                errorTemplate: "Fehler beim Speichern der Vorlage!",
+                searchCleared: "Konsolensuche gelöscht",
+                noSearchResults: "Keine Suchergebnisse"
+            }
+        };
+
+        let konsolaLogi = ['Konsola gotowa do logów...'];
+        let trybCiemny = localStorage.getItem('trybCiemny') === 'true';
+        let jezyk = localStorage.getItem('jezyk') || 'pl';
+
+        if (trybCiemny) {
+            document.body.classList.add('tryb-ciemny');
+            document.querySelector('button[onclick="przelaczTryb()"]').setAttribute('data-i18n', 'lightMode');
+        }
+
+        function zmienJezyk(nowyJezyk) {
+            jezyk = nowyJezyk;
+            localStorage.setItem('jezyk', jezyk);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const klucz = el.getAttribute('data-i18n');
+                if (klucz.includes('clickToGenerate')) {
+                    el.textContent = tlumaczenia[jezyk][klucz];
+                } else if (el.tagName === 'BUTTON' || el.tagName === 'H1' || (el.tagName === 'DIV' && !el.classList.contains('wynik'))) {
+                    el.textContent = tlumaczenia[jezyk][klucz];
+                } else if (el.tagName === 'OPTION') {
+                    el.textContent = tlumaczenia[jezyk][klucz];
+                } else if (el.tagName === 'INPUT' && el.type === 'text') {
+                    el.placeholder = tlumaczenia[jezyk][klucz];
+                } else if (el.tagName === 'SPAN') {
+                    el.textContent = tlumaczenia[jezyk][klucz];
+                }
+            });
+            document.querySelectorAll('.wynik').forEach(el => {
+                if (el.innerHTML.includes('Kliknij') || el.innerHTML.includes('Click') || el.innerHTML.includes('Klicken')) {
+                    const klucz = el.getAttribute('data-i18n');
+                    el.textContent = tlumaczenia[jezyk][klucz];
+                }
+            });
+            document.getElementById('jezyk').value = jezyk;
+            document.querySelector('button[onclick="przelaczTryb()"]').textContent = tlumaczenia[jezyk][trybCiemny ? 'lightMode' : 'darkMode'];
+            dodajLog(`Zmieniono jzyk na: ${jezyk === 'pl' ? 'Polski' : jezyk === 'en' ? 'English' : 'Deutsch'}`);
+        }
+
+        function pokazZakladke(id) {
+            document.querySelectorAll('.zakladka').forEach(z => z.classList.remove('aktywna'));
+            document.querySelectorAll('.zawartosc').forEach(z => z.classList.remove('aktywna'));
+            document.querySelector(`[onclick="pokazZakladke('${id}')"]`).classList.add('aktywna');
+            document.getElementById(id).classList.add('aktywna');
+            document.getElementById('status').textContent = '';
+            dodajLog(`PrzeBczono na zakBadk: ${tlumaczenia[jezyk][`tab${id.charAt(0).toUpperCase() + id.slice(1)}`]}`);
+        }
+
+        function dodajLog(wpis) {
+            const czas = new Date().toLocaleString('pl-PL', { hour12: false });
+            konsolaLogi.push(`[${czas}] ${wpis}`);
+            if (konsolaLogi.length > 200) konsolaLogi.shift();
+            document.getElementById('konsola-wynik').innerHTML = konsolaLogi.join('<br>');
+            document.getElementById('konsola-wynik').scrollTop = document.getElementById('konsola-wynik').scrollHeight;
+        }
+
+        function wyczyscKonsola() {
+            konsolaLogi = [tlumaczenia[jezyk].consoleCleared];
+            document.getElementById('konsola-wynik').innerHTML = konsolaLogi.join('<br>');
+            document.getElementById('status').textContent = tlumaczenia[jezyk].consoleCleared;
+            dodajLog(tlumaczenia[jezyk].consoleCleared);
+        }
+
+        function wyszukajWKonsoli() {
+            const fraza = document.getElementById('konsola-szukaj').value.toLowerCase();
+            if (!fraza) {
+                document.getElementById('konsola-wynik').innerHTML = konsolaLogi.join('<br>');
+                document.getElementById('status').textContent = tlumaczenia[jezyk].searchCleared;
+                dodajLog(tlumaczenia[jezyk].searchCleared);
+                return;
+            }
+            const wyniki = konsolaLogi.filter(log => log.toLowerCase().includes(fraza));
+            document.getElementById('konsola-wynik').innerHTML = wyniki.length ? wyniki.join('<br>') : tlumaczenia[jezyk].noSearchResults;
+            document.getElementById('status').textContent = wyniki.length ? `Znaleziono ${wyniki.length} wyników` : tlumaczenia[jezyk].noSearchResults;
+            dodajLog(`Wyszukano fraz "${fraza}" w konsoli`);
+        }
+
+        function przelaczTryb() {
+            trybCiemny = !trybCiemny;
+            document.body.classList.toggle('tryb-ciemny');
+            const btn = document.querySelector('button[onclick="przelaczTryb()"]');
+            btn.setAttribute('data-i18n', trybCiemny ? 'lightMode' : 'darkMode');
+            btn.textContent = tlumaczenia[jezyk][trybCiemny ? 'lightMode' : 'darkMode'];
+            localStorage.setItem('trybCiemny', trybCiemny);
+            dodajLog(`PrzeBczono na ${trybCiemny ? tlumaczenia[jezyk].darkMode : tlumaczenia[jezyk].lightMode}`);
+        }
+
+        function generuj(typ) {
+            document.getElementById('ladowanie').style.display = 'flex';
+            setTimeout(() => {
+                try {
+                    const ilosc = Math.min(parseInt(document.getElementById(`${typ}-ilosc`).value) || 1, 10);
+                    let wynik = '';
+                    if (typ === 'psc') {
+                        for (let j = 0; j < ilosc; j++) {
+                            let kod = '';
+                            for (let i = 0; i < 16; i++) {
+                                kod += Math.floor(Math.random() * 10);
+                            }
+                            const format = `${kod.slice(0, 4)} ${kod.slice(4, 8)} ${kod.slice(8, 12)} ${kod.slice(12, 16)}`;
+                            wynik += `<strong>${tlumaczenia[jezyk].tabPsc} ${j + 1}:</strong> ${format}<br>`;
+                        }
+                    } else if (typ === 'adres') {
+                        const daneAdres = {
+                            pl: {
+                                ulice: ['SBoneczna', 'Klonowa', 'Ró|ana', 'Polna', 'Zielona', 'Miodowa', 'Brzozowa', 'Lipowa', 'Topolowa', 'Dbowa'],
+                                miasta: ['GdaDsk', 'WrocBaw', 'Aódz', 'Szczecin', 'Katowice', 'Kraków', 'PoznaD', 'Rzeszów', 'Bydgoszcz', 'Lublin'],
+                                format: (ulica, numer, kod, miasto) => `ul. ${ulica} ${numer}<br>${kod} ${miasto}, Polska`
+                            },
+                            en: {
+                                ulice: ['Sunny', 'Maple', 'Rose', 'Field', 'Green', 'Honey', 'Birch', 'Oak', 'Pine', 'Cedar'],
+                                miasta: ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego'],
+                                format: (ulica, numer, kod, miasto) => `${numer} ${ulica}<br>${miasto}, ${kod}, USA`
+                            },
+                            de: {
+                                ulice: ['Sonnenweg', 'Ahornstraße', 'Rosenweg', 'Feldstraße', 'Grünstraße', 'Honigweg', 'Birkenweg', 'Eichenstraße'],
+                                miasta: ['Berlin', 'Hamburg', 'München', 'Köln', 'Frankfurt', 'Stuttgart', 'Düsseldorf', 'Dortmund'],
+                                format: (ulica, numer, kod, miasto) => `${ulica} ${numer}<br>${kod} ${miasto}, Deutschland`
+                            }
+                        };
+                        const lang = jezyk === 'pl' ? 'pl' : jezyk === 'en' ? 'en' : 'de';
+                        for (let j = 0; j < ilosc; j++) {
+                            const ulica = daneAdres[lang].ulice[Math.floor(Math.random() * daneAdres[lang].ulice.length)];
+                            const numer = Math.floor(Math.random() * 100) + 1;
+                            const kod = lang === 'en' ? `${Math.floor(Math.random() * 90000) + 10000}` : `${Math.floor(Math.random() * 90 + 10)}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+                            const miasto = daneAdres[lang].miasta[Math.floor(Math.random() * daneAdres[lang].miasta.length)];
+                            wynik += `<strong>${tlumaczenia[jezyk].tabAddress} ${j + 1}:</strong><br>${daneAdres[lang].format(ulica, numer, kod, miasto)}<br><br>`;
+                        }
+                    } else if (typ === 'karta') {
+                        for (let j = 0; j < ilosc; j++) {
+                            let karta = '';
+                            for (let i = 0; i < 16; i++) {
+                                karta += Math.floor(Math.random() * 10);
+                            }
+                            const format = `${karta.slice(0, 4)} ${karta.slice(4, 8)} ${karta.slice(8, 12)} ${karta.slice(12, 16)}`;
+                            const typKarty = Math.random() > 0.5 ? 'Visa' : 'Mastercard';
+                            const waznosc = `${Math.floor(Math.random() * 12 + 1).toString().padStart(2, '0')}/${Math.floor(Math.random() * 5 + 25)}`;
+                            const cvv = Math.floor(Math.random() * 900 + 100);
+                            wynik += `
+                                <strong>${tlumaczenia[jezyk].tabCard} ${j + 1}:</strong><br>
+                                ${tlumaczenia[jezyk].tabCard}: ${typKarty}<br>
+                                ${jezyk === 'pl' ? 'Numer' : jezyk === 'en' ? 'Number' : 'Nummer'}: ${format}<br>
+                                ${jezyk === 'pl' ? 'Wa|no[' : jezyk === 'en' ? 'Expiry' : 'Gültigkeit'}: ${waznosc}<br>
+                                CVV: ${cvv}<br><br>
+                            `;
+                        }
+                    } else if (typ === 'telefon') {
+                        const prefix = jezyk === 'pl' ? '+48' : jezyk === 'en' ? '+1' : '+49';
+                        for (let j = 0; j < ilosc; j++) {
+                            let numer = prefix;
+                            for (let i = 0; i < 9; i++) {
+                                numer += Math.floor(Math.random() * 10);
+                            }
+                            const format = jezyk === 'en' ? `(${numer.slice(0, 2)} ${numer.slice(2, 5)}) ${numer.slice(5, 8)}-${numer.slice(8, 12)}` : `${numer.slice(0, 3)} ${numer.slice(3, 6)} ${numer.slice(6, 9)} ${numer.slice(9, 12)}`;
+                            wynik += `<strong>${tlumaczenia[jezyk].tabPhone} ${j + 1}:</strong> ${format}<br>`;
+                        }
+                    } else if (typ === 'imie') {
+                        const imiona = {
+                            pl: {
+                                mezczyzna: {
+                                    mlode: ['Kacper', 'Jakub', 'Mateusz', 'Szymon', 'Filip', 'MikoBaj', 'Dominik'],
+                                    srednie: ['Piotr', 'Krzysztof', 'Tomasz', 'Marek', 'PaweB', 'MichaB', 'Grzegorz'],
+                                    starsze: ['Jan', 'StanisBaw', 'Andrzej', 'Józef', 'WBadysBaw', 'Zygmunt']
+                                },
+                                kobieta: {
+                                    mlode: ['Julia', 'Zuzanna', 'Maja', 'Lena', 'Amelia', 'Oliwia', 'Alicja'],
+                                    srednie: ['Anna', 'Katarzyna', 'Joanna', 'Ewa', 'Magdalena', 'Agnieszka'],
+                                    starsze: ['Maria', 'Zofia', 'Helena', 'Wanda', 'Krystyna', 'Barbara']
+                                }
+                            },
+                            de: {
+                                mezczyzna: {
+                                    mlode: ['Lukas', 'Finn', 'Leon', 'Elias'],
+                                    srednie: ['Hans', 'Klaus', 'Stefan', 'Michael'],
+                                    starsze: ['Werner', 'Günther', 'Karl', 'Heinz']
+                                },
+                                kobieta: {
+                                    mlode: ['Emma', 'Mia', 'Hannah', 'Sofia'],
+                                    srednie: ['Ursula', 'Monika', 'Karin', 'Gisela'],
+                                    starsze: ['Renate', 'Brigitte', 'Hannelore', 'Gudrun']
+                                }
+                            },
+                            us: {
+                                mezczyzna: {
+                                    mlode: ['Liam', 'Noah', 'Ethan', 'Mason'],
+                                    srednie: ['James', 'Michael', 'William', 'David'],
+                                    starsze: ['John', 'Robert', 'Thomas', 'Charles']
+                                },
+                                kobieta: {
+                                    mlode: ['Emma', 'Olivia', 'Ava', 'Sophia'],
+                                    srednie: ['Jennifer', 'Linda', 'Patricia', 'Susan'],
+                                    starsze: ['Mary', 'Betty', 'Dorothy', 'Margaret']
+                                }
+                            }
+                        };
+                        const nazwiska = {
+                            pl: ['Kowalski', 'Nowak', 'Wi[niewska', 'Lewandowski', 'ZieliDska', 'SzymaDski', 'Wozniak', 'KozBowska'],
+                            de: ['Müller', 'Schmidt', 'Schneider', 'Fischer', 'Weber', 'Meyer', 'Wagner', 'Becker'],
+                            us: ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis']
+                        };
+                        const plec = document.getElementById('imie-plec').value;
+                        const kraj = document.getElementById('imie-kraj').value;
+                        const wiek = document.getElementById('imie-wiek').value;
+                        for (let j = 0; j < ilosc; j++) {
+                            const plecWybor = plec === 'wszystkie' ? (Math.random() > 0.5 ? 'mezczyzna' : 'kobieta') : plec;
+                            const wiekWybor = wiek === 'wszystkie' ? ['mlode', 'srednie', 'starsze'][Math.floor(Math.random() * 3)] : wiek;
+                            const imie = imiona[kraj][plecWybor][wiekWybor][Math.floor(Math.random() * imiona[kraj][plecWybor][wiekWybor].length)];
+                            const nazwisko = nazwiska[kraj][Math.floor(Math.random() * nazwiska[kraj].length)];
+                            wynik += `<strong>${tlumaczenia[jezyk].tabName} ${j + 1}:</strong> ${imie} ${nazwisko}<br>`;
+                        }
+                    } else if (typ === 'email') {
+                        const domeny = jezyk === 'pl' ? ['gmail.com', 'wp.pl', 'onet.pl', 'o2.pl'] : jezyk === 'en' ? ['gmail.com', 'yahoo.com', 'hotmail.com'] : ['gmx.de', 'web.de', 't-online.de'];
+                        const imiona = jezyk === 'pl' ? ['anna', 'jan', 'kasia', 'piotr'] : jezyk === 'en' ? ['john', 'emma', 'mike', 'sarah'] : ['hans', 'mia', 'klara', 'lukas'];
+                        for (let j = 0; j < ilosc; j++) {
+                            const losowe = Math.random().toString(36).substring(2, 6);
+                            const imie = imiona[Math.floor(Math.random() * imiona.length)];
+                            const domena = domeny[Math.floor(Math.random() * domeny.length)];
+                            const email = `${imie}${losowe}@${domena}`;
+                            wynik += `<strong>${tlumaczenia[jezyk].tabEmail} ${j + 1}:</strong> ${email}<br>`;
+                        }
+                    } else if (typ === 'pesel') {
+                        for (let j = 0; j < ilosc; j++) {
+                            let pesel = '';
+                            for (let i = 0; i < 11; i++) {
+                                pesel += Math.floor(Math.random() * 10);
+                            }
+                            wynik += `<strong>${tlumaczenia[jezyk].tabPesel} ${j + 1}:</strong> ${pesel}<br>`;
+                        }
+                    } else if (typ === 'haslo') {
+                        const dlugosc = Math.min(Math.max(parseInt(document.getElementById('haslo-dlugosc').value) || 12, 6), 64);
+                        const litery = document.getElementById('haslo-litery').checked;
+                        const cyfry = document.getElementById('haslo-cyfry').checked;
+                        const znakiSpec = document.getElementById('haslo-znaki').checked;
+                        const wyklucz = document.getElementById('haslo-wyklucz').value.split('');
+                        let znaki = '';
+                        if (litery) znaki += 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+                        if (cyfry) znaki += '0123456789';
+                        if (znakiSpec) znaki += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+                        znaki = znaki.split('').filter(c => !wyklucz.includes(c)).join('');
+                        if (!znaki) {
+                            document.getElementById('status').textContent = tlumaczenia[jezyk].noChars;
+                            dodajLog(tlumaczenia[jezyk].noChars);
+                            document.getElementById('ladowanie').style.display = 'none';
+                            return;
+                        }
+                        for (let j = 0; j < ilosc; j++) {
+                            let haslo = '';
+                            for (let i = 0; i < dlugosc; i++) {
+                                haslo += znaki.charAt(Math.floor(Math.random() * znaki.length));
+                            }
+                            wynik += `<strong>${tlumaczenia[jezyk].tabPassword} ${j + 1}:</strong> ${haslo}<br>`;
+                        }
+                    } else if (typ === 'iban') {
+                        const kodyKrajow = jezyk === 'pl' ? ['PL'] : jezyk === 'en' ? ['US', 'GB'] : ['DE', 'AT'];
+                        for (let j = 0; j < ilosc; j++) {
+                            let iban = kodyKrajow[Math.floor(Math.random() * kodyKrajow.length)];
+                            for (let i = 0; i < 24; i++) {
+                                iban += Math.floor(Math.random() * 10);
+                            }
+                            const format = `${iban.slice(0, 2)} ${iban.slice(2, 6)} ${iban.slice(6, 10)} ${iban.slice(10, 14)} ${iban.slice(14, 18)} ${iban.slice(18, 22)} ${iban.slice(22, 26)}`;
+                            wynik += `<strong>${tlumaczenia[jezyk].tabIban} ${j + 1}:</strong> ${format}<br>`;
+                        }
+                    } else if (typ === 'data') {
+                        for (let j = 0; j < ilosc; j++) {
+                            const rok = Math.floor(Math.random() * (2005 - 1950 + 1)) + 1950;
+                            const miesiac = Math.floor(Math.random() * 12) + 1;
+                            const maxDzien = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][miesiac - 1];
+                            const dzien = Math.floor(Math.random() * maxDzien) + 1;
+                            const format = jezyk === 'en' ? `${miesiac.toString().padStart(2, '0')}/${dzien.toString().padStart(2, '0')}/${rok}` : `${dzien.toString().padStart(2, '0')}.${miesiac.toString().padStart(2, '0')}.${rok}`;
+                            wynik += `<strong>${tlumaczenia[jezyk].tabDate} ${j + 1}:</strong> ${format}<br>`;
+                        }
+                    } else if (typ === 'nazwa') {
+                        const slowa = jezyk === 'pl' ? ['niebo', 'niebieski', 'gwiazda', 'wilk', 'ogieD', 'chmura', 'ksi|yc', 'mrok'] : jezyk === 'en' ? ['sky', 'blue', 'star', 'wolf', 'fire', 'cloud', 'moon', 'dark'] : ['himmel', 'blau', 'stern', 'wolf', 'feuer', 'wolke', 'mond', 'dunkel'];
+                        for (let j = 0; j < ilosc; j++) {
+                            const slowo1 = slowa[Math.floor(Math.random() * slowa.length)];
+                            const slowo2 = slowa[Math.floor(Math.random() * slowa.length)];
+                            const numer = Math.floor(Math.random() * 10000);
+                            const nazwa = `${slowo1}${slowo2}${numer}`;
+                            wynik += `<strong>${tlumaczenia[jezyk].tabUsername} ${j + 1}:</strong> ${nazwa}<br>`;
+                        }
+                    } else if (typ === 'nip') {
+                        for (let j = 0; j < ilosc; j++) {
+                            let nip = '';
+                            for (let i = 0; i < 10; i++) {
+                                nip += Math.floor(Math.random() * 10);
+                            }
+                            const format = `${nip.slice(0, 3)}-${nip.slice(3, 6)}-${nip.slice(6, 8)}-${nip.slice(8, 10)}`;
+                            wynik += `<strong>${tlumaczenia[jezyk].tabNip} ${j + 1}:</strong> ${format}<br>`;
+                        }
+                    } else if (typ === 'uuid') {
+                        for (let j = 0; j < ilosc; j++) {
+                            const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                                const r = Math.random() * 16 | 0;
+                                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                            });
+                            wynik += `<strong>${tlumaczenia[jezyk].tabUuid} ${j + 1}:</strong> ${uuid}<br>`;
+                        }
+                    } else if (typ === 'tekst') {
+                        const slowa = jezyk === 'pl' ? ['lorem', 'ipsum', 'dolor', 'sit', 'amet'] : jezyk === 'en' ? ['lorem', 'ipsum', 'dolor', 'sit', 'amet'] : ['lorem', 'ipsum', 'dolor', 'sit', 'amet'];
+                        for (let j = 0; j < ilosc; j++) {
+                            let tekst = '';
+                            for (let i = 0; i < 10; i++) {
+                                tekst += slowa[Math.floor(Math.random() * slowa.length)] + ' ';
+                            }
+                            wynik += `<strong>${tlumaczenia[jezyk].tabText} ${j + 1}:</strong> ${tekst.trim()}<br>`;
+                        }
+                    } else if (typ === 'kod') {
+                        for (let j = 0; j < ilosc; j++) {
+                            const kod = jezyk === 'en' ? `${Math.floor(Math.random() * 90000) + 10000}` : `${Math.floor(Math.random() * 90 + 10)}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+                            wynik += `<strong>${tlumaczenia[jezyk].tabZip} ${j + 1}:</strong> ${kod}<br>`;
+                        }
+                    }
+                    document.getElementById(`${typ}-wynik`).innerHTML = wynik || tlumaczenia[jezyk].noData;
+                    document.getElementById('status').textContent = tlumaczenia[jezyk].generated.replace('{count}', ilosc).replace('{type}', tlumaczenia[jezyk][`tab${typ.charAt(0).toUpperCase() + typ.slice(1)}`]);
+                    dodajLog(tlumaczenia[jezyk].generated.replace('{count}', ilosc).replace('{type}', tlumaczenia[jezyk][`tab${typ.charAt(0).toUpperCase() + typ.slice(1)}`]));
+                } catch (e) {
+                    document.getElementById('status').textContent = tlumaczenia[jezyk].errorGenerate;
+                    dodajLog(`${tlumaczenia[jezyk].errorGenerate}: ${e.message}`);
+                }
+                document.getElementById('ladowanie').style.display = 'none';
+            }, 500);
+        }
+
+        function kopiuj(id) {
+            const tekst = document.getElementById(id).textContent;
+            if (tekst.includes('Kliknij') || tekst.includes('Click') || tekst.includes('Klicken') || !tekst.trim()) {
+                document.getElementById('status').textContent = tlumaczenia[jezyk].noData;
+                dodajLog(tlumaczenia[jezyk].noData);
+                return;
+            }
+            navigator.clipboard.writeText(tekst).then(() => {
+                document.getElementById('status').textContent = tlumaczenia[jezyk].copied;
+                dodajLog(tlumaczenia[jezyk].copied);
+            }).catch((err) => {
+                document.getElementById('status').textContent = tlumaczenia[jezyk].errorCopy;
+                dodajLog(`${tlumaczenia[jezyk].errorCopy}: ${err}`);
+            });
+        }
+
+        function zapisz(id) {
+            const wynik = document.getElementById(id).innerHTML;
+            if (wynik.includes('Kliknij') || wynik.includes('Click') || wynik.includes('Klicken') || !wynik.trim()) {
+                document.getElementById('status').textContent = tlumaczenia[jezyk].noData;
+                dodajLog(tlumaczenia[jezyk].noData);
+                return;
+            }
+            try {
+                const tekst = wynik.replace(/<br>/g, '\n').replace(/<[^>]+>/g, '');
+                const blob = new Blob([tekst], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `generator_${id.split('-')[0]}_${new Date().toISOString().split('T')[0]}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+                document.getElementById('status').textContent = tlumaczenia[jezyk].saved;
+                dodajLog(tlumaczenia[jezyk].saved);
+            } catch (e) {
+                document.getElementById('status').textContent = tlumaczenia[jezyk].errorSave;
+                dodajLog(`${tlumaczenia[jezyk].errorSave}: ${e.message}`);
+            }
+        }
+
+        function zapiszWszystko() {
+            document.getElementById('ladowanie').style.display = 'flex';
+            setTimeout(() => {
+                try {
+                    let tekst = '';
+                    const zakladki = ['psc', 'adres', 'karta', 'telefon', 'imie', 'email', 'pesel', 'haslo', 'iban', 'data', 'nazwa', 'nip', 'uuid', 'tekst', 'kod'];
+                    zakladki.forEach(zakladka => {
+                        const wynik = document.getElementById(`${zakladka}-wynik`).innerHTML;
+                        if (!wynik.includes('Kliknij') && !wynik.includes('Click') && !wynik.includes('Klicken') && wynik.trim()) {
+                            tekst += `=== ${tlumaczenia[jezyk][`tab${zakladka.charAt(0).toUpperCase() + zakladka.slice(1)}`]} ===\n`;
+                            tekst += wynik.replace(/<br>/g, '\n').replace(/<[^>]+>/g, '') + '\n\n';
+                        }
+                    });
+                    if (!tekst.trim()) {
+                        document.getElementById('status').textContent = tlumaczenia[jezyk].noDataToSave;
+                        dodajLog(tlumaczenia[jezyk].noDataToSave);
+                        document.getElementById('ladowanie').style.display = 'none';
+                        return;
+                    }
+                    const blob = new Blob([tekst], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `generator_wszystko_${new Date().toISOString().split('T')[0]}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    document.getElementById('status').textContent = tlumaczenia[jezyk].saved;
+                    dodajLog(tlumaczenia[jezyk].saved);
+                } catch (e) {
+                    document.getElementById('status').textContent = tlumaczenia[jezyk].errorSaveAll;
+                    dodajLog(`${tlumaczenia[jezyk].errorSaveAll}: ${e.message}`);
+                }
+                document.getElementById('ladowanie').style.display = 'none';
+            }, 500);
+        }
+
+        function eksportJSON() {
+            document.getElementById('ladowanie').style.display = 'flex';
+            setTimeout(() => {
+                try {
+                    const dane = {};
+                    const zakladki = ['psc', 'adres', 'karta', 'telefon', 'imie', 'email', 'pesel', 'haslo', 'iban', 'data', 'nazwa', 'nip', 'uuid', 'tekst', 'kod'];
+                    zakladki.forEach(zakladka => {
+					const wynik = document.getElementById(`${zakladka}-wynik`).innerHTML;
+					if (!wynik.includes('Kliknij') && !wynik.includes('Click') && !wynik.includes('Klicken') && wynik.trim()) {
+					dane[zakladka] = wynik.replace(/<br>/g, '\n').replace(/<[^>]+>/g, '');
+						}
+						});
+						if (Object.keys(dane).length === 0) {
+						document.getElementById('status').textContent = tlumaczenia[jezyk].noDataToExport;
+						dodajLog(tlumaczenia[jezyk].noDataToExport);
+						document.getElementById('ladowanie').style.display = 'none';
+						return;
+						}
+						const json = JSON.stringify(dane, null, 2);
+						const blob = new Blob([json], { type: 'application/json' });
+						const url = URL.createObjectURL(blob);
+						const a = document.createElement('a');
+						a.href = url;
+						a.download = `generator_dane_${new Date().toISOString().split('T')[0]}.json`;
+						a.click();
+						URL.revokeObjectURL(url);
+						document.getElementById('status').textContent = tlumaczenia[jezyk].exportJsonDone;
+						dodajLog(tlumaczenia[jezyk].exportJsonDone);
+						} catch (e) {
+						document.getElementById('status').textContent = tlumaczenia[jezyk].errorExportJson;
+						dodajLog(`${tlumaczenia[jezyk].errorExportJson}: ${e.message}`);
+						}
+						document.getElementById('ladowanie').style.display = 'none';
+						}, 500);
+						}
+					
+						function importUstawien() {
+						const file = document.getElementById('import-ustawien').files[0];
+						if (!file) {
+						document.getElementById('status').textContent = tlumaczenia[jezyk].noFile;
+						dodajLog(tlumaczenia[jezyk].noFile);
+						return;
+						}
+						const reader = new FileReader();
+						reader.onload = function(e) {
+						try {
+						const dane = JSON.parse(e.target.result);
+						Object.keys(dane).forEach(zakladka => {
+						if (document.getElementById(`${zakladka}-wynik`)) {
+						document.getElementById(`${zakladka}-wynik`).innerHTML = dane[zakladka].replace(/\n/g, '<br>');
+					                        }
+					                    });
+					                    document.getElementById('status').textContent = tlumaczenia[jezyk].importDone;
+					                    dodajLog(tlumaczenia[jezyk].importDone);
+					                } catch (err) {
+					                    document.getElementById('status').textContent = tlumaczenia[jezyk].errorImport;
+					                    dodajLog(`${tlumaczenia[jezyk].errorImport}: ${err.message}`);
+					                }
+					            };
+					            reader.readAsText(file);
+					        }
+					
+					        function zapiszSzablon() {
+					            try {
+					                const szablon = {
+					                    jezyk: jezyk,
+					                    trybCiemny: trybCiemny,
+					                    ustawienia: {}
+					                };
+					                const zakladki = ['psc', 'adres', 'karta', 'telefon', 'imie', 'email', 'pesel', 'haslo', 'iban', 'data', 'nazwa', 'nip', 'uuid', 'tekst', 'kod'];
+					                zakladki.forEach(zakladka => {
+					                    szablon.ustawienia[zakladka] = {
+					                        ilosc: document.getElementById(`${zakladka}-ilosc`) ? document.getElementById(`${zakladka}-ilosc`).value : null
+					                    };
+					                    if (zakladka === 'imie') {
+					                        szablon.ustawienia.imie.plec = document.getElementById('imie-plec').value;
+					                        szablon.ustawienia.imie.kraj = document.getElementById('imie-kraj').value;
+					                        szablon.ustawienia.imie.wiek = document.getElementById('imie-wiek').value;
+					                    } else if (zakladka === 'haslo') {
+					                        szablon.ustawienia.haslo.dlugosc = document.getElementById('haslo-dlugosc').value;
+					                        szablon.ustawienia.haslo.litery = document.getElementById('haslo-litery').checked;
+					                        szablon.ustawienia.haslo.cyfry = document.getElementById('haslo-cyfry').checked;
+					                        szablon.ustawienia.haslo.znaki = document.getElementById('haslo-znaki').checked;
+					                        szablon.ustawienia.haslo.wyklucz = document.getElementById('haslo-wyklucz').value;
+					                    }
+					                });
+					                const blob = new Blob([JSON.stringify(szablon, null, 2)], { type: 'application/json' });
+					                const url = URL.createObjectURL(blob);
+					                const a = document.createElement('a');
+					                a.href = url;
+					                a.download = `generator_szablon_${new Date().toISOString().split('T')[0]}.json`;
+					                a.click();
+					                URL.revokeObjectURL(url);
+					                document.getElementById('status').textContent = tlumaczenia[jezyk].templateSaved;
+					                dodajLog(tlumaczenia[jezyk].templateSaved);
+					            } catch (e) {
+					                document.getElementById('status').textContent = tlumaczenia[jezyk].errorTemplate;
+					                dodajLog(`${tlumaczenia[jezyk].errorTemplate}: ${e.message}`);
+					            }
+					        }
+					
+					        function resetujWszystko() {
+					            try {
+					                const zakladki = ['psc', 'adres', 'karta', 'telefon', 'imie', 'email', 'pesel', 'haslo', 'iban', 'data', 'nazwa', 'nip', 'uuid', 'tekst', 'kod'];
+					                zakladki.forEach(zakladka => {
+					                    const wynik = document.getElementById(`${zakladka}-wynik`);
+					                    if (wynik) {
+					                        wynik.innerHTML = tlumaczenia[jezyk][`clickToGenerate${zakladka.charAt(0).toUpperCase() + zakladka.slice(1)}`];
+					                    }
+					                    const ilosc = document.getElementById(`${zakladka}-ilosc`);
+					                    if (ilosc) ilosc.value = 1;
+					                });
+					                document.getElementById('imie-plec').value = 'wszystkie';
+					                document.getElementById('imie-kraj').value = 'pl';
+					                document.getElementById('imie-wiek').value = 'wszystkie';
+					                document.getElementById('haslo-dlugosc').value = 12;
+					                document.getElementById('haslo-litery').checked = true;
+					                document.getElementById('haslo-cyfry').checked = true;
+					                document.getElementById('haslo-znaki').checked = true;
+					                document.getElementById('haslo-wyklucz').value = '';
+					                document.getElementById('konsola-szukaj').value = '';
+					                wyczyscKonsola();
+					                document.getElementById('status').textContent = tlumaczenia[jezyk].resetDone;
+					                dodajLog(tlumaczenia[jezyk].resetDone);
+					            } catch (e) {
+					                document.getElementById('status').textContent = tlumaczenia[jezyk].errorReset;
+					                dodajLog(`${tlumaczenia[jezyk].errorReset}: ${e.message}`);
+					            }
+					        }
+					
+					        zmienJezyk(jezyk);
+					    </script>
+						</body>
+					
+						</html></body><html>

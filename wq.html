@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Zaawansowany Licznik TikTok</title>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap"
+		rel="stylesheet">
+	<style>
+		:root {
+			--bg-gradient: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+			--glass-bg: rgba(255, 255, 255, 0.5);
+			--modal-bg: rgba(245, 247, 250, 0.75);
+			--text-color: #2c3e50;
+			--shadow-light: rgba(0, 0, 0, 0.1);
+			--shadow-dark: rgba(0, 0, 0, 0.15);
+			--border-radius: 16px;
+			--glass-border: 1px solid rgba(255, 255, 255, 0.2);
+			--accent-color: #3498db;
+			--success-color: #2ecc71;
+			--danger-color: #e74c3c;
+			--glass-blur: 10px;
+		}
+
+		body.new-ui {
+			--bg-gradient: linear-gradient(135deg, #2c3e50, #4ca1af);
+			--text-color: #ecf0f1;
+			--glass-bg: rgba(44, 62, 80, 0.5);
+			--modal-bg: rgba(52, 73, 94, 0.7);
+			--glass-border: 1px solid rgba(236, 240, 241, 0.2);
+		}
+
+		.new-ui .header h1,
+		.new-ui .icon-btn {
+			color: var(--text-color);
+		}
+
+		.new-ui .counter {
+			text-shadow: 0 0 15px rgba(236, 240, 241, 0.5);
+		}
+
+		.new-ui .button {
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+		}
+
+		.new-ui .button:hover {
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+		}
+
+		.new-ui .settings-section {
+			background: rgba(0, 0, 0, 0.2);
+		}
+
+		.new-ui .button-list-item {
+			background: rgba(0, 0, 0, 0.3);
+		}
+
+		body {
+			font-family: 'Inter', sans-serif;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: flex-start;
+			min-height: 100vh;
+			margin: 0;
+			padding: 20px;
+			background: var(--bg-gradient);
+			color: var(--text-color);
+			box-sizing: border-box;
+			overflow-x: hidden;
+			transition: background 0.5s;
+		}
+
+		.glass-effect {
+			background-color: var(--glass-bg);
+			-webkit-backdrop-filter: blur(var(--glass-blur));
+			backdrop-filter: blur(var(--glass-blur));
+			border: var(--glass-border);
+			transition: background-color 0.3s, backdrop-filter 0.3s;
+		}
+
+		.container {
+			width: 100%;
+			max-width: 600px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			position: relative;
+		}
+
+		.header {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+		}
+
+		.icon-btn {
+			background: none;
+			border: none;
+			font-size: 2rem;
+			cursor: pointer;
+			transition: transform 0.3s;
+		}
+
+		.icon-btn:hover {
+			transform: scale(1.1) rotate(15deg);
+		}
+
+		.counter {
+			font-size: 4.5rem;
+			font-weight: 700;
+			padding: 20px 40px;
+			border-radius: var(--border-radius);
+			box-shadow: 0 10px 30px var(--shadow-light);
+			transition: all 0.3s ease-in-out;
+			text-align: center;
+			word-break: break-all;
+			position: relative;
+		}
+
+		.counter.animate {
+			transform: scale(1.05);
+		}
+
+		.counter.shake {
+			animation: shake 0.5s ease-in-out;
+		}
+
+		.counter-emoji {
+			font-size: 2rem;
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+
+		@keyframes shake {
+
+			0%,
+			100% {
+				transform: translateX(0);
+			}
+
+			10%,
+			30%,
+			50%,
+			70%,
+			90% {
+				transform: translateX(-5px);
+			}
+
+			20%,
+			40%,
+			60%,
+			80% {
+				transform: translateX(5px);
+			}
+		}
+
+		.button-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+			gap: 15px;
+			width: 100%;
+			margin-top: 30px;
+			position: relative;
+		}
+
+		.button {
+			padding: 15px;
+			text-align: center;
+			font-size: 1rem;
+			font-weight: 500;
+			cursor: pointer;
+			transition: all 0.3s;
+			box-shadow: 0 4px 10px var(--shadow-light);
+			border: none;
+			position: relative;
+			overflow: hidden;
+			background-size: cover;
+			background-position: center;
+		}
+
+		.button:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 8px 16px var(--shadow-dark);
+		}
+
+		.button.rainbow {
+			animation: rainbow 5s linear infinite;
+		}
+
+		.button.adhd {
+			position: absolute;
+			transition: top 0.3s, left 0.3s, transform 0.3s;
+		}
+
+		.button.fake {
+			background-color: #ff5555;
+			z-index: 1001;
+		}
+
+		@keyframes rainbow {
+			0% {
+				background-color: #ff0000;
+			}
+
+			14% {
+				background-color: #ff9900;
+			}
+
+			28% {
+				background-color: #33cc33;
+			}
+
+			42% {
+				background-color: #00ccff;
+			}
+
+			57% {
+				background-color: #0066ff;
+			}
+
+			71% {
+				background-color: #cc00cc;
+			}
+
+			85% {
+				background-color: #ff3399;
+			}
+
+			100% {
+				background-color: #ff0000;
+			}
+		}
+
+		@keyframes chaoticBackground {
+			0% {
+				background: linear-gradient(135deg, #ff0000, #00ff00);
+			}
+
+			25% {
+				background: linear-gradient(135deg, #00ff00, #0000ff);
+			}
+
+			50% {
+				background: linear-gradient(135deg, #0000ff, #ff00ff);
+			}
+
+			75% {
+				background: linear-gradient(135deg, #ff00ff, #ffff00);
+			}
+
+			100% {
+				background: linear-gradient(135deg, #ffff00, #ff0000);
+			}
+		}
+
+		.modal-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity 0.3s, visibility 0.3s;
+			z-index: 1000;
+		}
+
+		.modal-overlay.show {
+			opacity: 1;
+			visibility: visible;
+		}
+
+		.modal-content {
+			background: var(--modal-bg);
+			padding: 25px;
+			border-radius: var(--border-radius);
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+			width: 90%;
+			max-height: 85vh;
+			display: flex;
+			flex-direction: column;
+			transform: scale(0.9);
+			transition: transform 0.3s, background-color 0.3s;
+		}
+
+		.modal-overlay.show .modal-content {
+			transform: scale(1);
+		}
+
+		.modal-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 20px;
+			flex-shrink: 0;
+		}
+
+		.modal-header h2 {
+			margin: 0;
+		}
+
+		.close-btn {
+			background: none;
+			border: none;
+			font-size: 1.8rem;
+			cursor: pointer;
+		}
+
+		.modal-body {
+			overflow-y: auto;
+		}
+
+		.settings-section {
+			background: rgba(255, 255, 255, 0.5);
+			padding: 15px;
+			border-radius: 10px;
+			margin-bottom: 20px;
+			transition: background-color 0.3s;
+		}
+
+		.settings-section h3 {
+			margin-top: 0;
+		}
+
+		.form-group {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 15px;
+		}
+
+		.form-group label {
+			margin-bottom: 5px;
+			font-weight: 500;
+		}
+
+		.form-group input,
+		.form-group select {
+			padding: 10px;
+			border-radius: 8px;
+			border: 1px solid #ccc;
+			font-size: 1rem;
+			background-color: rgba(255, 255, 255, 0.7);
+		}
+
+		.form-group input[type="color"] {
+			padding: 0;
+			height: 40px;
+			width: 100%;
+			border: none;
+		}
+
+		.form-group input[type="number"] {
+			width: 100%;
+		}
+
+		.form-group.inline {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.add-btn {
+			width: 100%;
+			padding: 12px;
+			background: var(--accent-color);
+			color: white;
+			border: none;
+			border-radius: 8px;
+			font-size: 1rem;
+			cursor: pointer;
+		}
+
+		.button-list-item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px;
+			background: rgba(255, 255, 255, 0.7);
+			border-radius: 8px;
+			margin-bottom: 10px;
+		}
+
+		.list-btn {
+			background: none;
+			border: none;
+			cursor: pointer;
+			font-size: 1.2rem;
+			padding: 5px;
+			border-radius: 50%;
+			width: 35px;
+			height: 35px;
+			line-height: 25px;
+			transition: background-color 0.2s;
+		}
+
+		.list-btn:hover {
+			background-color: rgba(0, 0, 0, 0.1);
+		}
+
+		.delete-btn {
+			color: var(--danger-color);
+		}
+
+		.edit-btn {
+			color: var(--accent-color);
+		}
+
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 60px;
+			height: 34px;
+		}
+
+		.switch input {
+			display: none;
+		}
+
+		.slider {
+			position: absolute;
+			cursor: pointer;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: #ccc;
+			transition: .4s;
+			border-radius: 34px;
+		}
+
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 26px;
+			width: 26px;
+			left: 4px;
+			bottom: 4px;
+			background-color: white;
+			transition: .4s;
+			border-radius: 50%;
+		}
+
+		input:checked+.slider {
+			background-color: var(--accent-color);
+		}
+
+		input:checked+.slider:before {
+			transform: translateX(26px);
+		}
+
+		input[type=range] {
+			-webkit-appearance: none;
+			width: 100%;
+			background: transparent;
+		}
+
+		input[type=range]:focus {
+			outline: none;
+		}
+
+		input[type=range]::-webkit-slider-runnable-track {
+			width: 100%;
+			height: 8px;
+			cursor: pointer;
+			background: var(--accent-color);
+			border-radius: 5px;
+		}
+
+		input[type=range]::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			border: 2px solid white;
+			height: 20px;
+			width: 20px;
+			border-radius: 50%;
+			background: var(--accent-color);
+			cursor: pointer;
+			margin-top: -6px;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+		}
+
+		input[type=range]:disabled::-webkit-slider-runnable-track {
+			background: #ccc;
+		}
+
+		input[type=range]:disabled::-webkit-slider-thumb {
+			background: #ccc;
+		}
+
+		#cmdModal .modal-content {
+			max-width: 800px;
+			height: 70vh;
+			background: rgba(20, 20, 30, 0.9);
+			color: #e0e0e0;
+		}
+
+		#cmdModal .modal-body {
+			flex-grow: 1;
+			font-family: 'Fira Code', monospace;
+		}
+
+		#cmdOutput {
+			height: calc(100% - 40px);
+			overflow-y: auto;
+			white-space: pre-wrap;
+			word-break: break-all;
+		}
+
+		.cmd-line {
+			display: flex;
+		}
+
+		.cmd-prompt {
+			color: #50fa7b;
+			margin-right: 8px;
+		}
+
+		.cmd-input {
+			flex-grow: 1;
+			background: none;
+			border: none;
+			color: #f8f8f2;
+			font-family: 'Fira Code', monospace;
+			font-size: 1rem;
+		}
+
+		.cmd-input:focus {
+			outline: none;
+		}
+
+		.cmd-response {
+			color: #8be9fd;
+		}
+
+		.cmd-error {
+			color: #ff5555;
+		}
+
+		.cmd-help {
+			color: #f1fa8c;
+		}
+
+		.cmd-success {
+			color: #50fa7b;
+		}
+
+		.message-box {
+			margin-top: 20px;
+			padding: 10px 20px;
+			border-radius: 8px;
+			background-color: #ffcdd2;
+			color: #c62828;
+			font-weight: 500;
+			text-align: center;
+			visibility: hidden;
+			opacity: 0;
+			transition: opacity 0.3s, visibility 0.3s;
+		}
+
+		.message-box.show {
+			visibility: visible;
+			opacity: 1;
+		}
+
+		.achievements {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			display: flex;
+			gap: 5px;
+		}
+
+		.achievement-icon {
+			font-size: 1.5rem;
+			cursor: pointer;
+		}
+
+		@media(max-width: 520px) {
+			.button-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.counter {
+				font-size: 3rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="header">
+			<button class="icon-btn" id="openCmdBtn">💻</button>
+			<h1>Licznik</h1>
+			<button class="icon-btn" id="openSettingsBtn">⚙️</button>
+		</div>
+		<div class="counter" id="counter">1000000<span class="counter-emoji" id="counterEmoji"></span></div>
+		<div class="button-grid" id="buttonGrid"></div>
+		<div id="achievements" class="achievements"></div>
+		<div id="messageBox" class="message-box"></div>
+	</div>
+
+	<div class="modal-overlay" id="settingsModal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>Ustawienia</h2><button class="close-btn" id="closeSettingsBtn">&times;</button>
+			</div>
+			<div class="modal-body">
+				<div class="settings-section">
+					<h3>Wygląd Globalny</h3>
+					<div class="form-group inline">
+						<label>Efekt "Aero Glass"</label><label class="switch"><input type="checkbox" id="glassToggle"><span class="slider"></span></label>
+					</div>
+					<div class="form-group">
+						<label for="glassIntensity">Intensywność rozmycia (0 = Liquid Glass)</label><input type="range" id="glassIntensity" min="0" max="25" step="1"></div>
+						<div class="form-group">
+							<label for="counterGifUrl">URL do GIFa (licznik)</label><input type="text" id="counterGifUrl" placeholder="Opcjonalnie"></div>
+						</div>
+						<div class="settings-section">
+							<h3>Tryb ADHD 🤪</h3>
+							<div class="form-group inline">
+								<label>Włącz/Wyłącz</label><label class="switch"><input type="checkbox" id="adhdToggle"><span class="slider"></span></label>
+							</div>
+							<div class="form-group">
+								<label for="adhdIntensity">Intensywność ADHD (1-10000000000)</label><input type="number" id="adhdIntensity" min="1" max="10000000000" step="1"></div>
+							</div>
+							<div class="settings-section">
+								<h3>Tryb Automatyczny</h3>
+								<div class="form-group">
+									<label for="autoInterval">Interwał (ms, 0-1000)</label><input type="number" id="autoInterval" min="0" max="1000" step="1" value="1000">
+								</div>
+									<div class="form-group">
+										<label for="autoAmount">Ilość punktów (-10000 do 10000)</label><input type="number" id="autoAmount" min="-10000" max="10000" step="1" value="1">
+								</div>
+										<div class="form-group inline">
+											<label>Włącz Auto</label><label class="switch"><input type="checkbox" id="autoToggle"><span class="slider"></span></label>
+										</div>
+									</div>
+									<div class="settings-section" id="addButtonSection">
+										<h3>Dodaj / Edytuj przycisk</h3>
+										<form id="addButtonForm">
+											<input type="hidden" id="btnId">
+											<div class="form-group">
+												<label for="btnName">Nazwa</label><input type="text" id="btnName" required></div>
+												<div class="form-group">
+													<label for="btnValue">Wartość</label><input type="text" id="btnValue" placeholder="Np. -100, restore, reset, toggle_auto" required></div>
+													<div class="form-group">
+														<label for="btnBgColor">Kolor tła</label><input type="color" id="btnBgColor" value="#3498db"></div>
+														<div class="form-group">
+															<label for="btnTextColor">Kolor tekstu</label><input type="color" id="btnTextColor" value="#ffffff"></div>
+															<div class="form-group">
+																<label for="btnBorderRadius">Zaokrąglenie (px)</label><input type="number" id="btnBorderRadius" min="0" value="12"></div>
+																<div class="form-group">
+																	<label for="btnGifUrl">URL do GIFa (tło)</label><input type="text" id="btnGifUrl" placeholder="Opcjonalnie"></div>
+																	<button type="submit" class="add-btn">Zapisz przycisk</button>
+										</form>
+									</div>
+									<div class="settings-section">
+										<h3>Zarządzaj przyciskami</h3>
+										<div id="buttonList"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-overlay" id="cmdModal">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h2>Terminal</h2><button class="close-btn" id="closeCmdBtn">&times;</button>
+								</div>
+								<div class="modal-body">
+									<div id="cmdOutput"></div>
+									<div class="cmd-line">
+										<span class="cmd-prompt">&gt;</span><input type="text" class="cmd-input" id="cmdInput" autofocus></div>
+									</div>
+								</div>
+							</div>
+
+							<script>
+								document.addEventListener('DOMContentLoaded', () => {
+            const getEl = id => document.getElementById(id);
+            const counterElement = getEl('counter');
+            const buttonGrid = getEl('buttonGrid');
+            const settingsModal = getEl('settingsModal');
+            const cmdModal = getEl('cmdModal');
+            const openSettingsBtn = getEl('openSettingsBtn');
+            const openCmdBtn = getEl('openCmdBtn');
+            const closeSettingsBtn = getEl('closeSettingsBtn');
+            const closeCmdBtn = getEl('closeCmdBtn');
+            const addButtonForm = getEl('addButtonForm');
+            const buttonList = getEl('buttonList');
+            const adhdToggle = getEl('adhdToggle');
+            const adhdIntensity = getEl('adhdIntensity');
+            const glassToggle = getEl('glassToggle');
+            const glassIntensity = getEl('glassIntensity');
+            const counterGifUrl = getEl('counterGifUrl');
+            const cmdOutput = getEl('cmdOutput');
+            const cmdInput = getEl('cmdInput');
+            const messageBox = getEl('messageBox');
+            const counterEmoji = getEl('counterEmoji');
+            const autoToggle = getEl('autoToggle');
+            const autoIntervalEl = getEl('autoInterval');
+            const autoAmountEl = getEl('autoAmount');
+            const achievementsDiv = getEl('achievements');
+
+            let previousCount = 0;
+            let adhdInterval = null;
+            let cmdHistory = [];
+            let historyIndex = -1;
+            let colorInterval = null;
+            let backgroundInterval = null;
+            let autoTimer = null;
+            let randomEventTimer = null;
+            let hardcoreInterval = null;
+            let scheduledTasks = [];
+            let pointMultiplier = 1;
+            let multiplierTimer = null;
+            let fakeButtons = [];
+
+            const defaultSettings = {
+                isGlassEffect: true,
+                glassBlur: 10,
+                isNewUI: false,
+                counterGif: '',
+                adhdIntensity: 1,
+                betaFeatures: { 
+                    loadJson: false, 
+                    shakeScreen: false, 
+                    rainbowBtn: false, 
+                    emojiReaction: false, 
+                    adhdIntensity: false, 
+                    randomEvents: false, 
+                    hardcoreChaos: false 
+                },
+                autoInterval: 1000,
+                autoAmount: 1,
+                isAuto: false
+            };
+            const defaultButtons = [
+                { id: 1, text: 'Klik (+1)', value: 1, bgColor: '#2ecc71', textColor: '#ffffff', borderRadius: 12, gifUrl: '' },
+                { id: 2, text: 'Róża (-1)', value: -1, bgColor: '#e74c3c', textColor: '#ffffff', borderRadius: 12, gifUrl: '' },
+                { id: 3, text: 'Cofnij', value: 'restore', bgColor: '#34495e', textColor: '#ffffff', borderRadius: 12, gifUrl: '' },
+                { id: 4, text: 'Reset', value: 'reset', bgColor: '#95a5a6', textColor: '#ffffff', borderRadius: 12, gifUrl: '' },
+                { id: 5, text: '🖱️ Auto Clicker', value: 'toggle_auto', bgColor: '#3498db', textColor: '#ffffff', borderRadius: 12, gifUrl: '' }
+            ];
+            
+            let appSettings = JSON.parse(localStorage.getItem('appSettings')) || defaultSettings;
+            let buttons = JSON.parse(localStorage.getItem('customButtons')) || defaultButtons;
+            let savedSettings = JSON.parse(localStorage.getItem('savedSettings')) || { preset1: null, preset2: null, preset3: null };
+            let unlockedAchievements = new Set(JSON.parse(localStorage.getItem('unlockedAchievements')) || []);
+
+            const achievements = [
+                { id: 'chaos_master', name: 'Chaos Master', description: 'ADHD Intensity > 50', condition: () => appSettings.adhdIntensity > 50 && adhdToggle.checked, emoji: '🔥' },
+                { id: 'high_score', name: 'High Score', description: 'Points > 1,000,000', condition: () => parseInt(counterElement.textContent) > 1000000, emoji: '🏆' },
+                { id: 'negative_master', name: 'Negative Master', description: 'Points < -100,000', condition: () => parseInt(counterElement.textContent) < -100000, emoji: '😢' },
+                { id: 'button_creator', name: 'Button Creator', description: 'More than 10 buttons', condition: () => buttons.length > 10, emoji: '🛠️' }
+            ];
+
+            const saveSettings = () => localStorage.setItem('appSettings', JSON.stringify(appSettings));
+            const saveButtons = () => localStorage.setItem('customButtons', JSON.stringify(buttons));
+            const savePresets = () => localStorage.setItem('savedSettings', JSON.stringify(savedSettings));
+            const saveAchievements = () => localStorage.setItem('unlockedAchievements', JSON.stringify(Array.from(unlockedAchievements)));
+
+            const showMessage = (text, isError = true) => {
+                messageBox.textContent = text;
+                messageBox.classList.toggle('show', true);
+                messageBox.style.backgroundColor = isError ? '#ffcdd2' : '#c8e6c9';
+                messageBox.style.color = isError ? '#c62828' : '#2e7d32';
+                setTimeout(() => messageBox.classList.toggle('show', false), 3000);
+            };
+
+            const applySettings = () => {
+                document.documentElement.style.setProperty('--glass-blur', `${appSettings.glassBlur}px`);
+                const glassElements = document.querySelectorAll('.counter, #settingsModal .modal-content');
+                glassElements.forEach(el => {
+                    el.classList.toggle('glass-effect', appSettings.isGlassEffect);
+                });
+                document.body.classList.toggle('new-ui', appSettings.isNewUI);
+                counterElement.style.backgroundImage = appSettings.counterGif ? `url('${appSettings.counterGif}')` : 'none';
+                counterElement.style.backgroundColor = appSettings.counterGif ? 'transparent' : '';
+                counterGifUrl.value = appSettings.counterGif;
+                glassToggle.checked = appSettings.isGlassEffect;
+                glassIntensity.value = appSettings.glassBlur;
+                glassIntensity.disabled = !appSettings.isGlassEffect;
+                adhdIntensity.value = appSettings.adhdIntensity;
+                adhdIntensity.disabled = !adhdToggle.checked;
+                autoIntervalEl.value = appSettings.autoInterval;
+                autoAmountEl.value = appSettings.autoAmount;
+                autoToggle.checked = appSettings.isAuto;
+                if (appSettings.betaFeatures.emojiReaction) {
+                    updateEmoji();
+                } else {
+                    counterEmoji.textContent = '';
+                }
+                renderButtons();
+                renderAchievements();
+            };
+
+            const updateEmoji = () => {
+                if (!appSettings.betaFeatures.emojiReaction) return;
+                const count = parseInt(counterElement.textContent, 10) || 0;
+                if (count > 1000000) counterEmoji.textContent = '😎';
+                else if (count > 500000) counterEmoji.textContent = '🥳';
+                else if (count > 100000) counterEmoji.textContent = '🎉';
+                else if (count < -100000) counterEmoji.textContent = '😢';
+                else counterEmoji.textContent = '';
+            };
+
+            const renderAchievements = () => {
+                achievementsDiv.innerHTML = '';
+                unlockedAchievements.forEach(id => {
+                    const ach = achievements.find(a => a.id === id);
+                    if (ach) {
+                        const icon = document.createElement('span');
+                        icon.className = 'achievement-icon';
+                        icon.textContent = ach.emoji || '🏆';
+                        icon.title = `${ach.name}: ${ach.description}`;
+                        achievementsDiv.appendChild(icon);
+                    }
+                });
+            };
+
+            const checkAchievements = () => {
+                let unlockedNew = false;
+                achievements.forEach(ach => {
+                    if (ach.condition() && !unlockedAchievements.has(ach.id)) {
+                        unlockedAchievements.add(ach.id);
+                        showMessage(`Osiągnięcie odblokowane: ${ach.name}!`, false);
+                        unlockedNew = true;
+                    }
+                });
+                if (unlockedNew) {
+                    saveAchievements();
+                    renderAchievements();
+                }
+            };
+
+            const renderButtons = () => {
+                buttonGrid.innerHTML = '';
+                buttonList.innerHTML = '';
+                buttons.forEach(btn => {
+                    const buttonEl = document.createElement('button');
+                    buttonEl.className = 'button';
+                    buttonEl.classList.toggle('rainbow', appSettings.betaFeatures.rainbowBtn && !btn.gifUrl);
+                    buttonEl.classList.toggle('adhd', adhdToggle.checked);
+                    buttonEl.textContent = btn.text;
+                    buttonEl.style.color = btn.textColor;
+                    buttonEl.style.borderRadius = `${btn.borderRadius}px`;
+                    buttonEl.style.backgroundImage = btn.gifUrl ? `url('${btn.gifUrl}')` : 'none';
+                    buttonEl.style.backgroundColor = btn.gifUrl ? 'transparent' : btn.bgColor;
+                    buttonEl.onclick = () => handleButtonClick(btn.value);
+                    buttonGrid.appendChild(buttonEl);
+
+                    const listItem = document.createElement('div');
+                    listItem.className = 'button-list-item';
+                    listItem.innerHTML = `<span>${btn.text}</span>`;
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'list-btn edit-btn';
+                    editBtn.innerHTML = '✏️';
+                    editBtn.onclick = () => editButton(btn.id);
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'list-btn delete-btn';
+                    deleteBtn.innerHTML = '×';
+                    deleteBtn.onclick = () => deleteButton(btn.id);
+                    const btnGroup = document.createElement('div');
+                    btnGroup.append(editBtn, deleteBtn);
+                    listItem.append(btnGroup);
+                    buttonList.appendChild(listItem);
+                });
+                if (adhdToggle.checked) updateButtonPositions();
+                saveButtons();
+            };
+
+            const handleButtonClick = value => {
+                if (value === 'reset') resetCounter();
+                else if (value === 'restore') restoreCounter();
+                else if (value === 'toggle_auto') {
+                    autoToggle.checked = !autoToggle.checked;
+                    autoToggle.dispatchEvent(new Event('change'));
+                } else updateCounter(parseInt(value, 10));
+            };
+
+            const updateCounter = amount => {
+                const currentCount = parseInt(counterElement.textContent, 10) || 0;
+                previousCount = currentCount;
+                counterElement.textContent = currentCount + (amount * pointMultiplier);
+                if (appSettings.betaFeatures.shakeScreen && Math.abs(amount) >= 1000) {
+                    counterElement.classList.add('shake');
+                    setTimeout(() => counterElement.classList.remove('shake'), 500);
+                }
+                animateCounter();
+                updateEmoji();
+                checkAchievements();
+            };
+
+            const resetCounter = () => {
+                previousCount = parseInt(counterElement.textContent, 10) || 0;
+                counterElement.textContent = 0;
+                animateCounter();
+                updateEmoji();
+                checkAchievements();
+            };
+
+            const restoreCounter = () => {
+                counterElement.textContent = previousCount;
+                animateCounter();
+                updateEmoji();
+                checkAchievements();
+            };
+
+            const animateCounter = () => {
+                counterElement.classList.add('animate');
+                setTimeout(() => counterElement.classList.remove('animate'), 200);
+            };
+
+            const editButton = id => {
+                const btn = buttons.find(b => b.id === id);
+                if (!btn) return;
+                getEl('btnId').value = btn.id;
+                getEl('btnName').value = btn.text;
+                getEl('btnValue').value = btn.value;
+                getEl('btnBgColor').value = btn.bgColor;
+                getEl('btnTextColor').value = btn.textColor;
+                getEl('btnBorderRadius').value = btn.borderRadius;
+                getEl('btnGifUrl').value = btn.gifUrl;
+                getEl('addButtonSection').scrollIntoView({ behavior: 'smooth' });
+            };
+
+            const deleteButton = id => {
+                buttons = buttons.filter(b => b.id !== id);
+                renderButtons();
+                showMessage(`Usunięto przycisk.`, false);
+                checkAchievements();
+            };
+
+            const updateButtonPositions = () => {
+                const buttons = document.querySelectorAll('.button.adhd');
+                const container = document.querySelector('.container');
+                const containerRect = container.getBoundingClientRect();
+                const intensity = appSettings.adhdIntensity;
+                const scaleFactor = Math.log10(Math.max(intensity, 1)) / 10;
+                const maxMovement = scaleFactor * 50;
+                const maxRotation = scaleFactor * 360;
+                const maxScale = 0.5 + scaleFactor * 1.5;
+                buttons.forEach(btn => {
+                    const maxX = containerRect.width - btn.offsetWidth;
+                    const maxY = containerRect.height - btn.offsetHeight;
+                    const moveX = (Math.random() - 0.5) * maxMovement;
+                    const moveY = (Math.random() - 0.5) * maxMovement;
+                    let newLeft = parseFloat(btn.style.left || 0) + moveX;
+                    let newTop = parseFloat(btn.style.top || 0) + moveY;
+                    newLeft = Math.max(0, Math.min(newLeft, maxX));
+                    newTop = Math.max(0, Math.min(newTop, maxY));
+                    const rotation = (Math.random() - 0.5) * maxRotation;
+                    const scale = 0.5 + Math.random() * (maxScale - 0.5);
+                    btn.style.left = `${newLeft}px`;
+                    btn.style.top = `${newTop}px`;
+                    btn.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+                });
+            };
+
+            const startColorFlashing = () => {
+                if (colorInterval) clearInterval(colorInterval);
+                const intensity = appSettings.adhdIntensity;
+                const scaleFactor = Math.log10(Math.max(intensity, 1)) / 10;
+                const intervalMs = Math.max(50, 500 - (scaleFactor * 450));
+                colorInterval = setInterval(() => {
+                    const buttons = document.querySelectorAll('.button.adhd');
+                    buttons.forEach(btn => {
+                        if (!btn.style.backgroundImage) {
+                            const hue = Math.random() * 360;
+                            btn.style.backgroundColor = `hsl(${hue}, 70%, 50%)`;
+                        }
+                    });
+                    const hue = Math.random() * 360;
+                    counterElement.style.color = `hsl(${hue}, 70%, 50%)`;
+                }, intervalMs);
+            };
+
+            const startChaoticBackground = () => {
+                if (backgroundInterval) clearInterval(backgroundInterval);
+                const intensity = appSettings.adhdIntensity;
+                const scaleFactor = Math.log10(Math.max(intensity, 1)) / 10;
+                const intervalMs = Math.max(50, 1000 - (scaleFactor * 950));
+                document.body.style.animation = `chaoticBackground ${intervalMs}ms infinite`;
+                backgroundInterval = setInterval(() => {
+                    const hue1 = Math.random() * 360;
+                    const hue2 = Math.random() * 360;
+                    document.documentElement.style.setProperty('--bg-gradient', `linear-gradient(135deg, hsl(${hue1}, 70%, 50%), hsl(${hue2}, 70%, 50%))`);
+                }, intervalMs);
+            };
+
+            const stopChaoticBackground = () => {
+                if (backgroundInterval) {
+                    clearInterval(backgroundInterval);
+                    backgroundInterval = null;
+                    document.body.style.animation = '';
+                    document.documentElement.style.setProperty('--bg-gradient', appSettings.isNewUI ? 'linear-gradient(135deg, #2c3e50, #4ca1af)' : 'linear-gradient(135deg, #f5f7fa, #c3cfe2)');
+                }
+            };
+
+            const stopColorFlashing = () => {
+                if (colorInterval) {
+                    clearInterval(colorInterval);
+                    colorInterval = null;
+                    document.querySelectorAll('.button').forEach(btn => {
+                        const btnData = buttons.find(b => b.text === btn.textContent);
+                        if (btnData) {
+                            btn.style.backgroundColor = btnData.gifUrl ? 'transparent' : btnData.bgColor;
+                        }
+                    });
+                    counterElement.style.color = '';
+                }
+                stopChaoticBackground();
+            };
+
+            const triggerRandomEvent = () => {
+                if (!appSettings.betaFeatures.randomEvents) return;
+                const events = [
+                    () => { // Double points for 10s
+                        pointMultiplier = 2;
+                        showMessage('🚀 Podwójne punkty przez 10 sekund!', false);
+                        if (multiplierTimer) clearTimeout(multiplierTimer);
+                        multiplierTimer = setTimeout(() => pointMultiplier = 1, 10000);
+                    },
+                    () => { // ADHD Overdrive
+                        const originalIntensity = appSettings.adhdIntensity;
+                        appSettings.adhdIntensity *= 2;
+                        adhdIntensity.value = appSettings.adhdIntensity;
+                        showMessage('🔥 ADHD Overdrive – chaos i kolory!', false);
+                        setTimeout(() => {
+                            appSettings.adhdIntensity = originalIntensity;
+                            adhdIntensity.value = originalIntensity;
+                            if (adhdToggle.checked) {
+                                clearInterval(adhdInterval);
+                                const scaleFactor = Math.log10(Math.max(originalIntensity, 1)) / 10;
+                                adhdInterval = setInterval(updateButtonPositions, Math.max(50, 1000 - (scaleFactor * 950)));
+                            }
+                        }, 10000);
+                    },
+                    () => { // Minus 50% points
+                        const current = parseInt(counterElement.textContent, 10) || 0;
+                        counterElement.textContent = Math.floor(current / 2);
+                        showMessage('❌ Minus 50% punktów!', true);
+                    },
+                    () => { // Bonus Mystery
+                        const bonus = Math.floor(Math.random() * 10000) + 1000;
+                        updateCounter(bonus);
+                        showMessage(`🎁 Bonus Mystery: +${bonus} punktów!`, false);
+                    }
+                ];
+                const randomEvent = events[Math.floor(Math.random() * events.length)];
+                randomEvent();
+            };
+
+            const startRandomEvents = () => {
+                if (randomEventTimer) clearInterval(randomEventTimer);
+                randomEventTimer = setInterval(triggerRandomEvent, Math.random() * 30000 + 30000); // 30-60s
+            };
+
+            const startHardcoreChaos = () => {
+                if (hardcoreInterval) clearInterval(hardcoreInterval);
+                const chaosIntensity = Math.min(appSettings.adhdIntensity / 100, 100); // Scale to 1-100
+                hardcoreInterval = setInterval(() => {
+                    // Screen jump
+                    document.body.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px)`;
+                    setTimeout(() => document.body.style.transform = '', 100);
+                    // Fake buttons
+                    if (Math.random() < 0.1 * (chaosIntensity / 100)) {
+                        const fakeBtn = document.createElement('button');
+                        fakeBtn.className = 'button fake';
+                        fakeBtn.textContent = 'Fake!';
+                        fakeBtn.style.position = 'absolute';
+                        fakeBtn.style.left = `${Math.random() * window.innerWidth}px`;
+                        fakeBtn.style.top = `${Math.random() * window.innerHeight}px`;
+                        fakeBtn.onclick = () => {
+                            updateCounter(-Math.floor(Math.random() * 1000));
+                            showMessage('Kliknąłeś fałszywy przycisk! Kara!', true);
+                            fakeBtn.remove();
+                            fakeButtons = fakeButtons.filter(b => b !== fakeBtn);
+                        };
+                        document.body.appendChild(fakeBtn);
+                        fakeButtons.push(fakeBtn);
+                        setTimeout(() => {
+                            fakeBtn.remove();
+                            fakeButtons = fakeButtons.filter(b => b !== fakeBtn);
+                        }, 5000);
+                    }
+                    // Glitch effects
+                    if (Math.random() < 0.2 * (chaosIntensity / 100)) {
+                        document.body.style.filter = 'invert(1)';
+                        setTimeout(() => document.body.style.filter = '', 200);
+                    }
+                }, Math.max(500, 1000 - ((chaosIntensity / 100) * 500))); // 0.5-1s
+            };
+
+            const stopHardcoreChaos = () => {
+                if (hardcoreInterval) clearInterval(hardcoreInterval);
+                document.body.style.transform = '';
+                document.body.style.filter = '';
+                fakeButtons.forEach(btn => btn.remove());
+                fakeButtons = [];
+            };
+
+            const scheduleTask = (time, action, value) => {
+                const [hh, mm] = time.split(':').map(Number);
+                const now = new Date();
+                let target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm);
+                if (target < now) target.setDate(target.getDate() + 1);
+                const ms = target - now;
+                const timer = setTimeout(() => {
+                    if (action === 'add') updateCounter(parseInt(value));
+                    else if (action === 'set') {
+                        previousCount = parseInt(counterElement.textContent);
+                        counterElement.textContent = parseInt(value);
+                    }
+                    showMessage(`Zaplanowana akcja wykonana: ${action} ${value}`, false);
+                }, ms);
+                scheduledTasks.push(timer);
+            };
+
+            addButtonForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const id = parseInt(getEl('btnId').value) || 0;
+                const borderRadiusValue = parseInt(getEl('btnBorderRadius').value, 10);
+                const buttonData = {
+                    text: getEl('btnName').value,
+                    value: getEl('btnValue').value,
+                    bgColor: getEl('btnBgColor').value,
+                    textColor: getEl('btnTextColor').value,
+                    borderRadius: isNaN(borderRadiusValue) ? 12 : Math.max(0, borderRadiusValue),
+                    gifUrl: getEl('btnGifUrl').value
+                };
+                if (id) {
+                    const index = buttons.findIndex(b => b.id === id);
+                    buttons[index] = { ...buttons[index], ...buttonData };
+                    showMessage(`Zaktualizowano przycisk "${buttonData.text}".`, false);
+                } else {
+                    buttons.push({ id: Date.now(), ...buttonData });
+                    showMessage(`Dodano przycisk "${buttonData.text}".`, false);
+                }
+                renderButtons();
+                addButtonForm.reset();
+                getEl('btnId').value = '';
+                getEl('btnBorderRadius').value = '12'; // Reset to default
+                checkAchievements();
+            });
+
+            counterGifUrl.addEventListener('change', () => {
+                appSettings.counterGif = counterGifUrl.value;
+                applySettings();
+                saveSettings();
+                showMessage(`Zaktualizowano GIF licznika.`, false);
+            });
+
+            adhdIntensity.addEventListener('change', () => {
+                let value = parseInt(adhdIntensity.value, 10);
+                if (isNaN(value) || value < 1) value = 1;
+                if (value > 10000000000) value = 10000000000;
+                appSettings.adhdIntensity = value;
+                adhdIntensity.value = value;
+                if (adhdToggle.checked) {
+                    clearInterval(adhdInterval);
+                    clearInterval(colorInterval);
+                    clearInterval(backgroundInterval);
+                    const scaleFactor = Math.log10(Math.max(value, 1)) / 10;
+                    adhdInterval = setInterval(updateButtonPositions, Math.max(50, 1000 - (scaleFactor * 950)));
+                    startColorFlashing();
+                    startChaoticBackground();
+                    if (appSettings.betaFeatures.hardcoreChaos) startHardcoreChaos();
+                }
+                saveSettings();
+                showMessage(`Intensywność ADHD ustawiona na ${value}.`, false);
+                checkAchievements();
+            });
+
+            autoIntervalEl.addEventListener('change', () => {
+                let value = parseInt(autoIntervalEl.value, 10);
+                if (isNaN(value) || value < 0) value = 0;
+                if (value > 1000) value = 1000;
+                appSettings.autoInterval = value;
+                autoIntervalEl.value = value;
+                if (appSettings.isAuto) {
+                    clearInterval(autoTimer);
+                    autoTimer = setInterval(() => updateCounter(appSettings.autoAmount), appSettings.autoInterval || 1);
+                }
+                saveSettings();
+                showMessage(`Interwał auto ustawiony na ${value} ms.`, false);
+            });
+
+            autoAmountEl.addEventListener('change', () => {
+                let value = parseInt(autoAmountEl.value, 10);
+                if (isNaN(value) || value < -10000) value = -10000;
+                if (value > 10000) value = 10000;
+                appSettings.autoAmount = value;
+                autoAmountEl.value = value;
+                saveSettings();
+                showMessage(`Ilość punktów auto ustawiona na ${value}.`, false);
+            });
+
+            autoToggle.addEventListener('change', e => {
+                appSettings.isAuto = e.target.checked;
+                if (appSettings.isAuto) {
+                    autoTimer = setInterval(() => updateCounter(appSettings.autoAmount), appSettings.autoInterval || 1);
+                } else {
+                    clearInterval(autoTimer);
+                }
+                saveSettings();
+                showMessage(`Tryb auto ${appSettings.isAuto ? 'włączony' : 'wyłączony'}.`, false);
+            });
+
+            const toggleModal = (modal, show) => {
+                modal.classList.toggle('show', show);
+                if (modal === cmdModal && show) setTimeout(() => cmdInput.focus(), 50);
+            };
+
+            const logToCmd = (text, type = 'response') => {
+                cmdOutput.innerHTML += `<div class="cmd-${type}">${text}</div>`;
+                cmdOutput.scrollTop = cmdOutput.scrollHeight;
+            };
+
+            const savePreset = preset => {
+                savedSettings[preset] = { settings: { ...appSettings }, buttons: [...buttons] };
+                savePresets();
+                showMessage(`Zapisano ustawienia jako ${preset}.`, false);
+                logToCmd(`Zapisano ustawienia jako ${preset}.`, 'success');
+            };
+
+            const loadPreset = preset => {
+                if (!savedSettings[preset]) {
+                    logToCmd(`Błąd: Brak zapisanego ustawienia ${preset}.`, 'error');
+                    showMessage(`Brak zapisanego ustawienia ${preset}.`, true);
+                    return;
+                }
+                appSettings = { ...savedSettings[preset].settings };
+                buttons = [...savedSettings[preset].buttons];
+                applySettings();
+                renderButtons();
+                saveSettings();
+                saveButtons();
+                logToCmd(`Załadowano ustawienia ${preset}.`, 'success');
+                showMessage(`Załadowano ustawienia ${preset}.`, false);
+            };
+
+            const resetSettings = () => {
+                appSettings = { ...defaultSettings };
+                buttons = [...defaultButtons];
+                savedSettings = { preset1: null, preset2: null, preset3: null };
+                unlockedAchievements.clear();
+                applySettings();
+                renderButtons();
+                saveSettings();
+                saveButtons();
+                savePresets();
+                saveAchievements();
+                logToCmd('Zresetowano wszystkie ustawienia do domyślnych.', 'success');
+                showMessage('Zresetowano wszystkie ustawienia.', false);
+            };
+
+            const executeCmd = cmdString => {
+                logToCmd(`> ${cmdString}`, 'prompt');
+                if (cmdString.trim() === '') return;
+                cmdHistory.unshift(cmdString);
+                if (cmdHistory.length > 50) cmdHistory.pop();
+                historyIndex = -1;
+
+                const [command, ...args] = cmdString.trim().split(/\s+/);
+                
+                switch (command.toLowerCase()) {
+                    case 'help':
+                        logToCmd(`
+Dostępne komendy:
+  help                    - Wyświetla tę pomoc
+  addpts <liczba>         - Dodaje punkty do licznika
+  setpts <liczba>         - Ustawia licznik na daną wartość
+  addbtn <nazwa> <wartość> [bgColor] [textColor] [borderRadius] [gifUrl] - Dodaje przycisk
+  delbtn <nazwa>          - Usuwa przycisk. Użyj "" dla nazw z spacjami
+  setcolor <el> <kolor>   - Zmienia kolor. Elementy: bg, counter, text, counter-gif
+  save <preset>           - Zapisuje ustawienia jako preset (preset1, preset2, preset3)
+  load <preset>           - Ładuje zapisane ustawienia (preset1, preset2, preset3)
+  reset                   - Resetuje wszystkie ustawienia do domyślnych
+  beta                    - Zarządzanie funkcjami beta
+  achievements            - Zarządzanie osiągnięciami (list, reset, add [id])
+  schedule <HH:MM> <add|set> <value> - Zaplanuj akcję na godzinę
+  clear                   - Czyści terminal
+`, 'help');
+                        break;
+                    case 'save':
+                        if (['preset1', 'preset2', 'preset3'].includes(args[0])) {
+                            savePreset(args[0]);
+                        } else {
+                            logToCmd(`Błąd: Nieprawidłowy preset. Użyj preset1, preset2 lub preset3.`, 'error');
+                            showMessage(`Nieprawidłowy preset: ${args[0] || ''}.`, true);
+                        }
+                        break;
+                    case 'load':
+                        if (['preset1', 'preset2', 'preset3'].includes(args[0])) {
+                            loadPreset(args[0]);
+                        } else {
+                            logToCmd(`Błąd: Nieprawidłowy preset. Użyj preset1, preset2 lub preset3.`, 'error');
+                            showMessage(`Nieprawidłowy preset: ${args[0] || ''}.`, true);
+                        }
+                        break;
+                    case 'reset':
+                        resetSettings();
+                        break;
+                    case 'addbtn':
+                        if (args.length < 2) {
+                            logToCmd('Użycie: addbtn <nazwa> <wartość> [bgColor] [textColor] [borderRadius] [gifUrl]', 'error');
+                            showMessage('Nieprawidłowe użycie addbtn.', true);
+                            return;
+                        }
+                        const btnName = args[0].replace(/"/g, '');
+                        const btnValue = args[1];
+                        const bgColor = /^#[0-9A-F]{6}$/i.test(args[2]) ? args[2] : '#3498db';
+                        const textColor = /^#[0-9A-F]{6}$/i.test(args[3]) ? args[3] : '#ffffff';
+                        const borderRadius = isNaN(parseInt(args[4])) ? 12 : Math.max(0, parseInt(args[4]));
+                        const gifUrl = args[5] || '';
+                        buttons.push({
+                            id: Date.now(),
+                            text: btnName,
+                            value: btnValue,
+                            bgColor,
+                            textColor,
+                            borderRadius,
+                            gifUrl
+                        });
+                        renderButtons();
+                        showMessage(`Dodano przycisk "${btnName}".`, false);
+                        logToCmd(`Dodano przycisk "${btnName}".`, 'success');
+                        checkAchievements();
+                        break;
+                    case 'beta':
+                        const [subCmd, ...betaArgs] = args;
+                        if (!subCmd) {
+                            logToCmd(`
+Funkcje Beta:
+  beta new-ui <on|off>       - Włącza/wyłącza nowy interfejs
+  beta shake-screen <on|off> - Włącza/wyłącza trzęsienie ekranu przy dużych zmianach
+  beta rainbow-btn <on|off>  - Włącza/wyłącza tęczowe przyciski
+  beta emoji-reaction <on|off> - Włącza/wyłącza emoji reagujące na punktację
+  beta random-events <on|off> - Włącza/wyłącza dynamiczne wydarzenia losowe
+  beta hardcore-chaos <on|off> - Włącza/wyłącza hardcore chaos
+  beta adhd-intensity <value> - Ustawia intensywność trybu ADHD (1-10000000000)
+  beta load-json <on|off>    - Włącza/wyłącza ładowanie z JSON (w budowie)
+`, 'help');
+                            return;
+                        }
+                        if (['new-ui', 'shake-screen', 'rainbow-btn', 'emoji-reaction', 'load-json', 'random-events', 'hardcore-chaos'].includes(subCmd)) {
+                            const state = betaArgs[0];
+                            if (state !== 'on' && state !== 'off') {
+                                logToCmd(`Błąd: Użyj '${subCmd} on' lub '${subCmd} off'.`, 'error');
+                                showMessage(`Nieprawidłowy stan dla ${subCmd}.`, true);
+                                return;
+                            }
+                            if (subCmd === 'new-ui') {
+                                appSettings.isNewUI = state === 'on';
+                                applySettings();
+                                saveSettings();
+                                logToCmd(`Nowy interfejs UI jest teraz ${appSettings.isNewUI ? 'WŁĄCZONY' : 'WYŁĄCZONY'}.`, 'success');
+                                showMessage(`Nowy UI ${appSettings.isNewUI ? 'włączony' : 'wyłączony'}.`, false);
+                            } else if (subCmd === 'shake-screen') {
+                                appSettings.betaFeatures.shakeScreen = state === 'on';
+                                saveSettings();
+                                logToCmd(`Trzęsienie ekranu jest teraz ${appSettings.betaFeatures.shakeScreen ? 'WŁĄCZONE' : 'WYŁĄCZONE'}.`, 'success');
+                                showMessage(`Trzęsienie ekranu ${appSettings.betaFeatures.shakeScreen ? 'włączone' : 'wyłączone'}.`, false);
+                            } else if (subCmd === 'rainbow-btn') {
+                                appSettings.betaFeatures.rainbowBtn = state === 'on';
+                                applySettings();
+                                saveSettings();
+                                logToCmd(`Tęczowe przyciski są teraz ${appSettings.betaFeatures.rainbowBtn ? 'WŁĄCZONE' : 'WYŁĄCZONE'}.`, 'success');
+                                showMessage(`Tęczowe przyciski ${appSettings.betaFeatures.rainbowBtn ? 'włączone' : 'wyłączone'}.`, false);
+                            } else if (subCmd === 'emoji-reaction') {
+                                appSettings.betaFeatures.emojiReaction = state === 'on';
+                                applySettings();
+                                saveSettings();
+                                logToCmd(`Emoji reakcje są teraz ${appSettings.betaFeatures.emojiReaction ? 'WŁĄCZONE' : 'WYŁĄCZONE'}.`, 'success');
+                                showMessage(`Emoji reakcje ${appSettings.betaFeatures.emojiReaction ? 'włączone' : 'wyłączone'}.`, false);
+                            } else if (subCmd === 'random-events') {
+                                appSettings.betaFeatures.randomEvents = state === 'on';
+                                if (appSettings.betaFeatures.randomEvents) startRandomEvents();
+                                else if (randomEventTimer) clearInterval(randomEventTimer);
+                                saveSettings();
+                                logToCmd(`Dynamiczne wydarzenia losowe są teraz ${appSettings.betaFeatures.randomEvents ? 'WŁĄCZONE' : 'WYŁĄCZONE'}.`, 'success');
+                                showMessage(`Dynamiczne wydarzenia ${appSettings.betaFeatures.randomEvents ? 'włączone' : 'wyłączone'}.`, false);
+                            } else if (subCmd === 'hardcore-chaos') {
+                                appSettings.betaFeatures.hardcoreChaos = state === 'on';
+                                if (appSettings.betaFeatures.hardcoreChaos && adhdToggle.checked) startHardcoreChaos();
+                                else stopHardcoreChaos();
+                                saveSettings();
+                                logToCmd(`Hardcore chaos jest teraz ${appSettings.betaFeatures.hardcoreChaos ? 'WŁĄCZONY' : 'WYŁĄCZONY'}.`, 'success');
+                                showMessage(`Hardcore chaos ${appSettings.betaFeatures.hardcoreChaos ? 'włączony' : 'wyłączony'}.`, false);
+                            } else if (subCmd === 'load-json') {
+                                logToCmd('Funkcja ładowania z JSON jest w trakcie rozwoju.', 'help');
+                            }
+                        } else if (subCmd === 'adhd-intensity') {
+                            const value = parseInt(betaArgs[0], 10);
+                            if (isNaN(value) || value < 1 || value > 10000000000) {
+                                logToCmd(`Błąd: Intensywność ADHD musi być liczbą od 1 do 10000000000.`, 'error');
+                                showMessage(`Nieprawidłowa wartość intensywności ADHD.`, true);
+                                return;
+                            }
+                            appSettings.adhdIntensity = value;
+                            adhdIntensity.value = value;
+                            if (adhdToggle.checked) {
+                                clearInterval(adhdInterval);
+                                clearInterval(colorInterval);
+                                clearInterval(backgroundInterval);
+                                const scaleFactor = Math.log10(Math.max(value, 1)) / 10;
+                                adhdInterval = setInterval(updateButtonPositions, Math.max(50, 1000 - (scaleFactor * 950)));
+                                startColorFlashing();
+                                startChaoticBackground();
+                                if (appSettings.betaFeatures.hardcoreChaos) startHardcoreChaos();
+                            }
+                            saveSettings();
+                            logToCmd(`Intensywność ADHD ustawiona na ${value}.`, 'success');
+                            showMessage(`Intensywność ADHD ustawiona na ${value}.`, false);
+                            checkAchievements();
+                        } else {
+                            logToCmd(`Nieznana komenda beta: ${subCmd}`, 'error');
+                            showMessage(`Nieznana komenda beta: ${subCmd}`, true);
+                        }
+                        break;
+                    case 'addpts':
+                        const addAmount = parseInt(args[0], 10);
+                        if (isNaN(addAmount)) {
+                            logToCmd(`Błąd: Podaj prawidłową liczbę.`, 'error');
+                            showMessage(`Podaj prawidłową liczbę dla addpts.`, true);
+                        } else {
+                            updateCounter(addAmount);
+                            logToCmd(`Dodano ${addAmount} punktów.`, 'success');
+                            showMessage(`Dodano ${addAmount} punktów.`, false);
+                        }
+                        break;
+                    case 'setpts':
+                        const setAmount = parseInt(args[0], 10);
+                        if (isNaN(setAmount)) {
+                            logToCmd(`Błąd: Podaj prawidłową liczbę.`, 'error');
+                            showMessage(`Podaj prawidłową liczbę dla setpts.`, true);
+                        } else {
+                            previousCount = parseInt(counterElement.textContent, 10);
+                            counterElement.textContent = setAmount;
+                            logToCmd(`Ustawiono licznik na ${setAmount}.`, 'success');
+                            showMessage(`Licznik ustawiony na ${setAmount}.`, false);
+                            updateEmoji();
+                            checkAchievements();
+                        }
+                        break;
+                    case 'delbtn':
+                        const nameToDelete = args.join(' ').replace(/"/g, '');
+                        const initialLength = buttons.length;
+                        buttons = buttons.filter(b => b.text !== nameToDelete);
+                        if (buttons.length < initialLength) {
+                            renderButtons();
+                            logToCmd(`Usunięto przycisk "${nameToDelete}".`, 'success');
+                            showMessage(`Usunięto przycisk "${nameToDelete}".`, false);
+                        } else {
+                            logToCmd(`Błąd: Nie znaleziono przycisku "${nameToDelete}".`, 'error');
+                            showMessage(`Nie znaleziono przycisku "${nameToDelete}".`, true);
+                        }
+                        break;
+                    case 'setcolor':
+                        const [element, color] = args;
+                        if (!['bg', 'counter', 'text', 'counter-gif'].includes(element)) {
+                            logToCmd(`Błąd: Użyj 'setcolor <bg|counter|text|counter-gif> <wartość>'.`, 'error');
+                            showMessage(`Nieprawidłowy element.`, true);
+                            return;
+                        }
+                        if (element === 'counter-gif') {
+                            appSettings.counterGif = color || '';
+                            applySettings();
+                            saveSettings();
+                            logToCmd(`Ustawiono GIF licznika na "${color || 'brak'}".`, 'success');
+                            showMessage(`Ustawiono GIF licznika.`, false);
+                        } else if (/^#[0-9A-F]{6}$/i.test(color)) {
+                            if (element === 'bg') document.documentElement.style.setProperty('--bg-gradient', color);
+                            else if (element === 'counter') counterElement.style.color = color;
+                            else if (element === 'text') document.documentElement.style.setProperty('--text-color', color);
+                            logToCmd(`Zmieniono kolor ${element} na ${color}.`, 'success');
+                            showMessage(`Zmieniono kolor ${element} na ${color}.`, false);
+                        } else {
+                            logToCmd(`Błąd: Podaj prawidłowy kolor w formacie #RRGGBB lub URL dla counter-gif.`, 'error');
+                            showMessage(`Nieprawidłowy kolor lub URL.`, true);
+                        }
+                        break;
+                    case 'achievements':
+                        const [achSubCmd, ...achArgs] = args;
+                        if (achSubCmd === 'list') {
+                            logToCmd(achievements.map(a => `${a.id}: ${a.name} - ${a.description}`).join('\n'), 'help');
+                        } else if (achSubCmd === 'reset') {
+                            unlockedAchievements.clear();
+                            saveAchievements();
+                            renderAchievements();
+                            logToCmd('Resetowano osiągnięcia.', 'success');
+                            showMessage('Resetowano osiągnięcia.', false);
+                        } else if (achSubCmd === 'add') {
+                            const achId = achArgs[0];
+                            if (achievements.some(a => a.id === achId)) {
+                                unlockedAchievements.add(achId);
+                                saveAchievements();
+                                renderAchievements();
+                                logToCmd(`Dodano osiągnięcie ${achId}.`, 'success');
+                                showMessage(`Dodano osiągnięcie ${achId}.`, false);
+                            } else {
+                                logToCmd(`Nie znaleziono osiągnięcia ${achId}.`, 'error');
+                                showMessage(`Nie znaleziono osiągnięcia ${achId}.`, true);
+                            }
+                        } else {
+                            logToCmd('Użycie: achievements list|reset|add [id]', 'help');
+                        }
+                        break;
+                    case 'schedule':
+                        const time = args[0];
+                        const action = args[1];
+                        const value = args[2];
+                        if (!time.match(/^\d{2}:\d{2}$/) || !['add', 'set'].includes(action) || isNaN(parseInt(value))) {
+                            logToCmd('Użycie: schedule <HH:MM> <add|set> <value>', 'error');
+                            return;
+                        }
+                        scheduleTask(time, action, value);
+                        logToCmd(`Zaplanowano ${action} ${value} na ${time}.`, 'success');
+                        showMessage(`Zaplanowano akcję na ${time}.`, false);
+                        break;
+                    case 'clear':
+                        cmdOutput.innerHTML = '';
+                        logToCmd('Wyczyszczono terminal.', 'success');
+                        break;
+                    default:
+                        logToCmd(`Błąd: Nieznana komenda "${command}". Wpisz 'help'.`, 'error');
+                        showMessage(`Nieznana komenda: ${command}`, true);
+                }
+            };
+
+            cmdInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    executeCmd(cmdInput.value);
+                    cmdInput.value = '';
+                } else if (e.key === 'ArrowUp') {
+                    if (historyIndex < cmdHistory.length - 1) {
+                        historyIndex++;
+                        cmdInput.value = cmdHistory[historyIndex];
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    if (historyIndex > 0) {
+                        historyIndex--;
+                        cmdInput.value = cmdHistory[historyIndex];
+                    } else {
+                        historyIndex = -1;
+                        cmdInput.value = '';
+                    }
+                }
+            });
+
+            openSettingsBtn.addEventListener('click', () => toggleModal(settingsModal, true));
+            closeSettingsBtn.addEventListener('click', () => toggleModal(settingsModal, false));
+            openCmdBtn.addEventListener('click', () => toggleModal(cmdModal, true));
+            closeCmdBtn.addEventListener('click', () => toggleModal(cmdModal, false));
+
+            adhdToggle.addEventListener('change', e => {
+                adhdIntensity.disabled = !e.target.checked;
+                if (e.target.checked) {
+                    const intensity = appSettings.adhdIntensity;
+                    const scaleFactor = Math.log10(Math.max(intensity, 1)) / 10;
+                    adhdInterval = setInterval(updateButtonPositions, Math.max(50, 1000 - (scaleFactor * 950)));
+                    startColorFlashing();
+                    startChaoticBackground();
+                    if (appSettings.betaFeatures.hardcoreChaos) startHardcoreChaos();
+                    renderButtons();
+                } else {
+                    clearInterval(adhdInterval);
+                    clearInterval(colorInterval);
+                    clearInterval(backgroundInterval);
+                    document.querySelectorAll('.button').forEach(el => {
+                        el.style.transform = 'none';
+                        el.style.position = '';
+                        el.style.top = '';
+                        el.style.left = '';
+                    });
+                    document.body.style.animation = '';
+                    document.documentElement.style.setProperty('--bg-gradient', appSettings.isNewUI ? 'linear-gradient(135deg, #2c3e50, #4ca1af)' : 'linear-gradient(135deg, #f5f7fa, #c3cfe2)');
+                    renderButtons();
+                    stopColorFlashing();
+                    if (appSettings.betaFeatures.hardcoreChaos) stopHardcoreChaos();
+                }
+                checkAchievements();
+            });
+
+            glassToggle.addEventListener('change', () => {
+                appSettings.isGlassEffect = glassToggle.checked;
+                applySettings();
+                saveSettings();
+                showMessage(`Efekt szkła ${appSettings.isGlassEffect ? 'włączony' : 'wyłączony'}.`, false);
+            });
+
+            glassIntensity.addEventListener('input', () => {
+                appSettings.glassBlur = parseInt(glassIntensity.value, 10);
+                document.documentElement.style.setProperty('--glass-blur', `${appSettings.glassBlur}px`);
+            });
+
+            glassIntensity.addEventListener('change', () => {
+                saveSettings();
+                showMessage(`Intensywność rozmycia ustawiona na ${appSettings.glassBlur}px.`, false);
+            });
+
+            applySettings();
+            renderButtons();
+            updateEmoji();
+            renderAchievements();
+            if (appSettings.isAuto) {
+                autoToggle.checked = true;
+                autoToggle.dispatchEvent(new Event('change'));
+            }
+            if (appSettings.betaFeatures.randomEvents) startRandomEvents();
+            if (appSettings.betaFeatures.hardcoreChaos && adhdToggle.checked) startHardcoreChaos();
+            logToCmd("Wpisz 'help' aby zobaczyć listę dostępnych komend.", 'help');
+        });
+							</script>
+</body>
+
+</html>
