@@ -1,111 +1,255 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>Zegar AMOLED Friendly</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      background: #000; /* Pełna czerń */
-      color: #444;      /* Bardzo ciemna szarość */
-      font-family: 'Segoe UI', sans-serif;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      user-select: none;
-    }
-
-    h1 {
-      font-size: 8em;
-      font-weight: 700; /* Grubszy font */
-      letter-spacing: 0.05em;
-      margin: 0;
-      color: #444;
-    }
-
-    .date {
-      font-size: 1.4em;
-      color: #333; /* Jeszcze ciemniejsza szarość */
-      margin-top: 12px;
-      font-weight: 500;
-    }
-
-    .battery {
-      position: absolute;
-      bottom: 20px;
-      font-size: 1em;
-      color: #222;
-      text-align: center;
-      font-weight: 500;
-    }
-
-    .low {
-      color: #aa0000; /* Ciemnoczerwony zamiast jasnego */
-      font-weight: bold;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 4.5em;
-      }
-      .date {
-        font-size: 1.2em;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <h1 id="clock">--:--:--</h1>
-  <div class="date" id="date">Ładowanie daty...</div>
-  <div class="battery" id="battery" style="display: none;">
-    🔋 Bateria: --%
-    <div id="warning"></div>
-  </div>
-
-  <script>
-    function updateClock() {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('date').textContent = now.toLocaleDateString('pl-PL', options);
-    }
-
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // Obsługa poziomu baterii
-    if ('getBattery' in navigator) {
-      navigator.getBattery().then(battery => {
-        const batteryDiv = document.getElementById("battery");
-        const warning = document.getElementById("warning");
-
-        batteryDiv.style.display = "block";
-
-        function updateBattery() {
-          const level = Math.round(battery.level * 100);
-          batteryDiv.firstChild.textContent = `🔋 Bateria: ${level}%`;
-
-          if (level < 15) {
-            warning.innerHTML = '⚠️ <span class="low">UWAGA: Niski poziom baterii!</span>';
-          } else {
-            warning.innerHTML = '';
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⌚ Zegar AMOLED Friendly 🔵</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        updateBattery();
-        battery.addEventListener('levelchange', updateBattery);
-      });
-    }
-  </script>
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000; /* ✅ TRUE AMOLED BLACK */
+            color: #00ff88;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            /* 🔵 ULTRA SLOW JITTER: 1px max, very very slow */
+            animation: ultraSlowJitter 1s infinite steps(1);
+            image-rendering: pixelated;
+        }
+
+        /* 🔵 SIGNATURE ROUNDED CORNERS CONTAINER */
+        .clock-container {
+            background: rgba(0, 0, 0, 0.98);
+            border: 1px solid #00ff8833;
+            border-radius: 16px; /* 🔵 GANG CERTIFIED */
+            padding: 24px 32px;
+            box-shadow: 0 0 12px #00ff8822;
+            /* 🔵 Even slower container jitter */
+            animation: containerSlowJitter 1.2s infinite steps(1);
+        }
+
+        h1 {
+            font-size: 1rem;
+            color: #00cc66;
+            text-shadow: 0 0 4px #00ff8833;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+            animation: textSlowJitter 1.1s infinite steps(1);
+        }
+
+        #clock {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #00ff88;
+            text-shadow: 0 0 8px #00ff8844;
+            margin: 8px 0;
+            animation: clockSlowJitter 0.9s infinite steps(1);
+            -webkit-font-smoothing: none;
+            font-smooth: never;
+        }
+
+        #date {
+            font-size: 0.95rem;
+            color: #00aa55;
+            margin: 12px 0;
+            text-shadow: 0 0 4px #00aa5533;
+            animation: textSlowJitter 1.15s infinite steps(1);
+        }
+
+        #battery {
+            font-size: 0.9rem;
+            margin-top: 16px;
+            padding: 6px 14px;
+            background: rgba(0, 255, 136, 0.08);
+            border: 1px solid #00ff8833;
+            border-radius: 10px; /* 🔵 Rounded! */
+            display: inline-block;
+            transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+            animation: badgeSlowJitter 1.3s infinite steps(1);
+        }
+
+        /* 🔵 BATTERY COLOR CLASSES */
+        #battery.green {
+            color: #00ff88;
+            border-color: #00ff8855;
+            background: rgba(0, 255, 136, 0.12);
+            text-shadow: 0 0 6px #00ff8844;
+        }
+
+        #battery.yellow {
+            color: #ffcc00;
+            border-color: #ffcc0055;
+            background: rgba(255, 204, 0, 0.12);
+            text-shadow: 0 0 6px #ffcc0044;
+        }
+
+        #battery.red {
+            color: #ff4444;
+            border-color: #ff444455;
+            background: rgba(255, 68, 68, 0.12);
+            text-shadow: 0 0 6px #ff444444;
+        }
+
+        #battery.gray {
+            color: #666666;
+            border-color: #66666655;
+            background: rgba(102, 102, 102, 0.12);
+            text-shadow: none;
+        }
+
+        /* 🔵 ULTRA SLOW JITTER KEYFRAMES - ONLY 1px, VERY VERY SLOW */
+        @keyframes ultraSlowJitter {
+            0%   { transform: translate(0, 0); }
+            50%  { transform: translate(1px, 0); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes containerSlowJitter {
+            0%   { transform: translate(0, 0); }
+            50%  { transform: translate(0, 1px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes textSlowJitter {
+            0%   { transform: translate(0, 0); }
+            50%  { transform: translate(1px, 0); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes clockSlowJitter {
+            0%   { transform: translate(0, 0); }
+            50%  { transform: translate(1px, 0); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes badgeSlowJitter {
+            0%   { transform: translate(0, 0); }
+            50%  { transform: translate(1px, 0); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* 🔵 Footer - PERFECTLY CENTERED */
+        footer {
+            position: fixed;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            width: 100%;
+            text-align: center;
+            color: #005533;
+            font-size: 0.7rem;
+            text-shadow: 0 0 2px #00553333;
+            animation: textSlowJitter 1.4s infinite steps(1);
+        }
+
+        footer a {
+            color: #00ff88;
+            text-decoration: none;
+        }
+
+        /* 🔵 Mobile responsive */
+        @media (max-width: 480px) {
+            .clock-container {
+                padding: 18px 24px;
+                border-radius: 14px;
+            }
+            #clock { font-size: 2.8rem; }
+            #date { font-size: 0.9rem; }
+            #battery { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <h1>⌚ Zegar AMOLED Friendly 🔵</h1>
+        <div id="clock">--:--:--</div>
+        <div id="date">Ładowanie daty...</div>
+        <div id="battery" class="gray">🔋 Bateria: --%</div>
+    </div>
+
+    <!-- 🔵 PERFECTLY CENTERED FOOTER -->
+    <footer>
+        <a href="https://github.com/Hyundai-hydro/virus" target="_blank">HydraHydro Style</a> 
+        • #RoundedCornersGang 🔵
+    </footer>
+
+    <script>
+        // 🔵 BATTERY COLOR UPDATE FUNCTION
+        function updateBatteryColor(level) {
+            const batteryEl = document.getElementById('battery');
+            batteryEl.classList.remove('green', 'yellow', 'red', 'gray');
+            
+            if (level === null || level === undefined) {
+                batteryEl.classList.add('gray'); // N/A
+            } else if (level >= 51) {
+                batteryEl.classList.add('green'); // 51-100%
+            } else if (level >= 16) {
+                batteryEl.classList.add('yellow'); // 16-50%
+            } else if (level >= 1) {
+                batteryEl.classList.add('red'); // 1-15%
+            } else {
+                batteryEl.classList.add('gray'); // Fallback
+            }
+        }
+
+        // 🔵 CLOCK + BATTERY FUNCTIONALITY
+        function updateTime() {
+            const now = new Date();
+            
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('date').textContent = now.toLocaleDateString('pl-PL', options);
+            
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(battery => {
+                    const level = Math.round(battery.level * 100);
+                    const charging = battery.charging ? '⚡' : '';
+                    document.getElementById('battery').textContent = `🔋 Bateria: ${level}% ${charging}`;
+                    updateBatteryColor(level);
+                    
+                    battery.addEventListener('levelchange', () => {
+                        const newLevel = Math.round(battery.level * 100);
+                        const charging = battery.charging ? '⚡' : '';
+                        document.getElementById('battery').textContent = `🔋 Bateria: ${newLevel}% ${charging}`;
+                        updateBatteryColor(newLevel);
+                    });
+                }).catch(() => {
+                    document.getElementById('battery').textContent = '🔋 Bateria: N/A';
+                    updateBatteryColor(null);
+                });
+            } else {
+                document.getElementById('battery').textContent = '🔋 Bateria: N/A';
+                updateBatteryColor(null);
+            }
+            
+            requestAnimationFrame(updateTime);
+        }
+
+        updateTime();
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+    </script>
 </body>
 </html>
