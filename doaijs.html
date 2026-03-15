@@ -1,341 +1,492 @@
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>🔥 Firebugs Pro GUI 💀</title>
-	<style>
-		body {
-			margin: 0;
-			padding: 0;
-			font-family: 'Courier New', monospace;
-			background: linear-gradient(135deg, #0a0a0a, #1a001a, #0a0a0a);
-			background-size: 400% 400%;
-			animation: bgShift 12s ease infinite;
-			color: #fff;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 12px;
-		}
-
-		@keyframes bgShift {
-			0% {
-				background-position: 0% 50%;
-			}
-
-			50% {
-				background-position: 100% 50%;
-			}
-
-			100% {
-				background-position: 0% 50%;
-			}
-		}
-
-		main {
-			background: rgba(20, 20, 20, 0.85);
-			border: 2px solid #ff00ff55;
-			border-radius: 16px;
-			padding: 20px;
-			box-shadow: 0 0 24px #ff00ff55, inset 0 0 12px #ff004455;
-			max-width: 640px;
-			width: 90%;
-		}
-
-		h1 {
-			margin-top: 0;
-			font-size: 2.2rem;
-			color: #ff0044;
-			text-align: center;
-			text-shadow: 0 0 6px #ff0044, 0 0 12px #ff00ff, 0 0 24px #ff0044;
-			animation: flicker 2s infinite alternate;
-		}
-
-		@keyframes flicker {
-			0% {
-				opacity: 1;
-			}
-
-			45% {
-				opacity: 0.9;
-			}
-
-			50% {
-				opacity: 0.4;
-			}
-
-			55% {
-				opacity: 0.9;
-			}
-
-			100% {
-				opacity: 1;
-			}
-		}
-
-		#tabControls {
-			display: flex;
-			gap: 8px;
-			margin: 12px 0;
-			justify-content: center;
-		}
-
-		.tabBtn {
-			padding: 10px 16px;
-			background: linear-gradient(45deg, #ff0044, #ff00ff);
-			border: none;
-			border-radius: 8px;
-			color: #fff;
-			font-weight: bold;
-			cursor: pointer;
-			text-shadow: 0 0 6px #f0f;
-			transition: 0.3s;
-		}
-
-		.tabBtn:hover {
-			background: linear-gradient(45deg, #ff00ff, #ff0044);
-			box-shadow: 0 0 16px #f0f, 0 0 32px #ff0;
-		}
-
-		.tabBtn.active {
-			background: linear-gradient(45deg, #ff0, #f0f);
-			color: #000;
-			box-shadow: 0 0 16px #ff0, 0 0 32px #f0f;
-		}
-
-		input,
-		select {
-			padding: 10px;
-			border-radius: 8px;
-			border: 2px solid #ff0;
-			background: #111;
-			color: #fff;
-			width: 100%;
-			margin: 6px 0;
-			box-shadow: 0 0 12px #ff0;
-			transition: 0.3s;
-		}
-
-		input:focus {
-			outline: none;
-			border-color: #ff00ff;
-			box-shadow: 0 0 16px #ff00ff;
-		}
-
-		#controls {
-			display: flex;
-			gap: 12px;
-			flex-wrap: wrap;
-			justify-content: center;
-			margin: 12px 0;
-		}
-
-		button {
-			padding: 12px 24px;
-			border: none;
-			border-radius: 8px;
-			font-weight: bold;
-			cursor: pointer;
-			transition: 0.3s;
-			font-size: 1.1rem;
-		}
-
-		#playBtn {
-			background: linear-gradient(90deg, #00ff88, #00ffaa);
-			color: #000;
-			animation: pulse 1.5s infinite;
-		}
-
-		#stopBtn {
-			background: linear-gradient(90deg, #ff0044, #ff2200);
-			color: #fff;
-		}
-
-		@keyframes pulse {
-			0% {
-				box-shadow: 0 0 8px #00ff88;
-			}
-
-			50% {
-				box-shadow: 0 0 24px #00ffaa;
-			}
-
-			100% {
-				box-shadow: 0 0 8px #00ff88;
-			}
-		}
-
-		#container {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 6px;
-			justify-content: center;
-			max-height: 60vh;
-			overflow: auto;
-			padding: 8px;
-			width: 100%;
-			background: rgba(255, 255, 255, 0.02);
-			border-radius: 12px;
-			box-shadow: 0 0 12px #f0f inset;
-		}
-
-		iframe,
-		video,
-		audio {
-			border: 4px solid #ff0;
-			transform: rotate(calc(-20deg + 40deg * var(--r)));
-			animation: iframeFlash 0.12s infinite alternate;
-			object-fit: contain;
-		}
-
-		@keyframes iframeFlash {
-			0% {
-				filter: hue-rotate(0deg);
-				border-color: #ff0
-			}
-
-			50% {
-				filter: hue-rotate(180deg);
-				border-color: #f0f
-			}
-
-			100% {
-				filter: hue-rotate(360deg);
-				border-color: #ff0
-			}
-		}
-
-		#counter {
-			margin-top: 10px;
-			padding: 6px 12px;
-			border-radius: 8px;
-			background: rgba(255, 0, 80, 0.2);
-			border: 1px solid #ff0044;
-			font-weight: bold;
-			text-align: center;
-			text-shadow: 0 0 8px #ff0, 0 0 16px #f0f;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Firebugs Pro GUI 💀</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a001a, #0a0a0a);
+            background-size: 400% 400%;
+            animation: bgShift 12s ease infinite;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        main {
+            background: rgba(20, 20, 20, 0.9);
+            border: 2px solid #ff00ff55;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 0 24px #ff00ff55, inset 0 0 12px #ff004455;
+            max-width: 700px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-size: 2rem;
+            color: #ff0044;
+            text-align: center;
+            text-shadow: 0 0 8px #ff0044, 0 0 16px #ff00ff;
+            animation: flicker 2s infinite alternate;
+            margin-bottom: 20px;
+        }
+        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        
+        /* 🔵 YOUTUBE WARNING BOX */
+        .yt-warning {
+            background: rgba(255, 0, 68, 0.15);
+            border: 1px solid #ff0044;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-size: 0.85rem;
+            color: #ff6699;
+            text-align: center;
+            box-shadow: 0 0 12px #ff004433;
+        }
+        .yt-warning strong { color: #ff0044; }
+        
+        #tabControls { display: flex; gap: 10px; margin: 16px 0; justify-content: center; }
+        .tabBtn {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #ff0044, #ff00ff);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 0 0 4px #f0f;
+            transition: all 0.3s ease;
+        }
+        .tabBtn:hover { transform: scale(1.05); box-shadow: 0 0 20px #ff00ff; }
+        .tabBtn.active {
+            background: linear-gradient(45deg, #ff0, #f0f);
+            color: #000;
+            box-shadow: 0 0 24px #ff0, 0 0 32px #f0f;
+        }
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            color: #ff00ff;
+            font-weight: bold;
+            text-shadow: 0 0 4px #ff00ff;
+        }
+        input[type="text"], input[type="number"], input[type="file"], select {
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #ff0;
+            background: #111;
+            color: #fff;
+            width: 100%;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 0 12px #ff05;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ff00ff;
+            box-shadow: 0 0 20px #ff00ff;
+        }
+        #controls { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 20px 0; }
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+        #playBtn {
+            background: linear-gradient(90deg, #00ff88, #00ffaa);
+            color: #000;
+            animation: pulse 1.5s infinite;
+        }
+        #playBtn:hover { transform: scale(1.05); box-shadow: 0 0 24px #00ff88; }
+        #stopBtn {
+            background: linear-gradient(90deg, #ff0044, #ff2200);
+            color: #fff;
+        }
+        #stopBtn:hover { transform: scale(1.05); box-shadow: 0 0 24px #ff0044; }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 8px #00ff88; } 50% { box-shadow: 0 0 24px #00ffaa; } }
+        
+        #container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            max-height: 50vh;
+            overflow: auto;
+            padding: 12px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            box-shadow: 0 0 16px #f0f inset;
+            margin-top: 16px;
+        }
+        iframe, video, audio {
+            border: 3px solid #ff0;
+            border-radius: 8px;
+            animation: iframeFlash 0.15s infinite alternate;
+            object-fit: contain;
+            box-shadow: 0 0 12px #ff05;
+        }
+        @keyframes iframeFlash {
+            0% { filter: hue-rotate(0deg); border-color: #ff0; }
+            50% { filter: hue-rotate(180deg); border-color: #f0f; }
+            100% { filter: hue-rotate(360deg); border-color: #ff0; }
+        }
+        #counter {
+            margin-top: 16px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: rgba(255, 0, 80, 0.2);
+            border: 1px solid #ff0044;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 0 8px #ff0, 0 0 16px #f0f;
+        }
+        
+        /* 🔵 EULA MODAL */
+        #eulaModal, #customModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a001a, #0a0a0a);
+            border: 3px solid #ff00ff;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 40px #ff00ff;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .modal-content h2 { color: #ff0044; margin-bottom: 16px; text-shadow: 0 0 8px #ff0044; }
+        .modal-content p { color: #fff; margin: 12px 0; line-height: 1.4; }
+        .modal-content ul { text-align: left; margin: 16px 0; padding-left: 20px; }
+        .modal-content li { margin: 8px 0; color: #ff0; }
+        .modal-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
+        .modal-buttons button { 
+            padding: 12px 24px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            cursor: pointer;
+            border: none;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+        .modal-buttons button:hover { transform: scale(1.05); }
+        .btn-accept { background: linear-gradient(90deg, #00ff88, #00ffaa); color: #000; }
+        .btn-decline { background: linear-gradient(90deg, #ff0044, #ff2200); color: #fff; }
+        .btn-ok { background: linear-gradient(90deg, #ff0, #ff8800); color: #000; }
+        
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #888;
+            font-size: 0.8rem;
+            text-shadow: 0 0 4px #888;
+        }
+        footer a { color: #ff00ff; text-decoration: none; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(45deg, #ff0044, #ff00ff); border-radius: 4px; }
+        
+        /* 🔵 FORMAT BADGES */
+        .format-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin: 8px 0;
+        }
+        .badge {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ff0;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            color: #ff0;
+        }
+    </style>
 </head>
-
 <body>
-	<main>
-		<h1>🔥 Firebugs Pro GUI 💀</h1>
-		<div id="tabControls">
-			<button class="tabBtn active" data-tab="online">Online (YouTube)</button>
-			<button class="tabBtn" data-tab="offline">Offline (plik)</button>
-		</div>
-		<div id="onlineTab">
-			<label>Wpisz link z YouTube (opcjonalnie):</label>
-			<input id="ytLink" type="text" placeholder="https://www.youtube.com/watch?v=DoUW5ZkblTs">
+    <main>
+        <h1>🔥 Firebugs Pro GUI 💀</h1>
+        
+        <!-- 🔵 YOUTUBE WARNING -->
+        <div class="yt-warning">
+            <strong>⚠️ YouTube Autoplay Nie Działa</strong><br>
+            YouTube zmienił zasady: autoplay przez iframe wymaga interakcji użytkownika.<br>
+            💡 <strong>Rozwiązanie:</strong> Użyj trybu <em>Offline (plik)</em> poniżej ↓
+        </div>
+        
+        <div id="tabControls">
+            <button class="tabBtn active" data-tab="online">Online (YouTube)</button>
+            <button class="tabBtn" data-tab="offline">Offline (plik)</button>
+        </div>
+
+        <div id="onlineTab">
+            <label for="ytLink">📺 Wpisz link z YouTube (tylko podgląd):</label>
+            <input id="ytLink" type="text" placeholder="https://www.youtube.com/watch?v=..." disabled>
+            <p style="font-size:0.8rem;color:#888;text-align:center;margin-top:8px;">
+                🔒 YouTube blokuje autoplay w iframe. Kliknij link ręcznie lub użyj Offline ↓
+            </p>
+        </div>
+
+        <div id="offlineTab">
+            <label for="offlineFile">📁 Wybierz plik wideo lub audio:</label>
+            
+            <!-- 🔵 FORMAT BADGES -->
+            <div class="format-badges">
+                <span class="badge">🎬 MP4</span>
+                <span class="badge">🎬 WebM</span>
+                <span class="badge">🎬 OGV</span>
+                <span class="badge">🎵 MP3</span>
+                <span class="badge">🎵 WAV</span>
+                <span class="badge">🎵 OGG</span>
+                <span class="badge">🎵 FLAC</span>
+                <span class="badge">🎵 M4A</span>
+                <span class="badge">🎵 AAC</span>
+            </div>
+            
+            <input id="offlineFile" type="file" accept="video/mp4,video/webm,video/ogg,audio/mp3,audio/wav,audio/ogg,audio/flac,audio/m4a,audio/aac">
+            
+            <p style="font-size:0.8rem;color:#888;text-align:center;margin-top:8px;">
+                💡 Tip: Konwertuj MKV/AVI → MP4 przez <a href="https://cloudconvert.com/" target="_blank" style="color:#ff00ff">CloudConvert</a>
+            </p>
+        </div>
+
+        <label for="numInstances">🔢 Liczba instancji:</label>
+        <input id="numInstances" type="number" min="1" max="100" placeholder="np. 10" value="5">
+
+        <div id="controls">
+            <button id="playBtn">▶ START</button>
+            <button id="stopBtn">⛔ STOP</button>
+        </div>
+
+        <div id="container"></div>
+        <div id="counter"></div>
+
+        <footer>
+            <p>🎨 HydraHydro Style | <a href="https://github.com/Hyundai-hydro/virus" target="_blank">GitHub Repo</a></p>
+            <p>⚠️ Tylko własny sprzęt! #RoundedCornersGang 🔵</p>
+        </footer>
+    </main>
+
+    <!-- 🔵 EULA MODAL -->
+    <div id="eulaModal">
+        <div class="modal-content">
+            <h2>⚠️ Firebugs Pro - Ostrzeżenie</h2>
+            <p>Ten tool może obciążyć Twoją przeglądarkę!</p>
+            <ul>
+                <li>✅ Testuj TYLKO na własnym komputerze</li>
+                <li>✅ Nie przekraczaj 50 instancji</li>
+                <li>✅ Zamknij kartę jeśli lag</li>
+                <li>❌ Nie używaj na cudzym sprzęcie</li>
+                <li>❌ Nie wysyłaj osobom trzecim</li>
+            </ul>
+            <p style="color:#ff0;margin-top:12px;">Akceptujesz ryzyko?</p>
+            <div class="modal-buttons">
+                <button class="btn-accept" id="eulaAccept">✅ TAK</button>
+                <button class="btn-decline" id="eulaDecline">❌ NIE</button>
+            </div>
+        </div>
     </div>
-			<div id="offlineTab" style="display:none;">
-				<label>Wybierz plik wideo lub audio (mp4, mp3, wav):</label>
-				<input id="offlineFile" type="file" accept="video/*,audio/*">
+
+    <!-- 🔵 CUSTOM MODAL (zamiast alertów) -->
+    <div id="customModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">ℹ️ Informacja</h2>
+            <p id="modalMessage">Treść komunikatu...</p>
+            <div class="modal-buttons">
+                <button class="btn-ok" id="modalOk">OK</button>
+            </div>
+        </div>
     </div>
-				<label>Wpisz liczbę instancji:</label>
-				<input id="numInstances" type="text" placeholder="np. 10">
-				<div id="controls">
-					<button id="playBtn">▶ START</button>
-					<button id="stopBtn">⛔ STOP</button>
-				</div>
-				<div id="container"></div>
-				<div id="counter"></div>
-	</main>
-	<script>
-		const container = document.getElementById('container');
-    const counter = document.getElementById('counter');
-    const playBtn = document.getElementById('playBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const ytLinkInput = document.getElementById('ytLink');
-    const numInput = document.getElementById('numInstances');
-    const offlineFileInput = document.getElementById('offlineFile');
-    const onlineTab = document.getElementById('onlineTab');
-    const offlineTab = document.getElementById('offlineTab');
-    const tabButtons = document.querySelectorAll('.tabBtn');
-    let stopFlag = false;
-    let currentTab = 'online';
-    tabButtons.forEach(btn=>{
-      btn.onclick=()=>{
-        tabButtons.forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        currentTab=btn.dataset.tab;
-        onlineTab.style.display=currentTab==='online'?'block':'none';
-        offlineTab.style.display=currentTab==='offline'?'block':'none';
-      }
-    });
-    const RANDOM_IDS = ["DoUW5ZkblTs","dQw4w9WgXcQ","fJ9rUzIMcZQ","3JZ4pnNtyxQ","hTWKbfoikeg","eY52Zsg-KVI"];
-    function pickRandomId(){return RANDOM_IDS[Math.floor(Math.random()*RANDOM_IDS.length)];}
-    function ytToEmbed(url){
-      if(!url) return null;
-      try{
-				const u = new URL(url);
-				const v = u.searchParams.get('v');
-				if(v) return `https://www.youtube.com/embed/${v}?controls=1&autoplay=1`;
-				if(u.hostname.includes('youtu.be')){
-				const id = u.pathname.slice(1);
-				if(id) return `https://www.youtube.com/embed/${id}?controls=1&autoplay=1`;
-				}
-				return null;
-				}catch(e){return null;}
-				}
-				function getScaledSize(totalInstances){
-				let w = 220;
-				let h = 130;
-				if(totalInstances > 100n) {
-				const factor = 100n/totalInstances;
-				w = Math.max(40,Math.floor(Number(w)*factor));
-				h = Math.max(30,Math.floor(Number(h)*factor));
-				}
-				return {width:w,height:h};
-				}
-				async function createInstances(total, src, isVideo=false, isAudio=false){
-				container.innerHTML='';
-				stopFlag=false;
-				const cooldown=2;
-				let created=0n;
-				const {width,height}=getScaledSize(total);
-				for(let i=0n;i<total;i++){ if(stopFlag) break; let el; if(isVideo){ el=document.createElement('video'); el.src=src;
-					el.autoplay=true; el.loop=true; el.controls=true; el.width=width; el.height=height; }else if(isAudio){
-					el=document.createElement('audio'); el.src=src; el.autoplay=true; el.loop=true; el.controls=true; }else{
-					el=document.createElement('iframe'); el.src=src; el.allow='autoplay; encrypted-media' ; el.frameBorder=0;
-					el.allowFullscreen=true; el.width=width; el.height=height; } el.style.setProperty('--r',Math.random());
-					el.style.transform+=` rotate(${Math.random()*360}deg) scale(${0.5+Math.random()*1.5})`; container.appendChild(el);
-					created++; if(created%50n===0n) counter.textContent=`💀 Tworzenie... ${created.toString()} / ${total.toString()}
-					(CPU heating...)`; await new Promise(r=>setTimeout(r,cooldown));
-					}
-					if(!stopFlag) counter.textContent=`💀 Uruchomiono ${total.toString()} instancji 🔥🔥🔥`;
-					}
-					playBtn.onclick=()=>{
-					const totalStr=numInput.value||'0';
-					const total=BigInt(totalStr);
-					let src='';
-					let isVideo=false;
-					let isAudio=false;
-					if(currentTab==='online'){
-					src=ytToEmbed(ytLinkInput.value);
-					if(!src) src=`https://www.youtube.com/embed/${pickRandomId()}?controls=1&autoplay=1`;
-					}else{
-					const file=offlineFileInput.files[0];
-					if(file){
-					src=URL.createObjectURL(file);
-					if(file.type.startsWith('video')) isVideo=true;
-					if(file.type.startsWith('audio')) isAudio=true;
-					}else{
-					alert("💀 Wybierz plik offline!");
-					return;
-					}
-					}
-					createInstances(total,src,isVideo,isAudio);
-					}
-					stopBtn.onclick=()=>{
-					stopFlag=true;
-					container.innerHTML='';
-					counter.textContent='⛔ Zatrzymano!';
-					}
-					</script>
-					</body>
-				
-					</html>
+
+    <script>
+        const container = document.getElementById('container');
+        const counter = document.getElementById('counter');
+        const playBtn = document.getElementById('playBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const ytLinkInput = document.getElementById('ytLink');
+        const numInput = document.getElementById('numInstances');
+        const offlineFileInput = document.getElementById('offlineFile');
+        const onlineTab = document.getElementById('onlineTab');
+        const offlineTab = document.getElementById('offlineTab');
+        const tabButtons = document.querySelectorAll('.tabBtn');
+        const eulaModal = document.getElementById('eulaModal');
+        const customModal = document.getElementById('customModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalOk = document.getElementById('modalOk');
+        const eulaAccept = document.getElementById('eulaAccept');
+        const eulaDecline = document.getElementById('eulaDecline');
+
+        let stopFlag = false;
+        let isRunning = false;
+        let currentTab = 'online';
+        let pendingStart = null;
+        let modalCallback = null;
+
+        // 🔵 CUSTOM MODAL FUNCTION (zamiast alert/confirm)
+        function showModal(title, message, callback = null) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalCallback = callback;
+            customModal.style.display = 'flex';
+        }
+
+        function hideModal() {
+            customModal.style.display = 'none';
+            if (modalCallback) {
+                modalCallback();
+                modalCallback = null;
+            }
+        }
+
+        modalOk.onclick = hideModal;
+        customModal.onclick = (e) => { if (e.target === customModal) hideModal(); };
+
+        // 🔵 TAB SWITCHING
+        tabButtons.forEach(btn => {
+            btn.onclick = () => {
+                tabButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTab = btn.dataset.tab;
+                onlineTab.style.display = currentTab === 'online' ? 'block' : 'none';
+                offlineTab.style.display = currentTab === 'offline' ? 'block' : 'none';
+            };
+        });
+
+        // 🔵 SCALING
+        function getScaledSize(total) {
+            let w = 200, h = 120;
+            if (total > 50) {
+                const f = 50 / total;
+                w = Math.max(40, Math.floor(w * f));
+                h = Math.max(30, Math.floor(h * f));
+            }
+            return { width: w, height: h };
+        }
+
+        // 🔵 CREATE INSTANCES
+        async function createInstances(total, src, type = 'iframe') {
+            if (isRunning) { showModal('⚠️ Oops!', 'Już działa! Kliknij ⛔ STOP najpierw.'); return; }
+            isRunning = true;
+            container.innerHTML = '';
+            stopFlag = false;
+            let created = 0;
+            const { width, height } = getScaledSize(total);
+
+            try {
+                for (let i = 0; i < total; i++) {
+                    if (stopFlag) break;
+                    let el;
+                    
+                    if (type === 'video') {
+                        el = document.createElement('video');
+                        el.src = src; el.autoplay = true; el.loop = true; el.controls = true;
+                    } else if (type === 'audio') {
+                        el = document.createElement('audio');
+                        el.src = src; el.autoplay = true; el.loop = true; el.controls = true;
+                    } else {
+                        el = document.createElement('iframe');
+                        el.src = src;
+                        el.allow = 'autoplay; encrypted-media; picture-in-picture';
+                        el.frameBorder = 0; el.allowFullscreen = true;
+                    }
+                    
+                    el.width = width; el.height = height;
+                    el.style.borderRadius = '8px';
+                    el.style.setProperty('--r', Math.random());
+                    el.style.transform = `rotate(${Math.random()*360}deg) scale(${0.5+Math.random()*1.5})`;
+                    container.appendChild(el);
+                    created++;
+                    if (created % 20 === 0) counter.textContent = `💀 ${created}/${total}...`;
+                    await new Promise(r => setTimeout(r, 10));
+                }
+                if (!stopFlag) counter.textContent = `💀 Uruchomiono ${total} 🔥`;
+            } finally { isRunning = false; }
+        }
+
+        // 🔵 PLAY WITH EULA
+        playBtn.onclick = () => {
+            if (isRunning) { showModal('⚠️ Oops!', 'Już tworzę! Poczekaj lub kliknij ⛔ STOP'); return; }
+            const total = parseInt(numInput.value) || 0;
+            if (total <= 0) { showModal('⚠️ Ups!', 'Podaj liczbę większą niż 0!'); return; }
+            if (total > 50) {
+                showModal('⚠️ Ostrożnie!', `${total} instancji może zamrozić przeglądarkę! Czy na pewno kontynuować?`, () => {
+                    if (confirmed) startProcess(total);
+                });
+                return;
+            }
+            
+            pendingStart = { total };
+            eulaModal.style.display = 'flex';
+        };
+
+        let confirmed = false;
+        eulaAccept.onclick = () => {
+            eulaModal.style.display = 'none';
+            if (pendingStart) { confirmed = true; startProcess(pendingStart.total); }
+            pendingStart = null;
+        };
+        eulaDecline.onclick = () => { eulaModal.style.display = 'none'; pendingStart = null; counter.textContent = '❌ Anulowano'; };
+
+        // 🔵 START PROCESS
+        function startProcess(total) {
+            if (currentTab === 'online') {
+                showModal('ℹ️ YouTube Info', 'YouTube autoplay jest zablokowany przez politykę YouTube.\n\n💡 Użyj trybu "Offline (plik)" aby odtwarzać lokalne wideo/audio!');
+                counter.textContent = '⚠️ YouTube: użyj trybu Offline';
+                isRunning = false;
+                return;
+            }
+            
+            const file = offlineFileInput.files[0];
+            if (!file) { showModal('💀 Oops!', 'Wybierz plik offline najpierw!'); isRunning = false; return; }
+            
+            const src = URL.createObjectURL(file);
+            let type = 'iframe';
+            if (file.type.startsWith('video')) type = 'video';
+            else if (file.type.startsWith('audio')) type = 'audio';
+            
+            createInstances(total, src, type);
+        }
+
+        // 🔵 STOP
+        stopBtn.onclick = () => {
+            stopFlag = true; isRunning = false;
+            container.innerHTML = '';
+            counter.textContent = '⛔ Zatrzymano!';
+        };
+    </script>
+</body>
+</html>
