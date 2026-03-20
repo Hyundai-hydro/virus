@@ -3,490 +3,661 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔥 Firebugs Pro GUI 💀</title>
+    <title>🔥 Firebugs Pro GUI 💀 | #HydraHydroStyle</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #0a0a0a, #1a001a, #0a0a0a);
+            background: linear-gradient(135deg, #0a0a0a, #1a0a1a, #0a0a1a);
             background-size: 400% 400%;
             animation: bgShift 12s ease infinite;
             color: #fff;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
         }
+
         @keyframes bgShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        main {
-            background: rgba(20, 20, 20, 0.9);
-            border: 2px solid #ff00ff55;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 0 24px #ff00ff55, inset 0 0 12px #ff004455;
-            max-width: 700px;
+
+        .container {
+            background: rgba(10, 10, 10, 0.95);
+            border: 3px solid #ff00ff;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
             width: 100%;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px #ff00ff55, inset 0 0 20px #00ff8833;
+            animation: glow 3s ease-in-out infinite;
         }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 30px #ff00ff55, inset 0 0 20px #00ff8833; }
+            50% { box-shadow: 0 0 50px #ff00ff88, inset 0 0 30px #00ff8855; }
+        }
+
         h1 {
-            font-size: 2rem;
-            color: #ff0044;
             text-align: center;
-            text-shadow: 0 0 8px #ff0044, 0 0 16px #ff00ff;
-            animation: flicker 2s infinite alternate;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+            animation: textGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; }
+            50% { text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 60px #ff00ff; }
+        }
+
+        .warning-box {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff4444;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .warning-box ⚠️ {
+            color: #ff4444;
+            text-shadow: 0 0 8px #ff4444;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
         }
-        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        
-        /* 🔵 YOUTUBE WARNING BOX */
-        .yt-warning {
-            background: rgba(255, 0, 68, 0.15);
-            border: 1px solid #ff0044;
-            border-radius: 10px;
-            padding: 12px 16px;
-            margin: 12px 0;
-            font-size: 0.85rem;
-            color: #ff6699;
-            text-align: center;
-            box-shadow: 0 0 12px #ff004433;
-        }
-        .yt-warning strong { color: #ff0044; }
-        
-        #tabControls { display: flex; gap: 10px; margin: 16px 0; justify-content: center; }
-        .tabBtn {
+
+        .mode-btn {
+            flex: 1;
             padding: 12px 20px;
-            background: linear-gradient(45deg, #ff0044, #ff00ff);
             border: none;
-            border-radius: 10px;
-            color: #fff;
+            border-radius: 12px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            text-shadow: 0 0 4px #f0f;
             transition: all 0.3s ease;
         }
-        .tabBtn:hover { transform: scale(1.05); box-shadow: 0 0 20px #ff00ff; }
-        .tabBtn.active {
-            background: linear-gradient(45deg, #ff0, #f0f);
-            color: #000;
-            box-shadow: 0 0 24px #ff0, 0 0 32px #f0f;
-        }
-        label {
-            display: block;
-            margin: 12px 0 6px;
-            color: #ff00ff;
-            font-weight: bold;
-            text-shadow: 0 0 4px #ff00ff;
-        }
-        input[type="text"], input[type="number"], input[type="file"], select {
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px solid #ff0;
-            background: #111;
+
+        .mode-btn.online {
+            background: linear-gradient(45deg, #ff00ff, #ff8800);
             color: #fff;
+            box-shadow: 0 0 15px #ff00ff55;
+        }
+
+        .mode-btn.offline {
+            background: linear-gradient(45deg, #00ff88, #0088ff);
+            color: #000;
+            box-shadow: 0 0 15px #00ff8855;
+        }
+
+        .mode-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px currentColor;
+        }
+
+        .mode-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px currentColor;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .input-section label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00ff88;
+            text-shadow: 0 0 5px #00ff88;
+        }
+
+        .input-section input {
             width: 100%;
+            padding: 12px;
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            background: rgba(0, 255, 136, 0.1);
+            color: #fff;
             font-family: 'Courier New', monospace;
-            box-shadow: 0 0 12px #ff05;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
-        input:focus, select:focus {
+
+        .input-section input:focus {
             outline: none;
             border-color: #ff00ff;
-            box-shadow: 0 0 20px #ff00ff;
+            box-shadow: 0 0 15px #ff00ff55;
         }
-        #controls { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 20px 0; }
-        button {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            font-family: 'Courier New', monospace;
-        }
-        #playBtn {
-            background: linear-gradient(90deg, #00ff88, #00ffaa);
-            color: #000;
-            animation: pulse 1.5s infinite;
-        }
-        #playBtn:hover { transform: scale(1.05); box-shadow: 0 0 24px #00ff88; }
-        #stopBtn {
-            background: linear-gradient(90deg, #ff0044, #ff2200);
-            color: #fff;
-        }
-        #stopBtn:hover { transform: scale(1.05); box-shadow: 0 0 24px #ff0044; }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 8px #00ff88; } 50% { box-shadow: 0 0 24px #00ffaa; } }
-        
-        #container {
+
+        .file-types {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            justify-content: center;
-            max-height: 50vh;
-            overflow: auto;
-            padding: 12px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            box-shadow: 0 0 16px #f0f inset;
-            margin-top: 16px;
+            margin-bottom: 15px;
         }
-        iframe, video, audio {
-            border: 3px solid #ff0;
+
+        .file-type-btn {
+            padding: 8px 12px;
+            border: 2px solid #ff00ff;
             border-radius: 8px;
-            animation: iframeFlash 0.15s infinite alternate;
-            object-fit: contain;
-            box-shadow: 0 0 12px #ff05;
+            background: rgba(255, 0, 255, 0.1);
+            color: #ff00ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
-        @keyframes iframeFlash {
-            0% { filter: hue-rotate(0deg); border-color: #ff0; }
-            50% { filter: hue-rotate(180deg); border-color: #f0f; }
-            100% { filter: hue-rotate(360deg); border-color: #ff0; }
+
+        .file-type-btn:hover {
+            background: #ff00ff;
+            color: #fff;
+            box-shadow: 0 0 15px #ff00ff;
         }
-        #counter {
-            margin-top: 16px;
-            padding: 10px 16px;
-            border-radius: 10px;
-            background: rgba(255, 0, 80, 0.2);
-            border: 1px solid #ff0044;
-            font-weight: bold;
+
+        .file-type-btn.audio {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+        }
+
+        .file-type-btn.audio:hover {
+            background: #00ff88;
+            color: #000;
+            box-shadow: 0 0 15px #00ff88;
+        }
+
+        .file-input-container {
+            margin-bottom: 20px;
+        }
+
+        .file-input-container input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #00ff88;
+            border-radius: 12px;
+            background: rgba(0, 255, 136, 0.05);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .instance-counter {
+            margin-bottom: 20px;
+        }
+
+        .instance-counter input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ff00ff;
+            border-radius: 12px;
+            background: rgba(255, 0, 255, 0.1);
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
             text-align: center;
-            text-shadow: 0 0 8px #ff0, 0 0 16px #f0f;
         }
-        
-        /* 🔵 EULA MODAL */
-        #eulaModal, #customModal {
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.start {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            color: #000;
+            box-shadow: 0 0 20px #00ff8855;
+        }
+
+        .action-btn.stop {
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+            color: #fff;
+            box-shadow: 0 0 20px #ff444455;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px currentColor;
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff00ff, #00ff88);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px solid #ff00ff55;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #00ff88;
+            text-decoration: none;
+            text-shadow: 0 0 5px #00ff88;
+        }
+
+        .footer a:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
+        }
+
+        .hashtag {
+            color: #0088ff;
+            text-shadow: 0 0 5px #0088ff;
+            font-weight: bold;
+        }
+
+        /* Modal Styles */
+        .modal {
             display: none;
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s ease;
+            z-index: 1000;
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
+
         .modal-content {
-            background: linear-gradient(135deg, #1a001a, #0a0a0a);
+            background: linear-gradient(135deg, #1a0a1a, #0a0a1a);
             border: 3px solid #ff00ff;
             border-radius: 20px;
             padding: 30px;
             max-width: 500px;
             width: 90%;
-            box-shadow: 0 0 40px #ff00ff;
-            text-align: center;
-            animation: slideIn 0.3s ease;
+            box-shadow: 0 0 50px #ff00ff55;
+            animation: modalGlow 2s ease-in-out infinite;
         }
-        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .modal-content h2 { color: #ff0044; margin-bottom: 16px; text-shadow: 0 0 8px #ff0044; }
-        .modal-content p { color: #fff; margin: 12px 0; line-height: 1.4; }
-        .modal-content ul { text-align: left; margin: 16px 0; padding-left: 20px; }
-        .modal-content li { margin: 8px 0; color: #ff0; }
-        .modal-buttons { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
-        .modal-buttons button { 
-            padding: 12px 24px; 
-            border-radius: 10px; 
-            font-weight: bold; 
-            cursor: pointer;
+
+        @keyframes modalGlow {
+            0%, 100% { box-shadow: 0 0 50px #ff00ff55; }
+            50% { box-shadow: 0 0 80px #ff00ff88; }
+        }
+
+        .modal h2 {
+            text-align: center;
+            color: #ff4444;
+            text-shadow: 0 0 10px #ff4444;
+            margin-bottom: 20px;
+        }
+
+        .modal ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .modal li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ff00ff33;
+        }
+
+        .modal li::before {
+            content: "✅ ";
+        }
+
+        .modal li.danger::before {
+            content: "❌ ";
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
             border: none;
-            font-family: 'Courier New', monospace;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
-        .modal-buttons button:hover { transform: scale(1.05); }
-        .btn-accept { background: linear-gradient(90deg, #00ff88, #00ffaa); color: #000; }
-        .btn-decline { background: linear-gradient(90deg, #ff0044, #ff2200); color: #fff; }
-        .btn-ok { background: linear-gradient(90deg, #ff0, #ff8800); color: #000; }
-        
-        footer {
-            margin-top: 20px;
-            text-align: center;
-            color: #888;
-            font-size: 0.8rem;
-            text-shadow: 0 0 4px #888;
+
+        .modal-btn.yes {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            color: #000;
         }
-        footer a { color: #ff00ff; text-decoration: none; }
-        
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(45deg, #ff0044, #ff00ff); border-radius: 4px; }
-        
-        /* 🔵 FORMAT BADGES */
-        .format-badges {
+
+        .modal-btn.no {
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+            color: #fff;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px currentColor;
+        }
+
+        /* Instance Display Area */
+        .instance-display {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            padding: 15px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .instance-item {
+            background: rgba(255, 0, 255, 0.1);
+            border: 1px solid #ff00ff55;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            justify-content: center;
-            margin: 8px 0;
+            justify-content: space-between;
+            align-items: center;
         }
-        .badge {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #ff0;
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 0.75rem;
-            color: #ff0;
+
+        .instance-item audio {
+            width: 200px;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff00ff;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff88;
         }
     </style>
 </head>
 <body>
-    <main>
+    <div class="container">
         <h1>🔥 Firebugs Pro GUI 💀</h1>
         
-        <!-- 🔵 YOUTUBE WARNING -->
-        <div class="yt-warning">
-            <strong>⚠️ YouTube Autoplay Nie Działa</strong><br>
-            YouTube zmienił zasady: autoplay przez iframe wymaga interakcji użytkownika.<br>
-            💡 <strong>Rozwiązanie:</strong> Użyj trybu <em>Offline (plik)</em> poniżej ↓
-        </div>
-        
-        <div id="tabControls">
-            <button class="tabBtn active" data-tab="online">Online (YouTube)</button>
-            <button class="tabBtn" data-tab="offline">Offline (plik)</button>
+        <div class="warning-box">
+            <p>⚠️ <strong>YouTube Autoplay Nie Działa</strong></p>
+            <p style="font-size: 0.9rem; margin-top: 5px;">
+                YouTube zmienił zasady: autoplay przez iframe wymaga interakcji użytkownika.<br>
+                💡 <strong>Rozwiązanie:</strong> Użyj trybu Offline (plik) poniżej ↓
+            </p>
         </div>
 
-        <div id="onlineTab">
-            <label for="ytLink">📺 Wpisz link z YouTube (tylko podgląd):</label>
-            <input id="ytLink" type="text" placeholder="https://www.youtube.com/watch?v=..." disabled>
-            <p style="font-size:0.8rem;color:#888;text-align:center;margin-top:8px;">
+        <div class="mode-buttons">
+            <button class="mode-btn online" onclick="setMode('online')">Online (YouTube)</button>
+            <button class="mode-btn offline active" onclick="setMode('offline')">Offline (plik)</button>
+        </div>
+
+        <div class="input-section" id="youtube-section" style="display: none;">
+            <label>📺 Wpisz link z YouTube (tylko podgląd):</label>
+            <input type="text" placeholder="https://www.youtube.com/watch?v=..." id="youtube-link">
+            <p style="font-size: 0.8rem; color: #ff4444; margin-top: 5px;">
                 🔒 YouTube blokuje autoplay w iframe. Kliknij link ręcznie lub użyj Offline ↓
             </p>
         </div>
 
-        <div id="offlineTab">
-            <label for="offlineFile">📁 Wybierz plik wideo lub audio:</label>
-            
-            <!-- 🔵 FORMAT BADGES -->
-            <div class="format-badges">
-                <span class="badge">🎬 MP4</span>
-                <span class="badge">🎬 WebM</span>
-                <span class="badge">🎬 OGV</span>
-                <span class="badge">🎵 MP3</span>
-                <span class="badge">🎵 WAV</span>
-                <span class="badge">🎵 OGG</span>
-                <span class="badge">🎵 FLAC</span>
-                <span class="badge">🎵 M4A</span>
-                <span class="badge">🎵 AAC</span>
+        <div class="input-section" id="offline-section">
+            <label>📁 Wybierz plik wideo lub audio:</label>
+            <div class="file-types">
+                <button class="file-type-btn">🎬 MP4</button>
+                <button class="file-type-btn">🎬 WebM</button>
+                <button class="file-type-btn">🎬 OGV</button>
+                <button class="file-type-btn audio">🎵 MP3</button>
+                <button class="file-type-btn audio">🎵 WAV</button>
+                <button class="file-type-btn audio">🎵 OGG</button>
+                <button class="file-type-btn audio">🎵 FLAC</button>
+                <button class="file-type-btn audio">🎵 M4A</button>
+                <button class="file-type-btn audio">🎵 AAC</button>
             </div>
-            
-            <input id="offlineFile" type="file" accept="video/mp4,video/webm,video/ogg,audio/mp3,audio/wav,audio/ogg,audio/flac,audio/m4a,audio/aac">
-            
-            <p style="font-size:0.8rem;color:#888;text-align:center;margin-top:8px;">
-                💡 Tip: Konwertuj MKV/AVI → MP4 przez <a href="https://cloudconvert.com/" target="_blank" style="color:#ff00ff">CloudConvert</a>
-            </p>
+            <div class="file-input-container">
+                <input type="file" id="file-input" accept="video/*,audio/*" multiple>
+                <p style="font-size: 0.8rem; color: #00ff88; margin-top: 5px;">
+                    💡 <strong>Tip:</strong> Konwertuj MKV/AVI → MP4 przez <a href="https://cloudconvert.com/" target="_blank" style="color: #ff00ff;">CloudConvert</a>
+                </p>
+            </div>
         </div>
 
-        <label for="numInstances">🔢 Liczba instancji:</label>
-        <input id="numInstances" type="number" min="1" max="100" placeholder="np. 10" value="5">
-
-        <div id="controls">
-            <button id="playBtn">▶ START</button>
-            <button id="stopBtn">⛔ STOP</button>
+        <div class="instance-counter">
+            <label>🔢 Liczba instancji:</label>
+            <input type="number" id="instance-count" placeholder="np. 10" min="1" max="10000">
         </div>
 
-        <div id="container"></div>
-        <div id="counter"></div>
+        <div class="action-buttons">
+            <button class="action-btn start" onclick="startInstances()">▶ START</button>
+            <button class="action-btn stop" onclick="stopInstances()">⛔ STOP</button>
+        </div>
 
-        <footer>
-            <p>🎨 HydraHydro Style | <a href="https://github.com/Hyundai-hydro/virus" target="_blank">GitHub Repo</a></p>
-            <p>⚠️ Tylko własny sprzęt! #RoundedCornersGang 🔵</p>
-        </footer>
-    </main>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p style="text-align: center; font-size: 0.9rem;" id="progress-text">0 / 0</p>
+        </div>
 
-    <!-- 🔵 EULA MODAL -->
-    <div id="eulaModal">
+        <div class="instance-display" id="instance-display">
+            <p style="text-align: center; color: #888;">Instancje pojawią się tutaj...</p>
+        </div>
+
+        <div class="footer">
+            <p>🎨 <strong>#HydraHydroStyle</strong> | <a href="https://github.com/Hyundai-hydro/virus" target="_blank">GitHub Repo</a></p>
+            <p style="margin-top: 5px;">⚠️ Tylko własny sprzęt! <span class="hashtag">#RoundedCornersGang 🔵</span></p>
+        </div>
+    </div>
+
+    <!-- Warning Modal -->
+    <div class="modal" id="warning-modal">
         <div class="modal-content">
             <h2>⚠️ Firebugs Pro - Ostrzeżenie</h2>
-            <p>Ten tool może obciążyć Twoją przeglądarkę!</p>
+            <p style="text-align: center; margin-bottom: 15px;">Ten tool może obciążyć Twoją przeglądarkę!</p>
             <ul>
-                <li>✅ Testuj TYLKO na własnym komputerze</li>
-                <li>✅ Nie przekraczaj 50 instancji</li>
-                <li>✅ Zamknij kartę jeśli lag</li>
-                <li>❌ Nie używaj na cudzym sprzęcie</li>
-                <li>❌ Nie wysyłaj osobom trzecim</li>
+                <li>Testuj TYLKO na własnym komputerze</li>
+                <li>Nie przekraczaj 50 instancji</li>
+                <li>Zamknij kartę jeśli lag</li>
+                <li class="danger">Nie używaj na cudzym sprzęcie</li>
+                <li class="danger">Nie wysyłaj osobom trzecim</li>
             </ul>
-            <p style="color:#ff0;margin-top:12px;">Akceptujesz ryzyko?</p>
+            <p style="text-align: center; margin-bottom: 15px;"><strong>Akceptujesz ryzyko?</strong></p>
             <div class="modal-buttons">
-                <button class="btn-accept" id="eulaAccept">✅ TAK</button>
-                <button class="btn-decline" id="eulaDecline">❌ NIE</button>
+                <button class="modal-btn yes" onclick="acceptRisk()">✅ TAK</button>
+                <button class="modal-btn no" onclick="declineRisk()">❌ NIE</button>
             </div>
         </div>
     </div>
 
-    <!-- 🔵 CUSTOM MODAL (zamiast alertów) -->
-    <div id="customModal">
+    <!-- Info Modal -->
+    <div class="modal" id="info-modal">
         <div class="modal-content">
-            <h2 id="modalTitle">ℹ️ Informacja</h2>
-            <p id="modalMessage">Treść komunikatu...</p>
-            <div class="modal-buttons">
-                <button class="btn-ok" id="modalOk">OK</button>
+            <h2>ℹ️ Informacja</h2>
+            <p id="info-message" style="text-align: center;"></p>
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button class="modal-btn yes" onclick="closeInfoModal()">OK</button>
             </div>
         </div>
     </div>
 
     <script>
-        const container = document.getElementById('container');
-        const counter = document.getElementById('counter');
-        const playBtn = document.getElementById('playBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const ytLinkInput = document.getElementById('ytLink');
-        const numInput = document.getElementById('numInstances');
-        const offlineFileInput = document.getElementById('offlineFile');
-        const onlineTab = document.getElementById('onlineTab');
-        const offlineTab = document.getElementById('offlineTab');
-        const tabButtons = document.querySelectorAll('.tabBtn');
-        const eulaModal = document.getElementById('eulaModal');
-        const customModal = document.getElementById('customModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
-        const modalOk = document.getElementById('modalOk');
-        const eulaAccept = document.getElementById('eulaAccept');
-        const eulaDecline = document.getElementById('eulaDecline');
-
-        let stopFlag = false;
+        let riskAccepted = false;
+        let instances = [];
         let isRunning = false;
-        let currentTab = 'online';
-        let pendingStart = null;
-        let modalCallback = null;
 
-        // 🔵 CUSTOM MODAL FUNCTION (zamiast alert/confirm)
-        function showModal(title, message, callback = null) {
-            modalTitle.textContent = title;
-            modalMessage.textContent = message;
-            modalCallback = callback;
-            customModal.style.display = 'flex';
-        }
+        // Show warning modal on load
+        window.onload = function() {
+            document.getElementById('warning-modal').style.display = 'flex';
+        };
 
-        function hideModal() {
-            customModal.style.display = 'none';
-            if (modalCallback) {
-                modalCallback();
-                modalCallback = null;
+        function setMode(mode) {
+            const onlineBtn = document.querySelector('.mode-btn.online');
+            const offlineBtn = document.querySelector('.mode-btn.offline');
+            const youtubeSection = document.getElementById('youtube-section');
+            const offlineSection = document.getElementById('offline-section');
+
+            if (mode === 'online') {
+                onlineBtn.classList.add('active');
+                offlineBtn.classList.remove('active');
+                youtubeSection.style.display = 'block';
+                offlineSection.style.display = 'none';
+            } else {
+                offlineBtn.classList.add('active');
+                onlineBtn.classList.remove('active');
+                youtubeSection.style.display = 'none';
+                offlineSection.style.display = 'block';
             }
         }
 
-        modalOk.onclick = hideModal;
-        customModal.onclick = (e) => { if (e.target === customModal) hideModal(); };
-
-        // 🔵 TAB SWITCHING
-        tabButtons.forEach(btn => {
-            btn.onclick = () => {
-                tabButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentTab = btn.dataset.tab;
-                onlineTab.style.display = currentTab === 'online' ? 'block' : 'none';
-                offlineTab.style.display = currentTab === 'offline' ? 'block' : 'none';
-            };
-        });
-
-        // 🔵 SCALING
-        function getScaledSize(total) {
-            let w = 200, h = 120;
-            if (total > 50) {
-                const f = 50 / total;
-                w = Math.max(40, Math.floor(w * f));
-                h = Math.max(30, Math.floor(h * f));
-            }
-            return { width: w, height: h };
+        function acceptRisk() {
+            riskAccepted = true;
+            document.getElementById('warning-modal').style.display = 'none';
         }
 
-        // 🔵 CREATE INSTANCES
-        async function createInstances(total, src, type = 'iframe') {
-            if (isRunning) { showModal('⚠️ Oops!', 'Już działa! Kliknij ⛔ STOP najpierw.'); return; }
-            isRunning = true;
-            container.innerHTML = '';
-            stopFlag = false;
-            let created = 0;
-            const { width, height } = getScaledSize(total);
+        function declineRisk() {
+            riskAccepted = false;
+            document.getElementById('warning-modal').style.display = 'none';
+            showInfoModal('Musisz zaakceptować ryzyko aby korzystać z tego narzędzia.');
+        }
 
-            try {
-                for (let i = 0; i < total; i++) {
-                    if (stopFlag) break;
-                    let el;
-                    
-                    if (type === 'video') {
-                        el = document.createElement('video');
-                        el.src = src; el.autoplay = true; el.loop = true; el.controls = true;
-                    } else if (type === 'audio') {
-                        el = document.createElement('audio');
-                        el.src = src; el.autoplay = true; el.loop = true; el.controls = true;
-                    } else {
-                        el = document.createElement('iframe');
-                        el.src = src;
-                        el.allow = 'autoplay; encrypted-media; picture-in-picture';
-                        el.frameBorder = 0; el.allowFullscreen = true;
-                    }
-                    
-                    el.width = width; el.height = height;
-                    el.style.borderRadius = '8px';
-                    el.style.setProperty('--r', Math.random());
-                    el.style.transform = `rotate(${Math.random()*360}deg) scale(${0.5+Math.random()*1.5})`;
-                    container.appendChild(el);
-                    created++;
-                    if (created % 20 === 0) counter.textContent = `💀 ${created}/${total}...`;
-                    await new Promise(r => setTimeout(r, 10));
+        function showInfoModal(message) {
+            document.getElementById('info-message').textContent = message;
+            document.getElementById('info-modal').style.display = 'flex';
+        }
+
+        function closeInfoModal() {
+            document.getElementById('info-modal').style.display = 'none';
+        }
+
+        function startInstances() {
+            if (!riskAccepted) {
+                showInfoModal('Najpierw zaakceptuj ryzyko!');
+                return;
+            }
+
+            const count = parseInt(document.getElementById('instance-count').value) || 1;
+            const fileInput = document.getElementById('file-input');
+            const files = fileInput.files;
+
+            if (files.length === 0) {
+                showInfoModal('Wybierz przynajmniej jeden plik!');
+                return;
+            }
+
+            if (count > 50) {
+                if (!confirm(`${count} instancji może zamrozić przeglądarkę! Czy na pewno kontynuować?`)) {
+                    return;
                 }
-                if (!stopFlag) counter.textContent = `💀 Uruchomiono ${total} 🔥`;
-            } finally { isRunning = false; }
+            }
+
+            isRunning = true;
+            instances = [];
+            const display = document.getElementById('instance-display');
+            display.innerHTML = '';
+
+            let created = 0;
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+
+            const interval = setInterval(() => {
+                if (created >= count || !isRunning) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                const file = files[created % files.length];
+                const url = URL.createObjectURL(file);
+                
+                const instanceDiv = document.createElement('div');
+                instanceDiv.className = 'instance-item';
+                
+                const audio = document.createElement('audio');
+                audio.controls = true;
+                audio.src = url;
+                audio.play().catch(e => console.log('Autoplay blocked:', e));
+                
+                const stopBtn = document.createElement('button');
+                stopBtn.textContent = '⛔';
+                stopBtn.style.cssText = 'background: #ff4444; color: #fff; border: none; border-radius: 8px; padding: 5px 10px; cursor: pointer;';
+                stopBtn.onclick = () => {
+                    audio.pause();
+                    instanceDiv.remove();
+                };
+
+                instanceDiv.appendChild(audio);
+                instanceDiv.appendChild(stopBtn);
+                display.appendChild(instanceDiv);
+                instances.push({ audio, div: instanceDiv });
+
+                created++;
+                progressFill.style.width = `${(created / count) * 100}%`;
+                progressText.textContent = `${created} / ${count}`;
+            }, 100);
         }
 
-        // 🔵 PLAY WITH EULA
-        playBtn.onclick = () => {
-            if (isRunning) { showModal('⚠️ Oops!', 'Już tworzę! Poczekaj lub kliknij ⛔ STOP'); return; }
-            const total = parseInt(numInput.value) || 0;
-            if (total <= 0) { showModal('⚠️ Ups!', 'Podaj liczbę większą niż 0!'); return; }
-            if (total > 50) {
-                showModal('⚠️ Ostrożnie!', `${total} instancji może zamrozić przeglądarkę! Czy na pewno kontynuować?`, () => {
-                    if (confirmed) startProcess(total);
-                });
-                return;
-            }
-            
-            pendingStart = { total };
-            eulaModal.style.display = 'flex';
-        };
-
-        let confirmed = false;
-        eulaAccept.onclick = () => {
-            eulaModal.style.display = 'none';
-            if (pendingStart) { confirmed = true; startProcess(pendingStart.total); }
-            pendingStart = null;
-        };
-        eulaDecline.onclick = () => { eulaModal.style.display = 'none'; pendingStart = null; counter.textContent = '❌ Anulowano'; };
-
-        // 🔵 START PROCESS
-        function startProcess(total) {
-            if (currentTab === 'online') {
-                showModal('ℹ️ YouTube Info', 'YouTube autoplay jest zablokowany przez politykę YouTube.\n\n💡 Użyj trybu "Offline (plik)" aby odtwarzać lokalne wideo/audio!');
-                counter.textContent = '⚠️ YouTube: użyj trybu Offline';
-                isRunning = false;
-                return;
-            }
-            
-            const file = offlineFileInput.files[0];
-            if (!file) { showModal('💀 Oops!', 'Wybierz plik offline najpierw!'); isRunning = false; return; }
-            
-            const src = URL.createObjectURL(file);
-            let type = 'iframe';
-            if (file.type.startsWith('video')) type = 'video';
-            else if (file.type.startsWith('audio')) type = 'audio';
-            
-            createInstances(total, src, type);
+        function stopInstances() {
+            isRunning = false;
+            instances.forEach(inst => {
+                inst.audio.pause();
+                inst.div.remove();
+            });
+            instances = [];
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0 / 0';
+            document.getElementById('instance-display').innerHTML = '<p style="text-align: center; color: #888;">Wszystkie instancje zatrzymane.</p>';
         }
 
-        // 🔵 STOP
-        stopBtn.onclick = () => {
-            stopFlag = true; isRunning = false;
-            container.innerHTML = '';
-            counter.textContent = '⛔ Zatrzymano!';
-        };
+        // File type button styling
+        document.querySelectorAll('.file-type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.file-type-btn').forEach(b => b.style.opacity = '0.5');
+                this.style.opacity = '1';
+            });
+        });
     </script>
 </body>
 </html>
