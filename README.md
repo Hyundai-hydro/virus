@@ -193,7 +193,7 @@ Używaj na własną odpowiedzialność. Tylko do celów edukacyjnych i rozrywkow
 Check out the epic guitar solo at 4:55 in Low Quality Music videos! 🎸
 
 ---
-[![Version](https://img.shields.io/badge/version-3.0-ff00ff?style=flat-square)](https://github.com/Hyundai-hydro/virus/releases)
+[![Version](https://img.shields.io/badge/version-1.3.0-ff00ff?style=flat-square)](https://github.com/Hyundai-hydro/virus/releases)
 [![RoundedCorners](https://img.shields.io/badge/style-RoundedCornersGang-00ffff?style=flat-square)](#-design)
 
 ---
