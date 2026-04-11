@@ -57,7 +57,7 @@ Sub ShowNetworkMenu
                "1. Narzedzia Sieciowe (IP/Ping/Reset)" & vbCrLf & _
                "2. Pokaz Hasla WiFi" & vbCrLf & _
                "3. Menadzer Defendera" & vbCrLf & _
-               "4. Test Opóźnienia Sieci (20x ping)" & vbCrLf & _
+               "4. Test Opoznienia Sieci (20x ping)" & vbCrLf & _
                "5. Sprawdz Otwarte Porty" & vbCrLf & _
                "6. Wroc do glownego menu" & vbCrLf & SEP
         wyb = InputBox(menu, "Siec", "1")
