@@ -1,9 +1,10 @@
 Set shell = CreateObject("WScript.Shell")
 Set fso = CreateObject("Scripting.FileSystemObject")
-Dim TITLE : TITLE = "VM COMMANDER v7.0 [ASCII PL]"
+Dim TITLE : TITLE = "VM COMMANDER v9.0 [STABLE]"
 Dim SEP : SEP = String(48, "=")
 Randomize
 
+' ===== GLÓWNA PĘTLA =====
 Do
     mainMenu = SEP & vbCrLf & _
                "        " & TITLE & vbCrLf & SEP & vbCrLf & _
@@ -27,16 +28,16 @@ Loop
 MsgBox "Do zobaczenia!", vbInformation, "Wyjscie"
 WScript.Quit
 
-' ===== ZAKLADKI =====
+' ===== ZAKŁADKI =====
 
 Sub ShowSystemMenu
     Do
         menu = SEP & vbCrLf & "ZAKLADKA: SYSTEM" & vbCrLf & SEP & vbCrLf & _
                "1. Menedzer Zadan" & vbCrLf & _
-               "2. Tryb Gracza (Zabija tlo)" & vbCrLf & _
+               "2. Tryb Gracza" & vbCrLf & _
                "3. Oczyszczanie Systemu" & vbCrLf & _
                "4. Monitor Zasobow (CPU/RAM/Dysk)" & vbCrLf & _
-               "5. Informacje o Sprzecie" & vbCrLf & _
+               "5. Lista Procesow" & vbCrLf & _
                "6. Wroc do glownego menu" & vbCrLf & SEP
         wyb = InputBox(menu, "System", "1")
         If wyb = "" Or wyb = "6" Then Exit Do
@@ -45,7 +46,7 @@ Sub ShowSystemMenu
             Case "2" : RunGamerMode
             Case "3" : RunCleaner
             Case "4" : RunResourceMonitor
-            Case "5" : RunHardwareInfo
+            Case "5" : RunProcessList
             Case Else : MsgBox "Nieprawidlowy wybor.", vbExclamation, "Blad"
         End Select
     Loop
@@ -54,20 +55,22 @@ End Sub
 Sub ShowNetworkMenu
     Do
         menu = SEP & vbCrLf & "ZAKLADKA: SIEC" & vbCrLf & SEP & vbCrLf & _
-               "1. Narzedzia Sieciowe (IP/Ping/Reset)" & vbCrLf & _
-               "2. Pokaz Hasla WiFi" & vbCrLf & _
-               "3. Menadzer Defendera" & vbCrLf & _
-               "4. Test Opoznienia Sieci (20x ping)" & vbCrLf & _
-               "5. Sprawdz Otwarte Porty" & vbCrLf & _
-               "6. Wroc do glownego menu" & vbCrLf & SEP
+               "1. IP Lokalny" & vbCrLf & _
+               "2. IP Publiczny" & vbCrLf & _
+               "3. Test Ping" & vbCrLf & _
+               "4. Reset Stosu Sieci" & vbCrLf & _
+               "5. Wylacz/Wlacz Adapter" & vbCrLf & _
+               "6. Otworz Polaczenia Sieciowe" & vbCrLf & _
+               "7. Wroc do glownego menu" & vbCrLf & SEP
         wyb = InputBox(menu, "Siec", "1")
-        If wyb = "" Or wyb = "6" Then Exit Do
+        If wyb = "" Or wyb = "7" Then Exit Do
         Select Case wyb
-            Case "1" : RunNetwork
-            Case "2" : RunWiFiPass
-            Case "3" : RunDefender
-            Case "4" : shell.Run "cmd /k ping -n 20 1.1.1.1", 1
-            Case "5" : shell.Run "cmd /k netstat -ano | findstr LISTENING", 1
+            Case "1" : RunGetLocalIP
+            Case "2" : RunGetPublicIP
+            Case "3" : RunPingTest
+            Case "4" : RunNetworkReset
+            Case "5" : RunAdapterToggle
+            Case "6" : shell.Run "ncpa.cpl", 1
             Case Else : MsgBox "Nieprawidlowy wybor.", vbExclamation, "Blad"
         End Select
     Loop
@@ -80,33 +83,20 @@ Sub ShowPowerMenu
                "2. Wyloguj" & vbCrLf & _
                "3. Restart" & vbCrLf & _
                "4. Zamknij" & vbCrLf & _
-               "5. Slide to Shut Down" & vbCrLf & _
-               "6. Anuluj Akcje" & vbCrLf & _
-               "7. Wroc do glownego menu" & vbCrLf & SEP
+               "5. Uspij / Hibernuj" & vbCrLf & _
+               "6. Slide to Shut Down" & vbCrLf & _
+               "7. Anuluj Akcje" & vbCrLf & _
+               "8. Wroc do glownego menu" & vbCrLf & SEP
         wyb = InputBox(menu, "Zasilanie", "4")
-        If wyb = "" Or wyb = "7" Then Exit Do
+        If wyb = "" Or wyb = "8" Then Exit Do
         Select Case wyb
             Case "1" : shell.Run "powershell -Command ""Start-Process shutdown -ArgumentList '/r /fw /t 0' -Verb RunAs""", 0
-            Case "2"
-                t = InputBox("Opoznienie (s):", "Czas", "10")
-                If t = "" Or Not IsNumeric(t) Then t = "10"
-                shell.Run "cmd /c timeout /t " & t & " /nobreak >nul && shutdown /l", 0
-            Case "3"
-                t = InputBox("Opoznienie (s):", "Czas", "30")
-                If t = "" Or Not IsNumeric(t) Then t = "30"
-                m = InputBox("Tekst:", "Komunikat", "Restartuje...")
-                If m = "" Then m = "Restartuje..."
-                shell.Run "shutdown /r /t " & t & " /c """ & m & """", 0
-            Case "4"
-                t = InputBox("Opoznienie (s):", "Czas", "30")
-                If t = "" Or Not IsNumeric(t) Then t = "30"
-                m = InputBox("Tekst:", "Komunikat", "Zamykam...")
-                If m = "" Then m = "Zamykam..."
-                shell.Run "shutdown /s /t " & t & " /c """ & m & """", 0
-            Case "5" : shell.Run "SlideToShutDown.exe", 1
-            Case "6"
-                shell.Run "shutdown /a", 0
-                MsgBox "Akcja anulowana!", vbInformation, "Anulowano"
+            Case "2" : RunLogoff
+            Case "3" : RunRestart
+            Case "4" : RunShutdown
+            Case "5" : RunSleepHibernate
+            Case "6" : shell.Run "SlideToShutDown.exe", 1
+            Case "7" : shell.Run "shutdown /a", 0 : MsgBox "Akcja anulowana!", vbInformation, "Anulowano"
             Case Else : MsgBox "Nieprawidlowy wybor.", vbExclamation, "Blad"
         End Select
     Loop
@@ -116,7 +106,7 @@ Sub ShowToolsMenu
     Do
         menu = SEP & vbCrLf & "ZAKLADKA: NARZEDZIA" & vbCrLf & SEP & vbCrLf & _
                "1. Edytor Rejestru / GodMode / UAC" & vbCrLf & _
-               "2. Narzedzia Naprawcze (SFC/DISM)" & vbCrLf & _
+               "2. Narzedzia Naprawcze" & vbCrLf & _
                "3. Szybkie Narzedzia (CMD/PS/Uslugi)" & vbCrLf & _
                "4. Opcje Dodatkowe (Motyw/Schowek/Kosz)" & vbCrLf & _
                "5. Generator Bezpiecznych Hasel" & vbCrLf & _
@@ -124,14 +114,13 @@ Sub ShowToolsMenu
                "7. Zarzadzanie Dyskami" & vbCrLf & _
                "8. Lista Programow i Funkcji" & vbCrLf & _
                "9. Logi Systemowe" & vbCrLf & _
-               "10. Ustawienia Dzwieku" & vbCrLf & _
-               "11. Planer Zadan Systemowych" & vbCrLf & _
-               "12. Podglad Top 10 Procesow (RAM)" & vbCrLf & _
-               "13. Raport Stanu Baterii" & vbCrLf & _
-               "14. Sterowanie Diodami Klawiatury" & vbCrLf & _
-               "15. Wroc do glownego menu" & vbCrLf & SEP
+               "10. Planer Zadan Systemowych" & vbCrLf & _
+               "11. Raport Stanu Baterii" & vbCrLf & _
+               "12. Sterowanie Diodami Klawiatury" & vbCrLf & _
+               "13. Status Aktywacji Windows" & vbCrLf & _
+               "14. Wroc do glownego menu" & vbCrLf & SEP
         wyb = InputBox(menu, "Narzedzia", "1")
-        If wyb = "" Or wyb = "15" Then Exit Do
+        If wyb = "" Or wyb = "14" Then Exit Do
         Select Case wyb
             Case "1" : RunAdvanced
             Case "2" : RunRepair
@@ -142,11 +131,10 @@ Sub ShowToolsMenu
             Case "7" : shell.Run "diskmgmt.msc", 1
             Case "8" : shell.Run "appwiz.cpl", 1
             Case "9" : shell.Run "eventvwr.msc", 1
-            Case "10": shell.Run "mmsys.cpl", 1
-            Case "11": shell.Run "taskschd.msc", 1
-            Case "12": shell.Run "powershell -Command ""Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First 10 Name, WorkingSet64""", 1
-            Case "13": shell.Run "cmd /k powercfg /batteryreport /output C:\Windows\Temp\battery.html", 0
-            Case "14": RunLEDToggle
+            Case "10": shell.Run "taskschd.msc", 1
+            Case "11": shell.Run "cmd /c powercfg /batteryreport /output ""%TEMP%\battery.html"" && start ""%TEMP%\battery.html""", 0
+            Case "12": RunLEDToggle
+            Case "13": shell.Run "slmgr /xpr", 1
             Case Else : MsgBox "Nieprawidlowy wybor.", vbExclamation, "Blad"
         End Select
     Loop
@@ -186,13 +174,19 @@ Sub RunGamerMode
     If MsgBox("Zatrzymac procesy tla (OneDrive, Teams, Spotify, Edge)?", vbYesNo + vbQuestion, "Tryb Gracza") = vbNo Then Exit Sub
     Dim procs : procs = Array("OneDrive.exe", "Teams.exe", "Skype.exe", "Spotify.exe", "Cortana.exe", "SearchUI.exe", "ShellExperienceHost.exe", "YourPhone.exe", "RuntimeBroker.exe", "GameBar.exe", "msedge.exe", "chrome.exe")
     Dim p
-    For Each p In procs : shell.Run "taskkill /f /t /im """ & p & """ 2>nul", 0, True : Next
+    For Each p In procs
+        On Error Resume Next
+        shell.Run "taskkill /f /t /im """ & p & """ 2>nul", 0, True
+        On Error GoTo 0
+    Next
     MsgBox "Tryb gracza aktywny.", vbInformation, "Sukces"
 End Sub
 
 Sub RunCleaner
     If MsgBox("Czyszczenie usunie:" & vbCrLf & "- %TEMP%" & vbCrLf & "- %WINDIR%\Temp" & vbCrLf & "- %WINDIR%\Prefetch" & vbCrLf & "- Cache DNS" & vbCrLf & "Kontynuowac?", vbQuestion + vbYesNo, "Czyszczenie") = vbYes Then
+        On Error Resume Next
         shell.Run "cmd /c ""del /f /s /q %TEMP%\*.* 2>nul & del /f /s /q %WINDIR%\Temp\*.* 2>nul & del /f /s /q %WINDIR%\Prefetch\*.* 2>nul & ipconfig /flushdns 2>nul""", 0, True
+        On Error GoTo 0
         MsgBox "Czyszczenie zakonczone!", vbInformation, "Sukces"
     End If
 End Sub
@@ -201,53 +195,61 @@ Sub RunResourceMonitor
     On Error Resume Next
     Set wmi = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
     Set cpu = wmi.ExecQuery("Select * from Win32_Processor") : For Each item In cpu : cpuLoad = item.LoadPercentage : Next
-    Set mem = wmi.ExecQuery("Select * from Win32_OperatingSystem") : For Each item In mem : ramFree = FormatNumber((item.TotalVisibleMemorySize - item.FreePhysicalMemory) / 1048576, 1) & " GB / " & FormatNumber(item.TotalVisibleMemorySize / 1048576, 1) & " GB" : Next
-    Set disks = wmi.ExecQuery("Select * from Win32_LogicalDisk where DriveType=3") : diskSpace = ""
-    For Each d In disks : diskSpace = diskSpace & " [" & d.DeviceID & "] " & FormatNumber(d.FreeSpace / 1073741824, 1) & " GB wolne / " & FormatNumber(d.Size / 1073741824, 1) & " GB" & vbCrLf : Next
+    Set mem = wmi.ExecQuery("Select * from Win32_OperatingSystem") : For Each item In mem : ramUsed = FormatNumber((item.TotalVisibleMemorySize - item.FreePhysicalMemory) / 1048576, 1) : ramTot = FormatNumber(item.TotalVisibleMemorySize / 1048576, 1) : Next
+    Set disks = wmi.ExecQuery("Select * from Win32_LogicalDisk where DriveType=3") : diskInfo = ""
+    For Each d In disks : diskInfo = diskInfo & " [" & d.DeviceID & "] " & FormatNumber(d.FreeSpace / 1073741824, 1) & " GB wolne / " & FormatNumber(d.Size / 1073741824, 1) & " GB" & vbCrLf : Next
     On Error GoTo 0
-    MsgBox "ZASOBY SYSTEMU:" & vbCrLf & "CPU: " & cpuLoad & "%" & vbCrLf & "RAM: " & ramFree & vbCrLf & "Dysk:" & diskSpace, vbInformation, "Monitor"
+    MsgBox "ZASOBY SYSTEMU:" & vbCrLf & "CPU: " & cpuLoad & "%" & vbCrLf & "RAM: " & ramUsed & " / " & ramTot & " GB" & vbCrLf & "Dysk:" & diskInfo, vbInformation, "Monitor"
 End Sub
 
-Sub RunHardwareInfo
+Sub RunProcessList
     On Error Resume Next
     Set wmi = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
-    Set cpu = wmi.ExecQuery("Select * from Win32_Processor") : For Each item In cpu : cpuName = item.Name : Next
-    Set gpu = wmi.ExecQuery("Select * from Win32_VideoController") : For Each item In gpu : gpuName = item.Name : Next
-    Set os = wmi.ExecQuery("Select * from Win32_OperatingSystem") : For Each item In os : osName = item.Caption : ramGB = FormatNumber(item.TotalVisibleMemorySize / 1048576, 1) : Next
+    Set procs = wmi.ExecQuery("Select Name, WorkingSetSize, ProcessId from Win32_Process ORDER BY WorkingSetSize DESC")
+    list = ""
+    count = 0
+    For Each p In procs
+        If p.Name <> "" And p.Name <> "Idle" And p.Name <> "System" Then
+            mb = Round(p.WorkingSetSize / 1048576, 1)
+            list = list & "[" & p.ProcessId & "] " & p.Name & " | " & mb & " MB" & vbCrLf
+            count = count + 1
+            If count >= 15 Then Exit For
+        End If
+    Next
     On Error GoTo 0
-    MsgBox "SPRZET I SYSTEM:" & vbCrLf & "CPU: " & cpuName & vbCrLf & "GPU: " & gpuName & vbCrLf & "OS: " & osName & vbCrLf & "RAM: " & ramGB & " GB", vbInformation, "Info"
+    If list = "" Then list = "Brak procesow do wyswietlenia."
+    MsgBox "TOP 15 PROCESOW (WEDLUG RAM):" & vbCrLf & list, vbInformation, "Lista Procesow"
 End Sub
 
-Sub RunNetwork
-    netMenu = "NARZEDZIA SIECIOWE:" & vbCrLf & "1. IP Lokalny" & vbCrLf & "2. IP Publiczny" & vbCrLf & "3. Wylacz Adapter" & vbCrLf & "4. Wlacz Adapter" & vbCrLf & "5. Reset Stosu Sieci" & vbCrLf & "6. Test Ping"
-    netWybor = InputBox(netMenu, "Siec", "1")
-    Select Case netWybor
-        Case "1" : Set exec = shell.Exec("cmd /c ipconfig | findstr /C:""IPv4""") : MsgBox "Lokalne IP:" & vbCrLf & exec.StdOut.ReadAll, vbInformation, "IP"
-        Case "2" : MsgBox "Sprawdzanie...", vbInformation, "IP" : Set exec = shell.Exec("powershell -Command ""(Invoke-RestMethod http://ifconfig.me/ip).Trim()""") : MsgBox "Publiczne IP:" & vbCrLf & exec.StdOut.ReadAll, vbInformation, "IP"
-        Case "3" : adapter = InputBox("Nazwa adaptera (np. Wi-Fi):", "Wylacz", "Wi-Fi") : If adapter <> "" Then shell.Run "powershell -Command ""Start-Process powershell -Verb RunAs -ArgumentList '-Command Disable-NetAdapter -Name ''' & adapter & ''' -Confirm:$false'""", 0
-        Case "4" : adapter = InputBox("Nazwa adaptera (np. Wi-Fi):", "Wlacz", "Wi-Fi") : If adapter <> "" Then shell.Run "powershell -Command ""Start-Process powershell -Verb RunAs -ArgumentList '-Command Enable-NetAdapter -Name ''' & adapter & ''' -Confirm:$false'""", 0
-        Case "5" : MsgBox "Resetowanie stosu sieciowego...", vbExclamation, "Reset" : shell.Run "cmd /c netsh winsock reset && netsh int ip reset && ipconfig /release && ipconfig /renew", 0, True : MsgBox "Reset zakoczony.", vbInformation, "Gotowe"
-        Case "6" : host = InputBox("Adres docelowy:", "Ping", "8.8.8.8") : If host <> "" Then Set exec = shell.Exec("ping -n 4 " & host) : MsgBox exec.StdOut.ReadAll, vbInformation, "Wynik Ping"
-    End Select
+Sub RunLogoff
+    t = InputBox("Opoznienie wylogowania (s):", "Czas", "5")
+    If t = "" Or Not IsNumeric(t) Then t = "5"
+    shell.Run "cmd /c timeout /t " & CInt(t) & " /nobreak >nul && shutdown /l", 0
 End Sub
 
-Sub RunWiFiPass
-    MsgBox "Pobieranie profilow WiFi...", vbInformation, "WiFi"
-    Set exec = shell.Exec("cmd /c netsh wlan show profiles")
-    MsgBox "PROFILE WIFI:" & vbCrLf & exec.StdOut.ReadAll, vbInformation, "Lista"
-    key = InputBox("Podaj nazwe sieci, aby pokazac haslo:", "Haslo WiFi")
-    If key <> "" Then Set exec2 = shell.Exec("cmd /c netsh wlan show profile name=""" & key & """ key=clear") : MsgBox exec2.StdOut.ReadAll, vbInformation, "Haslo: " & key
+Sub RunRestart
+    t = InputBox("Opoznienie restartu (s):", "Czas", "30")
+    If t = "" Or Not IsNumeric(t) Then t = "30"
+    m = InputBox("Komunikat na ekranie:", "Tekst", "Restartuje...")
+    If m = "" Then m = "Restartuje..."
+    shell.Run "shutdown /r /t " & CInt(t) & " /c """ & m & """", 0
 End Sub
 
-Sub RunDefender
-    dMenu = "MENADZER DEFENDERA:" & vbCrLf & "1. Wylacz Ochrone w Czasie Rzeczywistym" & vbCrLf & "2. Wlacz Ochrone w Czasie Rzeczywistym"
-    dWybor = InputBox(dMenu, "Defender", "1")
-    Select Case dWybor
-        Case "1" : MsgBox "Wylaczanie Defendera... Wymaga UAC.", vbInformation, "Defender" : shell.Run "powershell -Command ""Start-Process powershell -Verb RunAs -ArgumentList '-Command Set-MpPreference -DisableRealtimeMonitoring $true'""", 0 : MsgBox "Defender wylaczony.", vbInformation, "Info"
-        Case "2" : MsgBox "Wlaczanie Defendera... Wymaga UAC.", vbInformation, "Defender" : shell.Run "powershell -Command ""Start-Process powershell -Verb RunAs -ArgumentList '-Command Set-MpPreference -DisableRealtimeMonitoring $false'""", 0 : MsgBox "Defender wlaczony.", vbInformation, "Info"
-        Case Else : MsgBox "Nieprawidlowy wybor.", vbExclamation, "Blad"
-    End Select
+Sub RunShutdown
+    t = InputBox("Opoznienie zamkniecia (s):", "Czas", "30")
+    If t = "" Or Not IsNumeric(t) Then t = "30"
+    m = InputBox("Komunikat na ekranie:", "Tekst", "Zamykam...")
+    If m = "" Then m = "Zamykam..."
+    shell.Run "shutdown /s /t " & CInt(t) & " /c """ & m & """", 0
 End Sub
+
+Sub RunSleepHibernate
+    choice = MsgBox("1 = Uspij (Sleep)" & vbCrLf & "2 = Hibernacja", vbOKCancel, "Zasilanie")
+    If choice = vbOK Then shell.Run "rundll32.exe powrprof.dll,SetSuspendState 0,1,0", 0
+    If choice = vbCancel Then shell.Run "rundll32.exe powrprof.dll,SetSuspendState Hibernate", 0
+End Sub
+
+' ===== FUNKCJE NARZEDZIOWE =====
 
 Sub RunAdvanced
     advMenu = "NARZEDZIA ZAAWANSOWANE:" & vbCrLf & "1. Edytor Rejestru" & vbCrLf & "2. Utworz GodMode" & vbCrLf & "3. Ustawienia UAC"
@@ -260,13 +262,34 @@ Sub RunAdvanced
 End Sub
 
 Sub RunRepair
-    repMenu = "ZESTAW NAPRAWCZY:" & vbCrLf & "1. SFC Scan" & vbCrLf & "2. DISM Restore" & vbCrLf & "3. Czyszczenie Dysku"
-    repWybor = InputBox(repMenu, "Naprawa", "1")
-    Select Case repWybor
-        Case "1" : MsgBox "Uruchamianie SFC...", vbInformation, "SFC" : shell.Run "cmd /k sfc /scannow", 1
-        Case "2" : MsgBox "Uruchamianie DISM...", vbInformation, "DISM" : shell.Run "cmd /k DISM /Online /Cleanup-Image /RestoreHealth", 1
-        Case "3" : shell.Run "cleanmgr", 1
-    End Select
+    Do
+        menu = SEP & vbCrLf & "NARZEDZIA NAPRAWCZE" & vbCrLf & SEP & vbCrLf & _
+               "1. SFC Scan" & vbCrLf & _
+               "2. DISM Restore" & vbCrLf & _
+               "3. Czyszczenie Dysku" & vbCrLf & _
+               "4. Napraw procesu" & vbCrLf & _
+               "5. Optymalizacja Dyskow" & vbCrLf & _
+               "6. Wroc do narzedzi" & vbCrLf & SEP
+        wyb = InputBox(menu, "Naprawa", "1")
+        If wyb = "" Or wyb = "6" Then Exit Do
+        Select Case wyb
+            Case "1" : MsgBox "Uruchamianie SFC...", vbInformation, "SFC" : shell.Run "cmd /k sfc /scannow", 1
+            Case "2" : MsgBox "Uruchamianie DISM...", vbInformation, "DISM" : shell.Run "cmd /k DISM /Online /Cleanup-Image /RestoreHealth", 1
+            Case "3" : shell.Run "cleanmgr", 1
+            Case "4" : RunFixProcesses
+            Case "5" : shell.Run "dfrgui", 1
+            Case Else : MsgBox "Nieprawidlowy wybor.", vbExclamation, "Blad"
+        End Select
+    Loop
+End Sub
+
+Sub RunFixProcesses
+    If MsgBox("Zabije wszystkie procesy uzytkownika i uruchomi explorer ponownie. Kontynuowac?", vbYesNo + vbExclamation, "Napraw Procesow") = vbNo Then Exit Sub
+    On Error Resume Next
+    shell.Run "taskkill /f /fi ""STATUS eq RUNNING"" /fi ""USERNAME ne NT AUTHORITY\SYSTEM""", 0, True
+    shell.Run "explorer.exe", 1
+    On Error GoTo 0
+    MsgBox "Procesy zostaly zabite. Explorer uruchomiony ponownie.", vbInformation, "Sukces"
 End Sub
 
 Sub RunQuickTools
@@ -318,18 +341,21 @@ Sub RunPasswordGen
 End Sub
 
 Sub RunStartupManager
-    menu = "MENADZER AUTOSTARTU:" & vbCrLf & "1. Otworz folder Autostartu" & vbCrLf & "2. Pokaz programy startowe (Registry)" & vbCrLf & "3. Wylacz wybrany program z autostartu"
+    menu = "MENADZER AUTOSTARTU:" & vbCrLf & "1. Otworz folder Autostartu" & vbCrLf & "2. Pokaz programy startowe" & vbCrLf & "3. Wylacz wybrany program"
     sWybor = InputBox(menu, "Autostart", "1")
     Select Case sWybor
         Case "1" : shell.Run "shell:startup", 1
         Case "2"
+            On Error Resume Next
             Set wmi = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
             Set items = wmi.ExecQuery("Select * from Win32_StartupCommand")
             list = ""
             For Each item In items : list = list & item.Name & " -> " & item.Command & vbCrLf : Next
+            If list = "" Then list = "Brak wpisow w rejestrze."
+            On Error GoTo 0
             MsgBox "PROGRAMY AUTOSTARTU:" & vbCrLf & list, vbInformation, "Lista"
         Case "3"
-            app = InputBox("Wpisz dokladna nazwe programu z listy wyzej:", "Wylacz", "Program.exe")
+            app = InputBox("Wpisz nazwe programu:", "Wylacz", "Program.exe")
             If app <> "" Then shell.Run "reg delete ""HKCU\Software\Microsoft\Windows\CurrentVersion\Run"" /v """ & app & """ /f", 0, True : MsgBox "Usunieto z autostartu.", vbInformation, "Gotowe"
     End Select
 End Sub
@@ -344,6 +370,62 @@ Sub RunLEDToggle
         Case Else : MsgBox "Nieprawidlowy wybor.", vbExclamation, "Blad"
     End Select
     MsgBox "Dioda zmieniona.", vbInformation, "Sukces"
+End Sub
+
+' ===== FUNKCJE SIECIOWE (STABILNE) =====
+
+Sub RunGetLocalIP
+    On Error Resume Next
+    Set exec = shell.Exec("cmd /c ipconfig | findstr /C:""IPv4""")
+    out = exec.StdOut.ReadAll
+    On Error GoTo 0
+    If Trim(out) = "" Then out = "Nie znaleziono IPv4."
+    MsgBox "IP Lokalne:" & vbCrLf & out, vbInformation, "Siec"
+End Sub
+
+Sub RunGetPublicIP
+    MsgBox "Sprawdzanie IP zewnetrznego...", vbInformation, "Czekaj"
+    On Error Resume Next
+    Set http = CreateObject("MSXML2.XMLHTTP")
+    http.Open "GET", "https://api.ipify.org", False
+    http.Send
+    If http.Status = 200 Then
+        MsgBox "IP Publiczne: " & http.responseText, vbInformation, "Siec"
+    Else
+        Set exec = shell.Exec("powershell -Command ""(Invoke-RestMethod ifconfig.me/ip).Trim()""")
+        MsgBox "IP Publiczne: " & exec.StdOut.ReadAll, vbInformation, "Siec"
+    End If
+    On Error GoTo 0
+End Sub
+
+Sub RunPingTest
+    host = InputBox("Adres docelowy:", "Ping", "8.8.8.8")
+    If host = "" Then Exit Sub
+    MsgBox "Testowanie polaczenia... (moze potrwac 5s)", vbInformation, "Ping"
+    On Error Resume Next
+    Set exec = shell.Exec("ping -n 4 -w 1000 " & host)
+    result = exec.StdOut.ReadAll
+    On Error GoTo 0
+    MsgBox "WYNIK PING:" & vbCrLf & result, vbInformation, "Siec"
+End Sub
+
+Sub RunNetworkReset
+    MsgBox "Resetowanie stosu sieciowego...", vbExclamation, "Reset"
+    On Error Resume Next
+    shell.Run "cmd /c netsh winsock reset && netsh int ip reset && ipconfig /flushdns && ipconfig /release && ipconfig /renew", 0, True
+    On Error GoTo 0
+    MsgBox "Reset zakoczony. Zalecany restart systemu.", vbInformation, "Gotowe"
+End Sub
+
+Sub RunAdapterToggle
+    act = MsgBox("1 = Wylacz adapter" & vbCrLf & "2 = Wlacz adapter", vbOKCancel, "Adapter")
+    If act = vbCancel Then Exit Sub
+    adapter = InputBox("Nazwa adaptera (np. Wi-Fi, Ethernet):", "Nazwa", "Wi-Fi")
+    If adapter = "" Then Exit Sub
+    cmd = "Disable"
+    If act = 2 Then cmd = "Enable"
+    shell.Run "powershell -Command ""Start-Process powershell -Verb RunAs -ArgumentList '-Command " & cmd & "-NetAdapter -Name ''' & adapter & ''' -Confirm:$false'""", 0
+    MsgBox "Wyslano komende '" & cmd & "' dla adaptera '" & adapter & "'.", vbInformation, "Adapter"
 End Sub
 
 ' ===== FUNKCJE ROZRYWKOWE =====
@@ -391,7 +473,7 @@ End Sub
 Sub RunTypewriter
     MsgBox "Symulator pisania na maszynie. Kliknij OK, aby rozpoczac.", vbInformation, "Symulator"
     WScript.Sleep 500
-    shell.SendKeys "VM COMMANDER v7.0 INITIALIZED"
+    shell.SendKeys "VM COMMANDER v9.0 INITIALIZED"
     WScript.Sleep 200
     shell.SendKeys "{ENTER}"
     shell.SendKeys "TYPING SEQUENCE ENGAGED..."
@@ -402,15 +484,36 @@ Sub RunTypewriter
 End Sub
 
 Sub RunErrorLab
-    errMenu = "GENERATOR BLEDOW:" & vbCrLf & "1. Krytyczny" & vbCrLf & "2. Ostrzezenie" & vbCrLf & "3. Informacja" & vbCrLf & "4. Pytanie"
+    errMenu = "GENERATOR BLEDOW:" & vbCrLf & _
+              "1. Blad Krytyczny" & vbCrLf & _
+              "2. Ostrzezenie Systemowe" & vbCrLf & _
+              "3. Informacja" & vbCrLf & _
+              "4. Pytanie (Tak/Nie)" & vbCrLf & _
+              "5. Blad Dostepu (Access Denied)" & vbCrLf & _
+              "6. Brak Pliku (Not Found)" & vbCrLf & _
+              "7. Blad Sprzetowy" & vbCrLf & _
+              "8. Blad Polaczenia" & vbCrLf & _
+              "9. Pomoc (Help)" & vbCrLf & _
+              "10. Losowy Blad"
     e = InputBox(errMenu, "Bledy", "1")
-    If e <> "" Then
-        t = InputBox("Tresc:", "Tekst", "Wystapil blad!")
-        ti = InputBox("Tytul:", "Naglowek", "Blad Systemu")
-        Select Case e
-            Case "1" : MsgBox t, 16, ti : Case "2" : MsgBox t, 48, ti : Case "3" : MsgBox t, 64, ti : Case "4" : MsgBox t, 32, ti
-        End Select
-    End If
+    If e = "" Then Exit Sub
+    
+    txt = InputBox("Tresc:", "Tekst", "Wystapil blad!")
+    ti = InputBox("Tytul:", "Naglowek", "System Error")
+    
+    Select Case CInt(e)
+        Case 1 : MsgBox txt, 16, ti
+        Case 2 : MsgBox txt, 48, ti
+        Case 3 : MsgBox txt, 64, ti
+        Case 4 : MsgBox txt, 32, ti
+        Case 5 : MsgBox txt, 16, "ODMOWA DOSTEPU"
+        Case 6 : MsgBox txt, 48, "PLIK NIE ZNALEZIONY"
+        Case 7 : MsgBox txt, 16, "BLAD URZADZENIA"
+        Case 8 : MsgBox txt, 64, "BLAD SIECI"
+        Case 9 : MsgBox txt, 32, "POMOC SYSTEMU"
+        Case 10: MsgBox txt, Int(Rnd() * 5) * 16, "LOSOWY BLAD"
+        Case Else : MsgBox "Nieprawidlowy wybor.", vbExclamation, "Blad"
+    End Select
 End Sub
 
 Sub RunMatrix
